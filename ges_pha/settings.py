@@ -173,6 +173,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'"
 """
 Django settings for ges_pha project.
 """
+import dj_database_url
 
 from pathlib import Path
 import os
@@ -229,12 +230,35 @@ TEMPLATES = [
 WSGI_APPLICATION = 'ges_pha.wsgi.application'
 
 # Database
-DATABASES = {
+
+"""DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
     }
-}
+}"""
+
+# Nouvelle logique : Regarder si la variable DATABASE_URL existe.
+
+# La logique vérifie si la variable d'environnement DATABASE_URL existe (c'est le cas sur Render)
+if 'DATABASE_URL' in os.environ:
+    # 1. Configuration PostgreSQL pour Render (Production)
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=os.environ.get('DATABASE_URL'),
+            conn_max_age=600,
+            conn_health_check=True,
+            ssl_require=True,
+        )
+    }
+else:
+    # 2. Configuration SQLite pour le développement local
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # Password validation
 AUTH_PASSWORD_VALIDATORS = [
