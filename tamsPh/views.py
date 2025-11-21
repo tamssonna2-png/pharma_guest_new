@@ -1200,4 +1200,3 @@ def chat_ia(request, pharmacie_id):
     })
 
 
-#bon commencons l'hebergement je veux qu'on y aille pas à pas (en passant, est ce que si ca marche, je pourait acceder a mon site sur mon telephone?) 

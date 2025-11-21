@@ -1,0 +1,12 @@
+# Ignorer les environnements Python
+venv
+__pycache__
+
+# Ignorer les répertoires git et fichiers spécifiques à Docker
+.git
+.gitignore
+.dockerignore
+Dockerfile
+
+# Inclure tout le reste
+*
