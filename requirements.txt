@@ -1,0 +1,8 @@
+# requirements.txt
+Django==5.2.7
+requests==2.32.3
+python-decouple==3.8
+# Pour servir les fichiers statiques
+whitenoise==6.6.0 
+# Serveur de production Python
+gunicorn==21.2.0

@@ -1,0 +1,836 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Modifier ma Pharmacie - PharmaGest</title>
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-green: #45a049;
+            --light-green: #e8f5e8;
+            --accent-orange: #ff9800;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --border-color: #ddd;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background:rgb(131, 32, 118);
+            color: var(--white);
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 10px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(138, 11, 127, 0.3);
+        }
+        
+        .back-button:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .header-section {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+        
+        .header-title {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+        }
+        
+        .header-subtitle {
+            opacity: 0.9;
+            font-size: 1.1em;
+        }
+        
+        .form-section {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+        }
+        
+        .section-title {
+            color: var(--primary-green);
+            margin-bottom: 25px;
+            font-size: 1.5em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--light-green);
+            padding-bottom: 10px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 20px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: var(--text-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .form-input, .form-textarea, .form-select {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            background: var(--white);
+        }
+        
+        .form-input:focus, .form-textarea:focus, .form-select:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .form-textarea {
+            resize: vertical;
+            min-height: 100px;
+        }
+        
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--light-gray);
+            border-radius: 10px;
+            border: 2px solid var(--border-color);
+        }
+        
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+        }
+        
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
+        }
+        
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .slider {
+            background-color: var(--accent-orange);
+        }
+        
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+        
+        .switch-label {
+            font-weight: bold;
+            color: var(--text-dark);
+        }
+        
+        .garde-info {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 10px;
+            color: #856404;
+        }
+        
+        .coordinates-section {
+            background: #fff3f3;
+            border-radius: 10px;
+            padding: 20px;
+            margin-top: 10px;
+            border: 2px dashed #dc3545;
+            position: relative;
+        }
+        
+        .coordinates-info {
+            color: #1976D2;
+            font-size: 0.9em;
+            margin-top: 10px;
+        }
+        
+        .form-actions {
+            display: flex;
+            gap: 15px;
+            justify-content: flex-end;
+            margin-top: 30px;
+            padding-top: 20px;
+            border-top: 2px solid var(--light-gray);
+        }
+        
+        .btn {
+            padding: 15px 30px;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .btn-secondary {
+            background: var(--light-gray);
+            color: var(--text-dark);
+            border: 2px solid var(--border-color);
+        }
+        
+        .btn-secondary:hover {
+            background: #e9ecef;
+            transform: translateY(-1px);
+        }
+        
+        .status-indicator {
+            display: inline-block;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        
+        .status-active {
+            background: var(--accent-orange);
+            color: white;
+        }
+        
+        .status-inactive {
+            background: var(--text-light);
+            color: white;
+        }
+        
+        .help-text {
+            color: var(--text-light);
+            font-size: 0.9em;
+            margin-top: 5px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* NOUVEAUX STYLES POUR LA SÉCURITÉ DES COORDONNÉES */
+        .security-warning {
+            background: linear-gradient(135deg, #fff3cd, #ffeaa7);
+            border: 2px solid #ffc107;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+            color: #856404;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .coordinates-locked {
+            background: #f8f9fa;
+            border: 2px solid #6c757d;
+            opacity: 0.7;
+        }
+        
+        .lock-toggle {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .lock-toggle.unlocked {
+            background: #28a745;
+        }
+        
+        .coordinates-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .verification-step {
+            background: #e8f5e8;
+            border: 1px solid #4CAF50;
+            border-radius: 8px;
+            padding: 15px;
+            margin-top: 15px;
+        }
+        
+        .verification-checkbox {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .verification-checkbox input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+        }
+        
+        .current-location-btn {
+            background: #17a2b8;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-top: 10px;
+        }
+        
+        .location-status {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+        }
+        
+        .location-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        
+        .location-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        
+        .map-preview {
+            height: 150px;
+            background: #f0f0f0;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #6c757d;
+            border: 1px dashed #ccc;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Bouton de retour -->
+        <a href="{% url 'mes_medicaments_perso' %}" class="back-button">
+            ⬅️ Retour inventaire des Médicaments
+        </a>
+        <a href="{% url 'recherche_ia' %}" class="back-button">
+                    🔍 Recherche Intelligente
+        </a>
+
+        <!-- En-tête -->
+        <div class="header-section">
+            <h1 class="header-title">⚙️ Gestion de ma Pharmacie</h1>
+            <p class="header-subtitle">Modifiez les informations de votre établissement</p>
+        </div>
+
+        <!-- Formulaire de modification -->
+        <form method="post" class="form-section" id="pharmacyForm">
+            {% csrf_token %}
+            
+            <h2 class="section-title">📋 Informations générales</h2>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">
+                        🏥 Nom de la pharmacie
+                    </label>
+                    <input type="text" 
+                           name="nom" 
+                           value="{{ pharmacie.nom }}" 
+                           class="form-input" 
+                           required
+                           placeholder="Entrez le nom de votre pharmacie">
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        📍 Adresse complète
+                    </label>
+                    <textarea name="address" 
+                              class="form-textarea" 
+                              required
+                              placeholder="Adresse complète de votre pharmacie">{{ pharmacie.address }}</textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        🏘️ Zone/Quartier
+                    </label>
+                    <input type="text" 
+                           name="zone" 
+                           value="{{ pharmacie.zone }}" 
+                           class="form-input" 
+                           required
+                           placeholder="Quartier ou zone d'implantation">
+                </div>
+            </div>
+
+            <!-- Section statut de garde -->
+            <h2 class="section-title">🔥 Statut de garde</h2>
+            
+            <div class="form-group">
+                <div class="switch-container">
+                    <label class="switch">
+                        <input type="checkbox" 
+                               name="deGarde" 
+                               {% if pharmacie.deGarde %}checked{% endif %}>
+                        <span class="slider"></span>
+                    </label>
+                    <span class="switch-label">
+                        Pharmacie de garde
+                        <span class="status-indicator {% if pharmacie.deGarde %}status-active{% else %}status-inactive{% endif %}">
+                            {% if pharmacie.deGarde %}ACTIVE{% else %}INACTIVE{% endif %}
+                        </span>
+                    </span>
+                </div>
+                
+                <div class="garde-info">
+                    <strong>💡 Information :</strong> 
+                    En activant le statut de garde, votre pharmacie sera visible comme 
+                    <strong>pharmacie de garde</strong> pour les urgences. Ce statut est généralement 
+                    utilisé en dehors des heures d'ouverture normales.
+                </div>
+            </div>
+
+            <!-- Section coordonnées GPS SÉCURISÉE -->
+            <h2 class="section-title">🌍 Localisation GPS</h2>
+            
+            <div class="security-warning">
+                ⚠️ ZONE SENSIBLE - Une erreur de localisation peut empêcher les patients de vous trouver en cas d'urgence !
+            </div>
+            
+            <div class="coordinates-section" id="coordinatesSection">
+                <button type="button" class="lock-toggle" id="lockToggle">
+                    🔒 Verrouillé
+                </button>
+                
+                <div class="coordinates-info">
+                    🎯 Ces coordonnées déterminent votre visibilité dans les recherches. 
+                    <strong>Ne modifiez que si nécessaire et avec précaution.</strong>
+                </div>
+                
+                <div class="coordinates-inputs">
+                    <div class="form-group">
+                        <label class="form-label">📍 Latitude</label>
+                        <input type="number" 
+                               step="any"
+                               name="latitude" 
+                               value="{{ pharmacie.latitude }}" 
+                               class="form-input coordinates-input"
+                               placeholder="Ex: 3.876716"
+                               readonly
+                               id="latitudeInput">
+                        <div class="help-text">
+                            Doit être entre -90 et 90
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">📍 Longitude</label>
+                        <input type="number" 
+                               step="any"
+                               name="longitude" 
+                               value="{{ pharmacie.longitude }}" 
+                               class="form-input coordinates-input"
+                               placeholder="Ex: 11.550724"
+                               readonly
+                               id="longitudeInput">
+                        <div class="help-text">
+                            Doit être entre -180 et 180
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Bouton de géolocalisation automatique -->
+                <button type="button" class="current-location-btn" id="currentLocationBtn" disabled>
+                    📍 Utiliser ma position actuelle
+                </button>
+                
+                <!-- Aperçu de la localisation -->
+                <div class="map-preview" id="mapPreview">
+                    🔓 Déverrouillez pour voir l'aperçu
+                </div>
+                
+                <!-- Étape de vérification -->
+                <div class="verification-step" id="verificationStep" style="display: none;">
+                    <h4>✅ Vérification de sécurité requise</h4>
+                    <div class="verification-checkbox">
+                        <input type="checkbox" id="confirmLocation" required>
+                        <label for="confirmLocation">
+                            Je confirme que ces coordonnées correspondent exactement à l'emplacement physique de ma pharmacie
+                        </label>
+                    </div>
+                    <div class="verification-checkbox">
+                        <input type="checkbox" id="understandRisk" required>
+                        <label for="understandRisk">
+                            Je comprends qu'une erreur peut empêcher des patients de trouver la pharmacie en cas d'urgence
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions du formulaire -->
+            <div class="form-actions">
+                <button type="button" class="btn btn-secondary" onclick="confirmCancel()">
+                    ❌ Annuler
+                </button>
+                
+                <button type="submit" class="btn btn-primary" id="submitBtn">
+                    💾 Enregistrer les modifications
+                </button>
+            </div>
+        </form>
+
+        <!-- Section informations importantes -->
+        <div class="form-section">
+            <h2 class="section-title">ℹ️ Informations importantes</h2>
+            
+            <div style="display: grid; gap: 15px;">
+                <div style="display: flex; align-items: start; gap: 15px; padding: 15px; background: #e8f5e8; border-radius: 8px;">
+                    <div style="font-size: 1.5em;">🔒</div>
+                    <div>
+                        <strong>Sécurité des données</strong>
+                        <p style="margin-top: 5px; color: var(--text-light);">
+                            Vos informations sont sécurisées et uniquement utilisées pour aider 
+                            les patients à vous localiser.
+                        </p>
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: start; gap: 15px; padding: 15px; background: #fff3cd; border-radius: 8px;">
+                    <div style="font-size: 1.5em;">⚠️</div>
+                    <div>
+                        <strong>Localisation précise</strong>
+                        <p style="margin-top: 5px; color: var(--text-light);">
+                            Des coordonnées GPS incorrectes peuvent rendre votre pharmacie 
+                            <strong>invisible</strong> aux patients qui vous cherchent.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Éléments DOM
+        const lockToggle = document.getElementById('lockToggle');
+        const coordinatesInputs = document.querySelectorAll('.coordinates-input');
+        const currentLocationBtn = document.getElementById('currentLocationBtn');
+        const verificationStep = document.getElementById('verificationStep');
+        const submitBtn = document.getElementById('submitBtn');
+        const latitudeInput = document.getElementById('latitudeInput');
+        const longitudeInput = document.getElementById('longitudeInput');
+        const mapPreview = document.getElementById('mapPreview');
+        const confirmLocation = document.getElementById('confirmLocation');
+        const understandRisk = document.getElementById('understandRisk');
+
+        let isUnlocked = false;
+
+        // Fonction pour verrouiller/déverrouiller les coordonnées
+        lockToggle.addEventListener('click', function() {
+            if (!isUnlocked) {
+                // Demander confirmation pour déverrouiller
+                if (confirm('⚠️ Êtes-vous sûr de vouloir modifier les coordonnées GPS ?\n\nUne erreur peut rendre votre pharmacie invisible aux patients.')) {
+                    unlockCoordinates();
+                }
+            } else {
+                lockCoordinates();
+            }
+        });
+
+        function unlockCoordinates() {
+            isUnlocked = true;
+            coordinatesInputs.forEach(input => input.readOnly = false);
+            currentLocationBtn.disabled = false;
+            lockToggle.textContent = '🔓 Déverrouillé';
+            lockToggle.classList.add('unlocked');
+            document.getElementById('coordinatesSection').style.borderColor = '#28a745';
+            document.getElementById('coordinatesSection').style.background = '#f0fff0';
+            verificationStep.style.display = 'block';
+            updateMapPreview();
+            validateCoordinates();
+        }
+
+        function lockCoordinates() {
+            isUnlocked = false;
+            coordinatesInputs.forEach(input => input.readOnly = true);
+            currentLocationBtn.disabled = true;
+            lockToggle.textContent = '🔒 Verrouillé';
+            lockToggle.classList.remove('unlocked');
+            document.getElementById('coordinatesSection').style.borderColor = '#dc3545';
+            document.getElementById('coordinatesSection').style.background = '#fff3f3';
+            verificationStep.style.display = 'none';
+            mapPreview.innerHTML = '🔓 Déverrouillez pour voir l\'aperçu';
+        }
+
+        // Géolocalisation automatique
+        currentLocationBtn.addEventListener('click', function() {
+            if (!navigator.geolocation) {
+                showLocationStatus('La géolocalisation n\'est pas supportée par votre navigateur', 'error');
+                return;
+            }
+
+            showLocationStatus('📍 Acquisition de votre position...', 'success');
+
+            navigator.geolocation.getCurrentPosition(
+                function(position) {
+                    const lat = position.coords.latitude;
+                    const lng = position.coords.longitude;
+                    
+                    latitudeInput.value = lat.toFixed(6);
+                    longitudeInput.value = lng.toFixed(6);
+                    
+                    showLocationStatus('✅ Position actuelle détectée', 'success');
+                    validateCoordinates();
+                    updateMapPreview();
+                },
+                function(error) {
+                    let message = 'Erreur de géolocalisation: ';
+                    switch(error.code) {
+                        case error.PERMISSION_DENIED:
+                            message += 'Permission refusée';
+                            break;
+                        case error.POSITION_UNAVAILABLE:
+                            message += 'Position indisponible';
+                            break;
+                        case error.TIMEOUT:
+                            message += 'Timeout';
+                            break;
+                        default:
+                            message += 'Erreur inconnue';
+                    }
+                    showLocationStatus(message, 'error');
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 10000,
+                    maximumAge: 60000
+                }
+            );
+        });
+
+        // Validation des coordonnées
+        function validateCoordinates() {
+            const lat = parseFloat(latitudeInput.value);
+            const lng = parseFloat(longitudeInput.value);
+            
+            if (isNaN(lat) || isNaN(lng)) {
+                return false;
+            }
+            
+            // Validation des plages
+            if (lat < -90 || lat > 90) {
+                showLocationStatus('La latitude doit être entre -90 et 90', 'error');
+                return false;
+            }
+            
+            if (lng < -180 || lng > 180) {
+                showLocationStatus('La longitude doit être entre -180 et 180', 'error');
+                return false;
+            }
+            
+            // Vérification de la localisation (Cameroun approximatif)
+            if (lng < 8 || lng > 16 || lat < 2 || lat > 13) {
+                if (!confirm('⚠️ Ces coordonnées semblent être en dehors du Cameroun. Êtes-vous sûr de vouloir continuer ?')) {
+                    return false;
+                }
+            }
+            
+            return true;
+        }
+
+        // Mise à jour de l'aperçu carte
+        function updateMapPreview() {
+            const lat = latitudeInput.value;
+            const lng = longitudeInput.value;
+            
+            if (lat && lng) {
+                const mapUrl = `https://www.google.com/maps?q=${lat},${lng}&z=18`;
+                mapPreview.innerHTML = 
+                    `<a href="${mapUrl}" target="_blank" style="color: #007bff; text-decoration: none; text-align: center;">
+                        <div style="font-size: 2em;">🗺️</div>
+                        <strong>Vérifier sur Google Maps</strong><br>
+                        <small>(ouvre dans un nouvel onglet)</small>
+                    </a>`;
+            } else {
+                mapPreview.innerHTML = '📍 Entrez des coordonnées pour voir l\'aperçu';
+            }
+        }
+
+        // Affichage des statuts de localisation
+        function showLocationStatus(message, type) {
+            const statusDiv = document.createElement('div');
+            statusDiv.className = `location-status location-${type}`;
+            statusDiv.textContent = message;
+            
+            // Supprimer les anciens statuts
+            const oldStatus = document.querySelector('.location-status');
+            if (oldStatus) {
+                oldStatus.remove();
+            }
+            
+            currentLocationBtn.parentNode.insertBefore(statusDiv, currentLocationBtn.nextSibling);
+            
+            // Auto-suppression après 5 secondes
+            setTimeout(() => {
+                if (statusDiv.parentNode) {
+                    statusDiv.remove();
+                }
+            }, 5000);
+        }
+
+        // Événements de validation
+        latitudeInput.addEventListener('blur', function() {
+            if (isUnlocked) {
+                validateCoordinates();
+                updateMapPreview();
+            }
+        });
+
+        longitudeInput.addEventListener('blur', function() {
+            if (isUnlocked) {
+                validateCoordinates();
+                updateMapPreview();
+            }
+        });
+
+        // Validation avant soumission
+        document.getElementById('pharmacyForm').addEventListener('submit', function(e) {
+            if (isUnlocked) {
+                if (!validateCoordinates()) {
+                    e.preventDefault();
+                    alert('❌ Veuillez corriger les coordonnées GPS avant de soumettre le formulaire.');
+                    return;
+                }
+                
+                if (!confirmLocation.checked || !understandRisk.checked) {
+                    e.preventDefault();
+                    alert('❌ Veuillez confirmer les vérifications de sécurité pour les coordonnées GPS.');
+                    return;
+                }
+                
+                if (!confirm('⚠️ CONFIRMATION FINALE\n\nVous êtes sur le point de modifier les coordonnées GPS de votre pharmacie. Cette action peut affecter la visibilité de votre établissement.\n\nConfirmer la modification ?')) {
+                    e.preventDefault();
+                    return;
+                }
+            }
+        });
+
+        // Mise à jour dynamique du statut (existant)
+        const toggleSwitch = document.querySelector('input[name="deGarde"]');
+        const statusIndicator = document.querySelector('.status-indicator');
+        
+        toggleSwitch.addEventListener('change', function() {
+            if (this.checked) {
+                statusIndicator.textContent = 'ACTIVE';
+                statusIndicator.className = 'status-indicator status-active';
+            } else {
+                statusIndicator.textContent = 'INACTIVE';
+                statusIndicator.className = 'status-indicator status-inactive';
+            }
+        });
+
+        // Confirmation avant annulation
+        function confirmCancel() {
+            if (confirm('Voulez-vous vraiment annuler ? Les modifications non enregistrées seront perdues.')) {
+                window.history.back();
+            }
+        }
+    </script>
+</body>
+</html>

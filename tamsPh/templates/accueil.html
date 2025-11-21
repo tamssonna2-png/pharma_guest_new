@@ -1,0 +1,403 @@
+<!--<!DOCTYPE html>
+<html>
+<head>
+    <title>Accueil - PharmaGest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margpath('', views.accueil, name='accueil'),in: 0 auto;
+            padding: 20px;
+            background: #f5f5f5;
+        }
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+        .bouton-container {
+            text-align: center;
+            margin: 30px 0;
+        }
+        .bouton-pharmacie {
+            display: inline-block;
+            background: #4CAF50;
+            color: white;
+            padding: 15px 30px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 18px;
+            font-weight: bold;
+            transition: background 0.3s;
+        }
+        .bouton-pharmacie:hover {
+            background: #45a049;
+        }
+        .features {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 50px;
+            flex-wrap: wrap;
+        }
+        .feature {
+            text-align: center;
+            margin: 10px;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            min-width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏥 PharmaGest</h1>
+        <p>Votre solution de gestion pharmaceutique</p>
+    </div>
+
+    <div class="bouton-container">
+        <a href="{% url 'recherche_pharmacies_gps' %}" class="bouton-pharmacie">
+            📍 Pharmacies Proches
+        </a>
+    </div>
+
+    <div class="features">
+        <div class="feature">
+            <h3>💊 Gestion Stock</h3>
+            <p>Gérez votre inventaire de médicaments</p>
+        </div>
+        <div class="feature">
+            <h3>🏥 Inscription</h3>
+            <p>Rejoignez notre réseau de pharmacies</p>
+        </div>
+        <div class="feature">
+            <h3>🔍 Recherche</h3>
+            <p>Trouvez médicaments et pharmacies</p>
+        </div>
+    </div>
+    <a href="{% url 'inscription' %}" class="bouton-inscription">
+    🏥 S'inscrire comme Pharmacie
+    </a>
+
+    <style>
+    .bouton-inscription {
+        display: inline-block;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 15px 30px;
+        text-decoration: none;
+        border-radius: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);
+        border: none;
+        cursor: pointer;
+    }
+
+    .bouton-inscription:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        background: linear-gradient(135deg, #764ba2 0%, #667eea 100%);
+    }
+    </style>
+    <a href="{% url 'medicament_client_recherche' %}" class="bouton-inscription">
+    chercher medicament
+    </a>
+</body>
+</html>-->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Accueil - PharmaGest</title>
+    <style>
+        :root {
+            --client-color: #4CAF50;
+            --client-hover: #45a049;
+            --pharma-color: #6c757d;
+            --pharma-hover: #5a6268;
+            --text-light: #ffffff;
+            --text-dark: #333333;
+            --background: #f8f9fa;
+            --card-bg: #ffffff;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: var(--background);
+            line-height: 1.6;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 50px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--client-color), #2E8B57);
+            color: var(--text-light);
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+        }
+        
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.3em;
+            opacity: 0.95;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .client-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            margin-bottom: 40px;
+            border-left: 6px solid var(--client-color);
+            text-align: center;
+        }
+        
+        .section-title {
+            font-size: 2em;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: var(--client-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .boutons-container {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-top: 30px;
+        }
+        
+        .bouton-client {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--client-color), var(--client-hover));
+            color: var(--text-light);
+            padding: 18px 35px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            font-size: 1.1em;
+            transition: all 0.3s ease;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.3);
+            min-width: 200px;
+        }
+        
+        .bouton-client:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(76, 175, 80, 0.4);
+        }
+        
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin: 50px 0;
+        }
+        
+        .feature {
+            text-align: center;
+            padding: 30px;
+            background: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: transform 0.3s ease;
+            border-top: 4px solid var(--client-color);
+        }
+        
+        .feature:hover {
+            transform: translateY(-5px);
+        }
+        
+        .feature h3 {
+            color: var(--client-color);
+            margin-bottom: 15px;
+            font-size: 1.4em;
+        }
+        
+        /* Section pharmacie discrète */
+        .pharma-feature {
+            border-top: 4px solid var(--pharma-color);
+            background: linear-gradient(135deg, #f8f9fa, #e9ecef);
+            position: relative;
+        }
+        
+        .pharma-feature h3 {
+            color: var(--pharma-color);
+        }
+        
+        .bouton-pharma {
+            display: inline-block;
+            background: linear-gradient(135deg, var(--pharma-color), var(--pharma-hover));
+            color: var(--text-light);
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            margin-top: 15px;
+            font-size: 0.95em;
+            box-shadow: 0 3px 10px rgba(108, 117, 125, 0.3);
+        }
+        
+        .bouton-pharma:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(108, 117, 125, 0.4);
+        }
+        
+        .professional-badge {
+            position: absolute;
+            top: -12px;
+            right: 20px;
+            background: var(--pharma-color);
+            color: white;
+            padding: 6px 15px;
+            border-radius: 25px;
+            font-size: 0.75em;
+            font-weight: bold;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.2);
+        }
+        
+        .access-note {
+            font-size: 0.8em;
+            color: #6c757d;
+            font-style: italic;
+            margin-top: 12px;
+            padding: 8px;
+            background: rgba(255,255,255,0.7);
+            border-radius: 5px;
+            border-left: 2px solid var(--pharma-color);
+        }
+        
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+            text-align: center;
+        }
+        
+        .stat-item {
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 10px;
+            box-shadow: 0 3px 15px rgba(0,0,0,0.05);
+        }
+        
+        .stat-number {
+            font-size: 2.5em;
+            font-weight: bold;
+            color: var(--client-color);
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .boutons-container {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .bouton-client {
+                width: 100%;
+                max-width: 300px;
+            }
+            
+            .header {
+                padding: 30px 20px;
+            }
+            
+            .header h1 {
+                font-size: 2.2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>🏥 PharmaGest</h1>
+        <p>Votre solution pour trouver les médicaments disponibles près de chez vous</p>
+    </div>
+
+    <!-- Section Client bien visible -->
+    <div class="client-section">
+        <div class="section-title">
+            <span>👤 Trouvez vos médicaments</span>
+        </div>
+        <p style="font-size: 1.2em; color: #666; margin-bottom: 20px; max-width: 600px; margin-left: auto; margin-right: auto;">
+            Recherchez en temps réel la disponibilité de vos médicaments dans les pharmacies autour de vous.
+        </p>
+        
+        <div class="boutons-container">
+            <a href="{% url 'medicament_client_recherche' %}" class="bouton-client">
+                💊 Rechercher un médicament
+            </a>
+            <a href="{% url 'recherche_pharmacies_gps' %}" class="bouton-client">
+                📍 Pharmacies à proximité
+            </a>
+        </div>
+    </div>
+
+    <!-- Statistiques -->
+    <div class="stats">
+        <div class="stat-item">
+            <span class="stat-number">500+</span>
+            <span>Pharmacies partenaires</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">10K+</span>
+            <span>Médicaments disponibles</span>
+        </div>
+        <div class="stat-item">
+            <span class="stat-number">24/7</span>
+            <span>Service en continu</span>
+        </div>
+    </div>
+
+    <!-- Fonctionnalités avec section pharmacie discrète -->
+    <div class="features">
+        <div class="feature">
+            <h3>🔍 Recherche Intelligente</h3>
+            <p>Trouvez vos médicaments par nom, catégorie ou symptôme en quelques secondes</p>
+        </div>
+        
+        <div class="feature">
+            <h3>📍 Géolocalisation</h3>
+            <p>Découvrez les pharmacies les plus proches avec leurs horaires et contacts</p>
+        </div>
+        
+        <div class="feature">
+            <h3>📱 Interface Simple</h3>
+            <p>Application intuitive accessible à tous, sans formation nécessaire</p>
+        </div>
+        
+        <!-- Section pharmacie discrètement intégrée -->
+        <div class="feature pharma-feature">
+            <div class="professional-badge">Professionnel</div>
+            <h3>🏥 Pour les pharmacies</h3>
+            <p>Rejoignez notre réseau et gérez votre stock efficacement</p>
+            <a href="{% url 'inscription' %}" class="bouton-pharma">
+                S'inscrire
+            </a>
+            <div class="access-note">
+                Réservé aux pharmacies habilitées
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

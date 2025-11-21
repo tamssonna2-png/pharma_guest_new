@@ -1,0 +1,283 @@
+
+<!-- Formulaire de recherche -->
+<div class="search-medicament-container">
+    <div class="search-medicament-header">
+        <h3>🔍 Rechercher un médicament</h3>
+        <p>Trouvez rapidement vos médicaments dans votre pharmacie</p>
+    </div>
+    
+    <form method="get" action="{% url 'Recherche_medicament_pharmacie' %}" class="search-medicament-form">
+        <div class="search-medicament-input-group">
+            <div class="input-wrapper-large">
+                <input type="text" 
+                       name="nom_medic" 
+                       placeholder="Entrez le nom du médicament que vous recherchez..." 
+                       class="search-medicament-input">
+                <div class="input-icon-large">💊</div>
+            </div>
+            
+            <button type="submit" class="search-medicament-btn">
+                <span class="btn-icon-large">🔍</span>
+                <span class="btn-text-large">Rechercher</span>
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    .search-medicament-container {
+        margin: 30px 0;
+        padding: 35px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border-radius: 20px;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+        color: white;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .search-medicament-container::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        z-index: 1;
+    }
+
+    .search-medicament-header {
+        position: relative;
+        z-index: 2;
+        margin-bottom: 25px;
+        text-align: center;
+    }
+
+    .search-medicament-header h3 {
+        font-size: 2em;
+        margin-bottom: 10px;
+        font-weight: 700;
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .search-medicament-header p {
+        font-size: 1.2em;
+        opacity: 0.9;
+        margin: 0;
+    }
+
+    .search-medicament-form {
+        position: relative;
+        z-index: 2;
+    }
+
+    .search-medicament-input-group {
+        display: flex;
+        gap: 20px;
+        align-items: stretch;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .input-wrapper-large {
+        flex: 1;
+        position: relative;
+    }
+
+    /* CHAMP DE RECHERCHE AGRANDI */
+    .search-medicament-input {
+        width: 100%;
+        padding: 22px 70px 22px 30px;
+        border: none;
+        border-radius: 15px;
+        font-size: 1.3em;
+        background: rgba(255, 255, 255, 0.95);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        transition: all 0.3s ease;
+        color: #2c3e50;
+        font-weight: 500;
+        min-height: 75px;
+    }
+
+    .search-medicament-input::placeholder {
+        color: #6c757d;
+        font-weight: 400;
+        font-size: 1.1em;
+    }
+
+    .search-medicament-input:focus {
+        outline: none;
+        background: white;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        transform: translateY(-2px);
+    }
+
+    .input-icon-large {
+        position: absolute;
+        right: 30px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.8em;
+        color: #6c757d;
+    }
+
+    /* BOUTON AGRANDI */
+    .search-medicament-btn {
+        padding: 0 45px;
+        border: none;
+        border-radius: 15px;
+        background: linear-gradient(135deg, #4CAF50, #45a049);
+        color: white;
+        font-size: 1.3em;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 5px 20px rgba(76, 175, 80, 0.3);
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        min-height: 75px;
+        white-space: nowrap;
+    }
+
+    .search-medicament-btn:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+        background: linear-gradient(135deg, #45a049, #3d8b40);
+    }
+
+    .search-medicament-btn:active {
+        transform: translateY(-1px);
+    }
+
+    .btn-icon-large {
+        font-size: 1.5em;
+    }
+
+    .btn-text-large {
+        font-size: 1.2em;
+    }
+
+    /* Animation de focus améliorée */
+    @keyframes inputFocus {
+        0% { transform: translateY(-2px); }
+        50% { transform: translateY(-4px); }
+        100% { transform: translateY(-2px); }
+    }
+
+    .search-medicament-input:focus {
+        animation: inputFocus 0.3s ease;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .search-medicament-container {
+            padding: 25px 20px;
+            margin: 20px 0;
+        }
+
+        .search-medicament-input-group {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .search-medicament-input {
+            min-height: 65px;
+            font-size: 1.1em;
+            padding: 18px 50px 18px 20px;
+        }
+
+        .search-medicament-btn {
+            min-height: 65px;
+            padding: 0 25px;
+            justify-content: center;
+            font-size: 1.1em;
+        }
+
+        .search-medicament-header h3 {
+            font-size: 1.6em;
+        }
+
+        .search-medicament-header p {
+            font-size: 1em;
+        }
+
+        .input-icon-large {
+            right: 20px;
+            font-size: 1.5em;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .search-medicament-container {
+            padding: 20px 15px;
+        }
+
+        .search-medicament-input {
+            min-height: 60px;
+            font-size: 1em;
+            padding: 16px 45px 16px 16px;
+        }
+
+        .search-medicament-btn {
+            min-height: 60px;
+            font-size: 1em;
+        }
+
+        .btn-text-large {
+            font-size: 1em;
+        }
+    }
+</style>
+
+<script>
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.querySelector('.search-medicament-input');
+        setTimeout(() => {
+            input.style.transition = 'all 0.5s ease';
+            input.style.transform = 'translateY(0)';
+            input.style.opacity = '1';
+        }, 300);
+    });
+
+    // Focus automatique sur le champ de recherche
+    document.querySelector('.search-medicament-input')?.focus();
+
+    // Soumission avec la touche Entrée
+    document.querySelector('.search-medicament-input')?.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            this.form.submit();
+        }
+    });
+
+    // Effet de pulsation sur le bouton au survol
+    const searchBtn = document.querySelector('.search-medicament-btn');
+    searchBtn?.addEventListener('mouseenter', function() {
+        this.style.animation = 'pulse 1s infinite';
+    });
+
+    searchBtn?.addEventListener('mouseleave', function() {
+        this.style.animation = 'none';
+    });
+
+    // Ajout des animations CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes pulse {
+            0% { transform: translateY(-3px) scale(1); }
+            50% { transform: translateY(-3px) scale(1.02); }
+            100% { transform: translateY(-3px) scale(1); }
+        }
+        
+        .search-medicament-input {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+    `;
+    document.head.appendChild(style);
+</script>
