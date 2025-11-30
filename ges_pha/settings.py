@@ -173,7 +173,7 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'"
 """
 Django settings for ges_pha project.
 """
-import dj_database_url
+#import dj_database_url
 
 
 from pathlib import Path

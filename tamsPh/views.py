@@ -1576,7 +1576,7 @@ def inscription_client(request):
                 date_naissance=form.cleaned_data['date_naissance'],
                 zone=form.cleaned_data['zone'],
                 notifications_email = form.cleaned_data['notifications_email'],
-                notifications_sms = form.cleaned_data['notifications_email'],
+                notifications_sms = form.cleaned_data['notifications_sms'],
                 telephone=form.cleaned_data['numero']
 
             )

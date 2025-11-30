@@ -42,7 +42,8 @@ class InscriptionPharmacieForm(forms.Form):
         # Vérifier si l'username existe déjà
         if User.objects.filter(username=cleaned_data.get("username")).exists():
             raise forms.ValidationError("Ce nom d'utilisateur existe déjà")
-from django.forms.widgets import TextInput      
+from django.forms.widgets import TextInput   
+from django.contrib.auth.forms import UserCreationForm   
 class InscriptionClient(forms.Form):
     username = forms.CharField(max_length=150, label="Nom d'utilisateur")
     address = forms.CharField(max_length=280, label="Adresse")
@@ -68,6 +69,18 @@ class InscriptionClient(forms.Form):
         required=False)
     notifications_email = forms.BooleanField(label="Via email")
     notifications_sms =forms.BooleanField(label="Via SMS")
+
+    def clean_username(self):
+        # Récupère le nom d'utilisateur après la validation basique du champ
+        username = self.cleaned_data.get('username')
+        
+        # Vérifie si un utilisateur avec ce nom existe déjà
+        if User.objects.filter(username=username).exists():
+            # Si oui, lève une erreur de validation qui sera ajoutée au formulaire
+            raise forms.ValidationError("Ce nom d'utilisateur est déjà utilisé. Veuillez en choisir un autre.")
+            
+        return username
+
     def clean(self):
         cleaned_data = super().clean()
         password = cleaned_data.get("password")
