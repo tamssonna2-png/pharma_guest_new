@@ -1585,7 +1585,7 @@ def inscription_client(request,pharmacie_id ):
             return redirect('passer_commande',pharmacie_id=pharmacie_id)
     else:
         form=InscriptionClient()
-    return render(request, 'inscription_client.html', {'form': form})
+    return render(request, 'inscription_client.html', {'form': form,'pharmacie_id':pharmacie_id})
     
 #http://localhost:8000/inscription-client/
 
@@ -1593,17 +1593,19 @@ from django.urls import reverse
 from django.contrib.auth import authenticate, login
 from django.http import JsonResponse
 
-def connexion_rapide(request):
+def connexion_rapide(request,phar_id):
     if request.method == 'POST':
         identifiant = request.POST.get('identifiant')
         password = request.POST.get('password', '')
         pharmacie_id = request.POST.get('pharmacie_id')
         medicament_id = request.POST.get('medicament_id')
-        
+        if not pharmacie_id:
+            pharmacie_id=phar_id
         try:
             # Chercher l'utilisateur par username ou email
             try:
                 user = User.objects.get(username=identifiant)
+                print("feeerfggg",user.email)
             except User.DoesNotExist:
                 user = User.objects.get(email=identifiant)
             

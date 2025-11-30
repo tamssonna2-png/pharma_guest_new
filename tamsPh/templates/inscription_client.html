@@ -236,7 +236,7 @@
     </form>
     
     <div class="connexion-link-container">
-        <p>Déjà un compte ? <a href="{% url 'passer_commande' 1 %}">**Se connecter Rapidement**</a></p>
+        <p>Déjà un compte ? <a href="{% url 'passer_commande' pharmacie_id %}">**Se connecter Rapidement**</a></p>
     </div>
 </div>
 
@@ -248,7 +248,7 @@
             <input type="hidden" id="medicament-id" value="{{ request.GET.medicament_id }}">
             
             <div style="margin-bottom: 15px;">
-                <label for="identifiant-rapide">Identifiant (Email ou Téléphone)</label>
+                <label for="identifiant-rapide">Identifiant (votre nom d'utilisateur ou email) </label>
                 <input type="text" 
                        id="identifiant-rapide" 
                        placeholder="Votre nom d'utilisateur"
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // modal.style.display = 'none';
         // return; // Retire ce return pour activer le fetch
 
-        fetch('{% url "connexion_rapide" %}', {
+        fetch('{% url "connexion_rapide" pharmacie_id %}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded',
