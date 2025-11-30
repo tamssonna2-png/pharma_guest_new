@@ -1561,10 +1561,9 @@ def traiter_commande(request, commande_id, action):
     return redirect('commandes_pharmacie')
 
 from .form import InscriptionClient
-def inscription_client(request):
+def inscription_client(request,pharmacie_id ):
     if request.method=='POST':
         form=InscriptionClient(request.POST)
-        pharmacie_id = request.POST.get('pharmacie_id')
         if form.is_valid():
             user=User.objects.create_user(
                 username=form.cleaned_data['username'],

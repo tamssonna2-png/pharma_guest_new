@@ -466,7 +466,7 @@
 
                             <div class="action-buttons" style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center;">
     <!-- Bouton Commander -->
-    <a href="{% url 'inscription_client'%}?pharmacie_id={{ med.pharmacie_id }}&medicament_id={{med.id}}" 
+    <a href="{% url 'inscription_client' med.pharmacie_id%}?pharmacie_id={{ med.pharmacie_id }}&medicament_id={{med.id}}" 
        class="btn-action btn-commander"
        style="flex: 1; min-width: 160px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3); transition: all 0.4s ease; border: 2px solid #27ae60; cursor: pointer; position: relative; overflow: hidden;">
        
