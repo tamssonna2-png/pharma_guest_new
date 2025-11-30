@@ -173,11 +173,14 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'"
 """
 Django settings for ges_pha project.
 """
-import dj_database_url
+#import dj_database_url
+
 
 from pathlib import Path
-import os
+
 from decouple import config
+import os
+#import dj_database_url
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -218,7 +221,7 @@ TEMPLATES = [
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
-                'django.template.context_processors.debug',  # ← AJOUT IMPORTANT
+                'django.template.context_processors.debug',
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -291,9 +294,16 @@ STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Google API Keys
-GOOGLE_API_KEY = "VOTRE_CLÉ_API_ICI"
-GOOGLE_AI_API_KEY = config('GOOGLE_AI_API_KEY', default='your-google-ai-api-key-here')
+GOOGLE_AI_API_KEY = config('GOOGLE_AI_API_KEY', default='')
 
 # Media files (décommentez si besoin)
-# MEDIA_URL = '/media/'
-# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, '')
+
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tamssonna2@gmail.com'  # Ton compte Gmail
+EMAIL_HOST_PASSWORD = 'xymj drrf yubz izkv '  # Mot de passe d'application

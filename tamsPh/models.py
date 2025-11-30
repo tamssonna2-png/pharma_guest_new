@@ -2,6 +2,8 @@ from django.db import models
 from django.conf import settings
 from typing import List, Dict, Any
 from django.contrib.auth.models import User
+from django.utils import timezone
+from datetime import timedelta
 # Create your models here.
 class Medicament(models.Model):
     #id_medicament = models.AutoField(primary_key=True)
@@ -16,10 +18,17 @@ def __str__(self):
     return self.nom
 
 class Specialiste(models.Model):
-    #id_specialiste = models.AutoField(primary_key=True)
+    #id_specialiste = models.AutoField(primary_key
+    # =True)
     nom = models.CharField(max_length=280)
+    prenom=models.CharField(max_length=280,default=" ")
+    photo=models.ImageField(upload_to='personel/',null=True,blank=True)
     specialite = models.CharField(max_length=280)
     Disponible =models.BooleanField(default=False)
+    pharmacie = models.ForeignKey('Pharmacie', on_delete=models.CASCADE,null=True, blank=True)
+
+#http://localhost:8000/media/personel/MATLAB.png
+
 
 def __str__(self):
     return self.nom
@@ -38,6 +47,88 @@ class MonIA(models.Model):
     reponse =models.TextField()
     timestamp=models.DateTimeField(auto_now_add=True)#à quoi ca sert?
     type_conversation =models.CharField(max_length=50,choices=TYPE_CONVERSATION_CHOICES,default='general',verbose_name="Type de Conversation")
+
+class Client(models.Model):
+    # Lien avec un compte utilisateur Django
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    
+    # Informations spécifiques au client
+    telephone = models.CharField(max_length=20, blank=True)
+    adresse = models.TextField(blank=True)
+    date_naissance = models.DateField(null=True, blank=True)
+    zone = models.CharField(max_length=280,default=" ")
+    
+    # Préférences
+    notifications_email = models.BooleanField(default=True)
+    notifications_sms = models.BooleanField(default=False)
+    
+    def __str__(self):
+        return f"Client: {self.user.username}"
+    
+
+class Commande(models.Model):
+    STATUT_CHOICES = [
+        ('en_attente', 'En attente'),
+        ('acceptee', 'Acceptée'),
+        ('refusee', 'Refusée'),
+        ('expiree', 'Expirée'),
+        ('recuperee', 'Récupérée'),
+        ('annulee', 'Annulée'), 
+    ]
+    
+    client = models.ForeignKey(Client, on_delete=models.CASCADE)
+    pharmacie = models.ForeignKey('Pharmacie', on_delete=models.CASCADE)
+    statut = models.CharField(max_length=20, choices=STATUT_CHOICES, default='en_attente')
+    
+    date_creation = models.DateTimeField(auto_now_add=True)
+    date_expiration = models.DateTimeField()
+    date_traitement = models.DateTimeField(null=True, blank=True)
+    
+    def __str__(self):
+        return f"Commande #{self.id} - {self.client.user.username} -> {self.pharmacie.nom}"
+    
+    def save(self, *args, **kwargs):
+        if not self.id:
+            self.date_expiration = timezone.now() + timedelta(days=7)
+        super().save(*args, **kwargs)
+    
+    def get_total(self):
+        return sum(ligne.sous_total() for ligne in self.lignecommande_set.all())
+
+class LigneCommande(models.Model):
+    commande = models.ForeignKey(Commande, on_delete=models.CASCADE)
+    medicament = models.ForeignKey(Medicament, on_delete=models.CASCADE)
+    quantite = models.IntegerField(default=1)
+    prix_unitaire = models.IntegerField()  # Prix au moment de la commande
+    
+    def __str__(self):
+        return f"{self.quantite}x {self.medicament.nom}"
+    
+    def sous_total(self):
+        return self.quantite * self.prix_unitaire
+
+
+class Notification(models.Model):
+    TYPE_CHOICES = [
+        ('nouvelle_commande', 'Nouvelle commande'),
+        ('commande_annulee', 'Commande annulée'),
+        ('rappel_stock', 'Rappel de stock bas'),
+        ('alerte_urgence', 'Alerte urgence'),
+    ]
+    
+    pharmacie = models.ForeignKey('Pharmacie', on_delete=models.CASCADE)  # ⬅️ CLE SECONDAIRE
+    type_notification = models.CharField(max_length=20, choices=TYPE_CHOICES)
+    message = models.TextField()
+    commande = models.ForeignKey(Commande, on_delete=models.CASCADE, null=True, blank=True)
+    date_creation = models.DateTimeField(auto_now_add=True)
+    lue = models.BooleanField(default=False)
+    
+    class Meta:
+        ordering = ['-date_creation']
+    
+    def __str__(self):
+        return f"{self.get_type_notification_display()} - {self.pharmacie.nom}"
+
 
 class Pharmacie(models.Model):
     #id_pharmacie = models.AutoField(primary_key=True)

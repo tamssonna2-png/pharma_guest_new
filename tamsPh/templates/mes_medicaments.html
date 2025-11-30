@@ -333,9 +333,31 @@
     </style>
 </head>
 <body>
-    <a href="{% url 'accueil' %}" class="navigation-btn btn-search">
-                ⬅️ Retourner à l'accueil
-    </a>
+    
+    <!-- Barre de navigation -->
+            <div class="navigation-bar">
+                <a href="{% url 'accueil' %}" class="navigation-btn btn-search">
+                    ⬅️ Retourner à l'accueil
+                </a>
+                <a href="/ajouter-medicament/" class="navigation-btn btn-add">
+                    ➕ Ajouter un médicament
+                </a>
+                <!--<a href="/recherche-medicament-pharmacie/" class="navigation-btn btn-search">
+                    🔍 Rechercher un médicament
+                </a>-->
+                <a href="/modif-info-pharmacie/" class="navigation-btn btn-pharmacy">
+                    🏥 Gérer ma pharmacie
+                </a>
+                <a href="{% url 'recherche_ia' %}" class="navigation-btn btn-pharmacy">
+                    🔍 Recherche Intelligente
+                </a>
+                <a href="{% url 'notifications_pharmacie' %}" class="navigation-btn btn-search" style="background: #6c757d;">
+                    Notifications commande
+                </a>
+                <a href="{% url 'commandes_pharmacie'%}" class="navigation-btn btn-search">
+                   Commandes de medicaments
+                </a>
+            </div>
     <div class="container">
         {% if erreur %}
             <div class="error-container">
@@ -380,6 +402,367 @@
                     <div class="stat-label">Taux de disponibilité</div>
                 </div>
             </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+            <div class="search-medicament-container">
+    <div class="search-medicament-header">
+        <h3>Rechercher un médicament</h3>
+        <p>Trouvez rapidement ce dont vous avez besoin</p>
+    </div>
+    
+    <form method="get" action="{% url 'Recherche_medicament_pharmacie' %}" class="search-medicament-form">
+        <div class="search-medicament-input-group">
+            <div class="input-wrapper">
+                <svg class="search-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <path d="m21 21-4.35-4.35"></path>
+                </svg>
+                <input type="text" 
+                       name="nom_medic" 
+                       placeholder="Nom du médicament..." 
+                       class="search-input"
+                       autocomplete="off">
+            </div>
+            
+            <button type="submit" class="search-btn">
+                <span>Rechercher</span>
+                <svg class="btn-arrow" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="5" y1="12" x2="19" y2="12"></line>
+                    <polyline points="12 5 19 12 12 19"></polyline>
+                </svg>
+            </button>
+        </div>
+    </form>
+</div>
+
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+    .search-medicament-container {
+        margin: 40px 0;
+        padding: 0;
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .search-medicament-header {
+        margin-bottom: 32px;
+        text-align: center;
+    }
+
+    .search-medicament-header h3 {
+        font-size: 1.875rem;
+        font-weight: 700;
+        color: #1a202c;
+        margin-bottom: 8px;
+        letter-spacing: -0.025em;
+    }
+
+    .search-medicament-header p {
+        font-size: 1rem;
+        color: #718096;
+        margin: 0;
+        font-weight: 400;
+    }
+
+    .search-medicament-form {
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    .search-medicament-input-group {
+        display: flex;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .input-wrapper {
+        flex: 1;
+        position: relative;
+        display: flex;
+        align-items: center;
+    }
+
+    .search-icon {
+        position: absolute;
+        left: 20px;
+        width: 20px;
+        height: 20px;
+        color: #a0aec0;
+        pointer-events: none;
+        transition: color 0.2s ease;
+    }
+
+    .search-input {
+        width: 100%;
+        padding: 18px 24px 18px 52px;
+        border: 2px solid #e2e8f0;
+        border-radius: 12px;
+        font-size: 1rem;
+        background: white;
+        transition: all 0.2s ease;
+        color: #2d3748;
+        font-weight: 500;
+        font-family: 'Inter', sans-serif;
+    }
+
+    .search-input::placeholder {
+        color: #a0aec0;
+        font-weight: 400;
+    }
+
+    .search-input:hover {
+        border-color: #cbd5e0;
+    }
+
+    .search-input:focus {
+        outline: none;
+        border-color: #667eea;
+        box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+    }
+
+    .search-input:focus ~ .search-icon,
+    .input-wrapper:hover .search-icon {
+        color: #667eea;
+    }
+
+    .search-btn {
+        padding: 18px 32px;
+        border: none;
+        border-radius: 12px;
+        background: #667eea;
+        color: white;
+        font-size: 1rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-family: 'Inter', sans-serif;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        white-space: nowrap;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .search-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 100%);
+        opacity: 0;
+        transition: opacity 0.2s ease;
+    }
+
+    .search-btn:hover::before {
+        opacity: 1;
+    }
+
+    .search-btn:hover {
+        background: #5a6fd8;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+    }
+
+    .search-btn:active {
+        transform: translateY(0);
+        box-shadow: 0 2px 8px rgba(9, 121, 46, 0.3);
+    }
+
+    .btn-arrow {
+        width: 18px;
+        height: 18px;
+        transition: transform 0.2s ease;
+    }
+
+    .search-btn:hover .btn-arrow {
+        transform: translateX(4px);
+    }
+
+    /* Animation d'entrée subtile */
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .search-medicament-header {
+        animation: fadeInUp 0.5s ease-out;
+    }
+
+    .search-medicament-form {
+        animation: fadeInUp 0.5s ease-out 0.1s backwards;
+    }
+
+    /* Focus visible pour accessibilité */
+    .search-input:focus-visible,
+    .search-btn:focus-visible {
+        outline: 2px solid #667eea;
+        outline-offset: 2px;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 768px) {
+        .search-medicament-container {
+            margin: 30px 0;
+        }
+
+        .search-medicament-header {
+            margin-bottom: 24px;
+        }
+
+        .search-medicament-header h3 {
+            font-size: 1.5rem;
+        }
+
+        .search-medicament-header p {
+            font-size: 0.9375rem;
+        }
+
+        .search-medicament-input-group {
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .search-input {
+            padding: 16px 20px 16px 48px;
+        }
+
+        .search-icon {
+            left: 16px;
+            width: 18px;
+            height: 18px;
+        }
+
+        .search-btn {
+            padding: 16px 24px;
+            justify-content: center;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .search-medicament-container {
+            margin: 24px 0;
+        }
+
+        .search-medicament-header h3 {
+            font-size: 1.375rem;
+        }
+
+        .search-input {
+            font-size: 0.9375rem;
+        }
+
+        .search-btn {
+            font-size: 0.9375rem;
+        }
+    }
+
+    /* Dark mode support (optionnel) */
+    @media (prefers-color-scheme: dark) {
+        .search-medicament-header h3 {
+            color: #f7fafc;
+        }
+
+        .search-medicament-header p {
+            color: #a0aec0;
+        }
+
+        .search-input {
+            background: #2d3748;
+            border-color: #4a5568;
+            color: #f7fafc;
+        }
+
+        .search-input:hover {
+            border-color: #718096;
+        }
+
+        .search-input:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.2);
+        }
+    }
+</style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.querySelector('.search-input');
+        const form = document.querySelector('.search-medicament-form');
+        
+        // Auto-focus sur le champ de recherche (optionnel)
+        // input?.focus();
+        
+        // Soumission avec Entrée
+        input?.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                form?.submit();
+            }
+        });
+    });
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             <!-- Liste des médicaments -->
             <div class="content-card">
@@ -438,21 +821,7 @@
                 {% endif %}
             </div>
 
-            <!-- Barre de navigation -->
-            <div class="navigation-bar">
-                <a href="/ajouter-medicament/" class="navigation-btn btn-add">
-                    ➕ Ajouter un médicament
-                </a>
-                <a href="/recherche-medicament-pharmacie/" class="navigation-btn btn-search">
-                    🔍 Rechercher un médicament
-                </a>
-                <a href="/modif-info-pharmacie/" class="navigation-btn btn-pharmacy">
-                    🏥 Gérer ma pharmacie
-                </a>
-                <a href="{% url 'recherche_ia' %}" class="navigation-btn btn-pharmacy">
-                    🔍 Recherche Intelligente
-                </a>
-            </div>
+            
         {% endif %}
     </div>
 

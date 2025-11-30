@@ -116,6 +116,13 @@
             transform: translateY(-2px);
         }
 
+        .input-hint {
+            font-size: 0.85em;
+            color: var(--text-light);
+            margin-top: 5px;
+            font-style: italic;
+        }
+
         .submit-btn {
             width: 100%;
             padding: 16px;
@@ -264,14 +271,17 @@
                 
                 <div class="form-group">
                     <label for="username" class="form-label">
-                        👤 Nom d'utilisateur
+                        👤 Email ou Nom d'utilisateur
                     </label>
                     <input type="text" 
                            name="username" 
                            id="username"
                            class="form-input" 
-                           placeholder="Entrez votre nom d'utilisateur"
+                           placeholder="Entrez votre email ou nom d'utilisateur"
                            required>
+                    <div class="input-hint">
+                        Vous pouvez utiliser votre adresse email ou votre nom d'utilisateur
+                    </div>
                 </div>
                 
                 <div class="form-group">
@@ -298,78 +308,17 @@
             
             {% if form.errors %}
                 <div class="error-container">
-                    <p>❌ Nom d'utilisateur ou mot de passe incorrect.</p>
+                    <p>❌ Email/nom d'utilisateur ou mot de passe incorrect.</p>
                 </div>
             {% endif %}
 
-
-
-
-
-                <div style="text-align: center; margin-top: 30px;">
-    <a href="{% url 'reset_password' %}" class="forgot-password-floating">
-        <span class="link-icon">🔑</span>
-        <span class="link-text">Mot de passe oublié ?</span>
-        <span class="link-arrow">→</span>
-    </a>
-</div>
-
-<style>
-    .forgot-password-floating {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 10px 18px;
-        color: #2196F3;
-        text-decoration: none;
-        font-weight: 600;
-        border: 1px solid #e3f2fd;
-        border-radius: 10px;
-        transition: all 0.3s ease;
-        background: white;
-        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-        position: relative;
-        overflow: hidden;
-    }
-
-    .forgot-password-floating::before {
-        content: '';
-        position: absolute;
-        top: 0;
-        left: -100%;
-        width: 100%;
-        height: 100%;
-        background: linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.1), transparent);
-        transition: left 0.5s ease;
-    }
-
-    .forgot-password-floating:hover {
-        color: #1976D2;
-        border-color: #2196F3;
-        transform: translateY(-2px);
-        box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
-    }
-
-    .forgot-password-floating:hover::before {
-        left: 100%;
-    }
-
-    .forgot-password-floating .link-arrow {
-        opacity: 0;
-        transform: translateX(-5px);
-        transition: all 0.3s ease;
-    }
-
-    .forgot-password-floating:hover .link-arrow {
-        opacity: 1;
-        transform: translateX(0);
-    }
-</style>
-</div>
-
-
-
-
+            <div style="text-align: center; margin-top: 30px;">
+                <a href="{% url 'reset_password' %}" class="forgot-password-floating">
+                    <span class="link-icon">🔑</span>
+                    <span class="link-text">Mot de passe oublié ?</span>
+                    <span class="link-arrow">→</span>
+                </a>
+            </div>
 
             <div class="register-section">
                 <p class="register-text">Pas encore de compte ?</p>
@@ -413,6 +362,15 @@
             });
         });
 
+        // Détection automatique si c'est un email
+        const usernameInput = document.getElementById('username');
+        usernameInput.addEventListener('blur', function() {
+            const value = this.value.trim();
+            if (value.includes('@') && value.includes('.')) {
+                this.style.borderColor = 'var(--primary-blue)';
+            }
+        });
+
         // Ajout d'une animation de shake en cas d'erreur
         {% if form.errors %}
         document.addEventListener('DOMContentLoaded', function() {
@@ -437,5 +395,57 @@
         });
         {% endif %}
     </script>
+
+    <style>
+        .forgot-password-floating {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            color: #2196F3;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #e3f2fd;
+            border-radius: 10px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .forgot-password-floating::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(33, 150, 243, 0.1), transparent);
+            transition: left 0.5s ease;
+        }
+
+        .forgot-password-floating:hover {
+            color: #1976D2;
+            border-color: #2196F3;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.2);
+        }
+
+        .forgot-password-floating:hover::before {
+            left: 100%;
+        }
+
+        .forgot-password-floating .link-arrow {
+            opacity: 0;
+            transform: translateX(-5px);
+            transition: all 0.3s ease;
+        }
+
+        .forgot-password-floating:hover .link-arrow {
+            opacity: 1;
+            transform: translateX(0);
+        }
+    </style>
 </body>
 </html>

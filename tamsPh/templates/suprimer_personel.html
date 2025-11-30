@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Confirmation suppression</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap');
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 50%, #ff8787 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animated warning symbols in background */
+        .warning-symbol {
+            position: absolute;
+            font-size: 100px;
+            opacity: 0.05;
+            animation: float 15s infinite ease-in-out;
+            pointer-events: none;
+        }
+        
+        .warning-symbol:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .warning-symbol:nth-child(2) {
+            top: 60%;
+            right: 15%;
+            animation-delay: 3s;
+        }
+        
+        .warning-symbol:nth-child(3) {
+            bottom: 15%;
+            left: 20%;
+            animation-delay: 6s;
+        }
+        
+        .warning-symbol:nth-child(4) {
+            top: 30%;
+            right: 25%;
+            animation-delay: 9s;
+        }
+        
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+                opacity: 0.05;
+            }
+            50% {
+                transform: translateY(-30px) rotate(180deg);
+                opacity: 0.1;
+            }
+        }
+        
+        .container {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            padding: 50px;
+            border-radius: 30px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.3);
+            max-width: 600px;
+            width: 100%;
+            position: relative;
+            animation: shakeIn 0.8s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 10;
+            border: 3px solid rgba(255, 107, 107, 0.3);
+        }
+        
+        @keyframes shakeIn {
+            0% {
+                opacity: 0;
+                transform: scale(0.8) rotate(-10deg);
+            }
+            50% {
+                transform: scale(1.05) rotate(5deg);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) rotate(0);
+            }
+        }
+        
+        .warning-header {
+            text-align: center;
+            margin-bottom: 35px;
+            position: relative;
+        }
+        
+        .warning-icon {
+            font-size: 80px;
+            display: inline-block;
+            animation: pulse-warning 2s infinite, shake 3s infinite;
+            filter: drop-shadow(0 10px 20px rgba(255, 107, 107, 0.4));
+        }
+        
+        @keyframes pulse-warning {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.2);
+            }
+        }
+        
+        @keyframes shake {
+            0%, 100% { transform: rotate(0deg); }
+            10%, 30%, 50%, 70%, 90% { transform: rotate(-10deg); }
+            20%, 40%, 60%, 80% { transform: rotate(10deg); }
+        }
+        
+        h1 {
+            color: #dc2626;
+            font-size: 32px;
+            font-weight: 800;
+            margin-top: 20px;
+            text-align: center;
+            animation: fadeInDown 0.6s ease;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+        
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .alert-box {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border-left: 6px solid #f59e0b;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(245, 158, 11, 0.2);
+            animation: slideIn 0.6s ease backwards;
+            animation-delay: 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .alert-box::before {
+            content: '⚠️';
+            position: absolute;
+            top: 50%;
+            right: 20px;
+            font-size: 60px;
+            opacity: 0.2;
+            transform: translateY(-50%);
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                transform: translateY(-50%) scale(1);
+            }
+            50% {
+                transform: translateY(-50%) scale(1.1);
+            }
+        }
+        
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateX(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        
+        .alert-box p {
+            margin: 15px 0;
+            color: #92400e;
+            font-size: 16px;
+            line-height: 1.6;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .alert-box p:first-child {
+            font-weight: 600;
+            font-size: 18px;
+            color: #78350f;
+        }
+        
+        .info-highlight {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 15px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            animation: fadeIn 0.5s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .info-highlight strong {
+            color: #dc2626;
+            font-weight: 700;
+            display: inline-block;
+            min-width: 100px;
+        }
+        
+        form {
+            animation: fadeInUp 0.6s ease backwards;
+            animation-delay: 0.4s;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 35px;
+        }
+        
+        .btn {
+            flex: 1;
+            padding: 18px 30px;
+            border: none;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 700;
+            font-family: 'Poppins', sans-serif;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            position: relative;
+            overflow: hidden;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+        
+        .btn:hover::before {
+            width: 400px;
+            height: 400px;
+        }
+        
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+            animation: danger-pulse 2s infinite;
+        }
+        
+        @keyframes danger-pulse {
+            0%, 100% {
+                box-shadow: 0 10px 30px rgba(220, 38, 38, 0.4);
+            }
+            50% {
+                box-shadow: 0 10px 40px rgba(220, 38, 38, 0.6);
+            }
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(220, 38, 38, 0.6);
+            animation: none;
+        }
+        
+        .btn-danger:active {
+            transform: translateY(-1px);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #6b7280 0%, #4b5563 100%);
+            color: white;
+            box-shadow: 0 10px 30px rgba(107, 114, 128, 0.4);
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(107, 114, 128, 0.5);
+            background: linear-gradient(135deg, #4b5563 0%, #374151 100%);
+        }
+        
+        .btn-secondary:active {
+            transform: translateY(-1px);
+        }
+        
+        /* Icon animations */
+        .btn-danger:hover span:first-child {
+            animation: check-bounce 0.5s ease;
+        }
+        
+        @keyframes check-bounce {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+        }
+        
+        .btn-secondary:hover span:first-child {
+            animation: x-rotate 0.5s ease;
+        }
+        
+        @keyframes x-rotate {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(180deg); }
+        }
+        
+        /* Danger border animation */
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -3px;
+            left: -3px;
+            right: -3px;
+            bottom: -3px;
+            background: linear-gradient(45deg, #ff6b6b, #ee5a6f, #ff8787, #ff6b6b);
+            border-radius: 30px;
+            z-index: -1;
+            opacity: 0;
+            animation: border-glow 3s infinite;
+            background-size: 300% 300%;
+        }
+        
+        @keyframes border-glow {
+            0%, 100% {
+                opacity: 0.3;
+                background-position: 0% 50%;
+            }
+            50% {
+                opacity: 0.6;
+                background-position: 100% 50%;
+            }
+        }
+        
+        /* Responsive */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .warning-icon {
+                font-size: 60px;
+            }
+            
+            .button-group {
+                flex-direction: column;
+            }
+            
+            .alert-box {
+                padding: 20px;
+            }
+        }
+        
+        /* Additional decorative elements */
+        .danger-line {
+            height: 3px;
+            background: linear-gradient(90deg, transparent, #dc2626, transparent);
+            margin: 25px 0;
+            animation: slide 2s infinite;
+        }
+        
+        @keyframes slide {
+            0%, 100% { transform: translateX(-100%); }
+            50% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body>
+    <!-- Warning symbols in background -->
+    <div class="warning-symbol">⚠️</div>
+    <div class="warning-symbol">⚠️</div>
+    <div class="warning-symbol">⚠️</div>
+    <div class="warning-symbol">⚠️</div>
+    
+    <div class="container">
+        <div class="warning-header">
+            <div class="warning-icon">🚨</div>
+            <h1>Confirmation Suppression</h1>
+        </div>
+        
+        <div class="danger-line"></div>
+        
+        <div class="alert-box">
+            <p>⚠️ Êtes-vous absolument sûr de vouloir supprimer ce personnel ?</p>
+            <p style="color: #dc2626; font-weight: 600;">Cette action est irréversible !</p>
+            
+            <div class="info-highlight">
+                <p><strong>👤 Nom:</strong> {{ personnel.nom }} {{ personnel.prenom }}</p>
+            </div>
+            
+            <div class="info-highlight">
+                <p><strong>🎓 Spécialité:</strong> {{ personnel.specialite }}</p>
+            </div>
+        </div>
+        
+        <form method="post">
+            {% csrf_token %}
+            <div class="button-group">
+                <button type="submit" class="btn btn-danger">
+                    <span>🗑️</span>
+                    <span>Oui, supprimer</span>
+                </button>
+                <a href="{% url 'info_personel' %}" class="btn btn-secondary">
+                    <span>❌</span>
+                    <span>Annuler</span>
+                </a>
+            </div>
+        </form>
+    </div>
+</body>
+</html>

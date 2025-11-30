@@ -59,6 +59,50 @@
             text-align: center;
         }
         
+        .search-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            padding: 15px 20px;
+            border: 2px solid var(--primary-green);
+            border-radius: 10px;
+            font-size: 16px;
+            width: 400px;
+            max-width: 100%;
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--dark-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: var(--white);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
         .btn-primary {
             background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
             color: var(--white);
@@ -75,6 +119,34 @@
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .search-tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .search-tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            color: var(--text-light);
+        }
+        
+        .search-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+        
+        .search-tab:hover {
+            color: var(--dark-green);
         }
         
         .status-indicator {
@@ -187,6 +259,10 @@
         
         .results-count.elargi {
             background: var(--accent-orange);
+        }
+        
+        .results-count.recherche {
+            background: #2196F3;
         }
         
         .pharmacies-grid {
@@ -359,87 +435,26 @@
             <h1>🏥 PharmaGest</h1>
             <p>Recherche de pharmacies à proximité</p>
         </div>
-         <a href="{% url 'accueil' %}" class="navigation-btn btn-accueil">
-    <span class="btn-icon">🏥</span>
-    <span class="btn-text">Accueil</span>
-</a>
-
-<style>
-    .navigation-btn {
-        padding: 16px 30px;
-        border: none;
-        border-radius: 12px;
-        font-size: 1.1em;
-        font-weight: 600;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        text-decoration: none;
-        display: inline-flex;
-        align-items: center;
-        gap: 10px;
-        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-        min-width: 140px;
-        justify-content: center;
-    }
-
-    .btn-accueil {
-        background: linear-gradient(135deg,rgb(7, 134, 60),rgb(15, 76, 156));
-        color: white;
-        border: 2px solid transparent;
-    }
-
-    .btn-accueil:hover {
-        transform: translateY(-3px);
-        box-shadow: 0 8px 25px rgba(156, 39, 176, 0.4);
-        background: linear-gradient(135deg, #8E24AA, #6A1B9A);
-        border-color: rgba(255, 255, 255, 0.3);
-    }
-
-    .btn-accueil:active {
-        transform: translateY(-1px);
-    }
-
-    .btn-icon {
-        font-size: 1.3em;
-        transition: transform 0.3s ease;
-    }
-
-    .btn-accueil:hover .btn-icon {
-        transform: scale(1.2);
-    }
-
-    .btn-text {
-        font-size: 1.1em;
-        font-weight: 500;
-    }
-
-    /* Animation de pulsation douce */
-    @keyframes gentlePulse {
-        0%, 100% { transform: translateY(-3px); }
-        50% { transform: translateY(-5px); }
-    }
-
-    .btn-accueil:hover {
-        animation: gentlePulse 2s ease-in-out infinite;
-    }
-
-    /* Responsive */
-    @media (max-width: 768px) {
-        .navigation-btn {
-            padding: 14px 25px;
-            font-size: 1em;
-            min-width: 120px;
-        }
         
-        .btn-text {
-            font-size: 1em;
-        }
-    }
-</style>
-        <!-- Section de recherche principale -->
-        <div class="search-section">
+        <a href="{% url 'accueil' %}" class="btn-primary">
+            <span class="btn-icon">🏥</span>
+            <span class="btn-text">Accueil</span>
+        </a>
+
+        <!-- Onglets de recherche -->
+        <div class="search-tabs">
+            <button class="search-tab active" onclick="afficherOnglet('geolocalisation')">
+                📍 Recherche par géolocalisation
+            </button>
+            <button class="search-tab" onclick="afficherOnglet('nom')">
+                🔍 Recherche par nom
+            </button>
+        </div>
+
+        <!-- Section recherche par géolocalisation -->
+        <div id="onglet-geolocalisation" class="search-section">
             <div class="status-indicator">
-                <p id="statut_recherche">📍 Cliquez sur le bouton pour démarrer la recherche...</p>
+                <p id="statut_recherche">📍 Cliquez sur le bouton pour démarrer la recherche par géolocalisation...</p>
             </div>
             
             <button class="btn-primary" onclick="localiserEtRechercherPharmacies()">
@@ -447,8 +462,30 @@
             </button>
         </div>
 
-        <!-- Personnalisation de la recherche -->
-        {% if request.GET.lat and request.GET.lon %}
+        <!-- Section recherche par nom -->
+        <div id="onglet-nom" class="search-section" style="display: none;">
+            <h3>🔍 Rechercher une pharmacie par nom</h3>
+            
+            <form method="get" action="" class="search-container">
+                <input type="text" 
+                       name="nom_pharmacie" 
+                       class="search-input" 
+                       placeholder="Entrez le nom d'une pharmacie..."
+                       value="{{ request.GET.nom_pharmacie|default:'' }}"
+                       required>
+                
+                <button type="submit" class="btn-search">
+                    🔍 Rechercher
+                </button>
+            </form>
+            
+            <div style="color: var(--text-light); font-size: 0.9em; margin-top: 10px;">
+                Recherchez une pharmacie spécifique par son nom
+            </div>
+        </div>
+
+        <!-- Personnalisation de la recherche (uniquement pour géolocalisation) -->
+        {% if request.GET.lat and request.GET.lon and not request.GET.nom_pharmacie %}
         <div class="customization-panel">
             <h3>🔧 Personnaliser la recherche</h3>
             <form method="get" action="">
@@ -474,8 +511,8 @@
         </div>
         {% endif %}
 
-        <!-- Sélecteur de mode -->
-        {% if request.GET.lat and request.GET.lon %}
+        <!-- Sélecteur de mode (uniquement pour géolocalisation) -->
+        {% if request.GET.lat and request.GET.lon and not request.GET.nom_pharmacie %}
         <div class="mode-selector">
             <a href="?lat={{ request.GET.lat }}&lon={{ request.GET.lon }}&choice=2{% if request.GET.distance %}&distance={{ request.GET.distance }}{% endif %}" 
                class="mode-btn elargir">
@@ -489,7 +526,7 @@
         </div>
 
         <!-- Indicateur de mode -->
-        {% if request.GET.choice %}
+        {% if request.GET.choice and not request.GET.nom_pharmacie %}
             <div class="mode-indicator">
                 {% if request.GET.choice == "2" %}
                     🎯 Mode recherche élargie activé - Rayon: {{ request.GET.distance|default:'5' }} km
@@ -513,8 +550,63 @@
             </div>
         {% endif %}
 
-        <!-- Résultats -->
-        {% if toutes_pharmacies2 %}
+        <!-- Résultats pour recherche par nom -->
+        {% if request.GET.nom_pharmacie %}
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count recherche">
+                    🏥 Résultats pour "{{ request.GET.nom_pharmacie }}"
+                </div>
+            </div>
+
+            {% if pharmacies_recherche %}
+            <div class="pharmacies-grid">
+                {% for pharmacie in pharmacies_recherche %}
+                <div class="pharmacy-card" onclick="window.location.href='{% url 'info_pharmacie' pharmacie.id %}'">
+                    <div class="pharmacy-header">
+                        <h3 class="pharmacy-name">🏥 {{ pharmacie.nom }}</h3>
+                        {% if pharmacie.deGarde %}
+                            <div class="garde-badge">🔥 DE GARDE</div>
+                        {% else %}
+                            <div class="regular-badge">⏰ RÉGULIÈRE</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="info-item">
+                            <i>📍</i>
+                            <span>{{ pharmacie.address }}</span>
+                        </div>
+                        {% if pharmacie.zone %}
+                        <div class="info-item">
+                            <i>🏘️</i>
+                            <span>{{ pharmacie.zone }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-item">
+                            <i>📞</i>
+                            <span>{{ pharmacie.telephone|default:"Téléphone non renseigné" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="click-hint">
+                        👆 Cliquez pour voir les détails complets et les médicaments
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <h3>🔍 Aucune pharmacie trouvée</h3>
+                <p>Aucune pharmacie ne correspond à votre recherche "{{ request.GET.nom_pharmacie }}".</p>
+                <p>Essayez avec un autre nom ou utilisez la recherche par géolocalisation.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Résultats pour géolocalisation -->
+        {% if toutes_pharmacies2 and not request.GET.nom_pharmacie %}
         <!-- Mode recherche élargie -->
         <div class="results-section">
             <div class="results-header">
@@ -568,7 +660,7 @@
             </div>
         </div>
 
-        {% elif toutes_pharmacies1 %}
+        {% elif toutes_pharmacies1 and not request.GET.nom_pharmacie %}
         <!-- Mode recherche normale -->
         <div class="results-section">
             <div class="results-header">
@@ -614,8 +706,8 @@
             </div>
         </div>
 
-        {% elif request.GET.lat and request.GET.lon %}
-        <!-- Aucun résultat -->
+        {% elif request.GET.lat and request.GET.lon and not request.GET.nom_pharmacie %}
+        <!-- Aucun résultat pour géolocalisation -->
         <div class="results-section">
             <div class="results-header">
                 <div class="results-count" style="background: #6c757d;">
@@ -631,6 +723,21 @@
     </div>
 
     <script>
+        function afficherOnglet(onglet) {
+            // Masquer tous les onglets
+            document.getElementById('onglet-geolocalisation').style.display = 'none';
+            document.getElementById('onglet-nom').style.display = 'none';
+            
+            // Désactiver tous les onglets
+            document.querySelectorAll('.search-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Afficher l'onglet sélectionné
+            document.getElementById('onglet-' + onglet).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
         function envoyerCoordonneesADjango(lat, lon) {
             const chemin_reel = 'pharmacies-proximite';
             const urlDeRecherche = `/${chemin_reel}/?lat=${lat}&lon=${lon}&choice=1`; 
@@ -656,6 +763,13 @@
                 document.getElementById('statut_recherche').innerHTML = "❌ Géolocalisation non supportée.";
             }
         }
+
+        // Si on a une recherche par nom, on affiche l'onglet correspondant
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if request.GET.nom_pharmacie %}
+                afficherOnglet('nom');
+            {% endif %}
+        });
     </script>
 </body>
 </html>

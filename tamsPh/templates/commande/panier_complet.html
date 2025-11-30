@@ -1,0 +1,840 @@
+<!-- templates/commande/passer_commande.html -->
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Passer une commande - {{ pharmacie.nom }}</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Effet de particules en arrière-plan */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%);
+            animation: float 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+        
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideInDown 0.6s ease-out;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .header h1 {
+            color: #667eea;
+            font-size: 32px;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header p {
+            color: #555;
+            font-size: 16px;
+        }
+
+        .header p strong {
+            color: #333;
+        }
+        
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 25px;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+            font-size: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+        
+        .btn-secondary {
+            background: linear-gradient(135deg, #868f96 0%, #596164 100%);
+            color: white;
+        }
+        
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(134, 143, 150, 0.4);
+        }
+        
+        .btn-success {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            font-size: 18px;
+            padding: 16px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-success::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn-success:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+        
+        .btn-success:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(17, 153, 142, 0.5);
+        }
+        
+        /* Section de recherche */
+        .search-section {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .search-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .search-box {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .search-box input {
+            flex: 1;
+            min-width: 250px;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            background: white;
+        }
+        
+        .search-box input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+            transform: translateY(-2px);
+        }
+        
+        /* Section médicaments */
+        .medicaments-section {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: none;
+            animation: expandIn 0.5s ease-out;
+        }
+
+        @keyframes expandIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        .medicaments-section.visible {
+            display: block;
+        }
+
+        .medicaments-section h2 {
+            color: #667eea;
+            margin-bottom: 25px;
+            font-size: 26px;
+        }
+        
+        .toggle-btn {
+            width: 100%;
+            padding: 18px;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border: none;
+            border-radius: 15px;
+            font-size: 18px;
+            font-weight: 700;
+            cursor: pointer;
+            margin-bottom: 25px;
+            transition: all 0.4s ease;
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .toggle-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .toggle-btn:hover::before {
+            left: 100%;
+        }
+        
+        .toggle-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 35px rgba(245, 87, 108, 0.5);
+        }
+
+        .toggle-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .medicament {
+            border: 3px solid transparent;
+            background: linear-gradient(white, white) padding-box,
+                        linear-gradient(135deg, #667eea, #764ba2) border-box;
+            padding: 25px;
+            margin: 20px 0;
+            border-radius: 15px;
+            transition: all 0.4s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicament::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .medicament:hover::before {
+            left: 100%;
+        }
+        
+        .medicament:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.3);
+        }
+        
+        .medicament.hidden {
+            display: none;
+        }
+        
+        .medicament h3 {
+            margin: 0 0 20px 0;
+            color: #2c3e50;
+            font-size: 24px;
+            position: relative;
+            padding-bottom: 10px;
+        }
+
+        .medicament h3::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 2px;
+        }
+        
+        .medicament-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .medicament-info p {
+            margin: 8px 0;
+            color: #555;
+            font-size: 15px;
+        }
+        
+        .medicament-info strong {
+            color: #333;
+            font-weight: 600;
+        }
+        
+        .quantity-control {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+        }
+        
+        .quantity-control input[type="number"] {
+            width: 120px;
+            padding: 12px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-weight: 600;
+        }
+        
+        .quantity-control input[type="number"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        /* Section total */
+        .total-section {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .total-section::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+            transform: rotate(45deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+        
+        .total-section h3 {
+            margin: 0;
+            font-size: 28px;
+            position: relative;
+        }
+        
+        .total-section #total {
+            font-weight: bold;
+            font-size: 36px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        /* Messages */
+        .empty-message {
+            text-align: center;
+            padding: 50px;
+            color: #666;
+            font-size: 18px;
+        }
+
+        #searchResults {
+            color: #666;
+            font-size: 14px;
+            padding: 10px 0;
+            font-weight: 600;
+        }
+        
+        /* Modal de confirmation */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
+            background: white;
+            margin: 8% auto;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 550px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: modalPop 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes modalPop {
+            0% {
+                opacity: 0;
+                transform: scale(0.5) translateY(-100px);
+            }
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+        
+        .modal-content h2 {
+            margin-top: 0;
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 20px;
+        }
+
+        .modal-content p {
+            font-size: 16px;
+            color: #555;
+            margin-bottom: 20px;
+        }
+
+        #commandeSummary {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            padding: 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+        }
+
+        #commandeSummary ul {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        #commandeSummary li {
+            padding: 8px 0;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+        }
+
+        #commandeSummary li:last-child {
+            border-bottom: none;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+            justify-content: flex-end;
+        }
+        
+        .btn-danger {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.5);
+        }
+        
+        /* Badge de stock */
+        .stock-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        .stock-low {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(245, 87, 108, 0.3);
+        }
+        
+        .stock-ok {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+            box-shadow: 0 4px 10px rgba(17, 153, 142, 0.3);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 24px;
+            }
+
+            .medicament h3 {
+                font-size: 20px;
+            }
+
+            .medicament-info {
+                grid-template-columns: 1fr;
+            }
+
+            .search-box {
+                flex-direction: column;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Navigation -->
+        <div class="nav-buttons">
+            <a href="{% url 'mes_commandes' %}" class="btn btn-secondary">
+                ← Mes commandes
+            </a>
+            <a href="{% url 'rechercher_medicament_client' %}" class="btn btn-primary">
+                🏠 Accueil
+            </a>
+        </div>
+        
+        <!-- En-tête -->
+        <div class="header">
+            <h1>📦 Commander à {{ pharmacie.nom }}</h1>
+            <p><strong>📍 Adresse :</strong> {{ pharmacie.address }}</p>
+        </div>
+        
+        <!-- Section de recherche -->
+        <div class="search-section">
+            <h2>🔍 Rechercher un médicament</h2>
+            <div class="search-box">
+                <input type="text" 
+                       id="searchInput" 
+                       placeholder="Entrez le nom du médicament..." 
+                       onkeyup="rechercherMedicament()">
+                <button class="btn btn-primary" onclick="rechercherMedicament()">
+                    Rechercher
+                </button>
+                <button class="btn btn-secondary" onclick="reinitialiserRecherche()">
+                    Réinitialiser
+                </button>
+            </div>
+            <p id="searchResults"></p>
+        </div>
+        
+        <!-- Bouton pour afficher/masquer les médicaments -->
+        <button class="toggle-btn" onclick="toggleMedicaments()">
+            <span id="toggleText">📋 Afficher les médicaments disponibles</span>
+        </button>
+        
+        <!-- Formulaire de commande -->
+        <form method="post" id="commandeForm" onsubmit="return confirmerCommande(event)">
+            {% csrf_token %}
+            
+            <div class="medicaments-section" id="medicamentsSection">
+                <h2>💊 Médicaments disponibles</h2>
+                
+                {% for medicament in medicaments %}
+                <div class="medicament" data-nom="{{ medicament.nom|lower }}">
+                    <h3>{{ medicament.nom }}</h3>
+                    
+                    <div class="medicament-info">
+                        <p><strong>💊 Catégorie :</strong> {{ medicament.categorie }}</p>
+                        <p><strong>💰 Prix :</strong> {{ medicament.prix }} FCFA</p>
+                        <p>
+                            <strong>📦 Stock :</strong> 
+                            {% if medicament.quantite < 10 %}
+                            <span class="stock-badge stock-low">{{ medicament.quantite }} restants</span>
+                            {% else %}
+                            <span class="stock-badge stock-ok">{{ medicament.quantite }} disponibles</span>
+                            {% endif %}
+                        </p>
+                    </div>
+                    
+                    <p><strong>📝 Description :</strong> {{ medicament.description }}</p>
+                    
+                    <div class="quantity-control">
+                        <label><strong>Quantité :</strong></label>
+                        <input type="number" 
+                               name="quantite" 
+                               min="0" 
+                               max="{{ medicament.quantite }}" 
+                               value="0"
+                               data-prix="{{ medicament.prix }}"
+                               onchange="calculerTotal()">
+                        <input type="hidden" name="medicament_id" value="{{ medicament.id }}">
+                    </div>
+                </div>
+                {% empty %}
+                <div class="empty-message">
+                    <p>❌ Aucun médicament disponible dans cette pharmacie.</p>
+                </div>
+                {% endfor %}
+                
+                <div class="total-section">
+                    <h3>💵 Total : <span id="total">0</span> FCFA</h3>
+                </div>
+                
+                {% if medicaments %}
+                <button type="submit" class="btn btn-success" style="width: 100%;">
+                    <span style="position: relative; z-index: 1;">🚀 Passer la commande</span>
+                </button>
+                {% endif %}
+            </div>
+        </form>
+    </div>
+    
+    <!-- Modal de confirmation -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h2>⚠️ Confirmer la commande</h2>
+            <p>Êtes-vous sûr de vouloir passer cette commande ?</p>
+            <div id="commandeSummary"></div>
+            <div class="modal-buttons">
+                <button type="button" class="btn btn-secondary" onclick="fermerModal()">
+                    Annuler
+                </button>
+                <button type="button" class="btn btn-success" onclick="envoyerCommande()">
+                    ✅ Confirmer
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let medicamentsSectionVisible = false;
+        
+        // Afficher/masquer les médicaments
+        function toggleMedicaments() {
+            const section = document.getElementById('medicamentsSection');
+            const toggleText = document.getElementById('toggleText');
+            
+            medicamentsSectionVisible = !medicamentsSectionVisible;
+            
+            if (medicamentsSectionVisible) {
+                section.classList.add('visible');
+                toggleText.textContent = '🔼 Masquer les médicaments';
+            } else {
+                section.classList.remove('visible');
+                toggleText.textContent = '📋 Afficher les médicaments disponibles';
+            }
+        }
+        
+        // Rechercher un médicament
+        function rechercherMedicament() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase().trim();
+            const medicaments = document.querySelectorAll('.medicament');
+            const searchResults = document.getElementById('searchResults');
+            let count = 0;
+            
+            if (searchTerm === '') {
+                medicaments.forEach(med => {
+                    med.classList.remove('hidden');
+                });
+                searchResults.textContent = '';
+                return;
+            }
+            
+            // Afficher la section si une recherche est effectuée
+            if (!medicamentsSectionVisible) {
+                toggleMedicaments();
+            }
+            
+            medicaments.forEach(med => {
+                const nom = med.getAttribute('data-nom');
+                if (nom.includes(searchTerm)) {
+                    med.classList.remove('hidden');
+                    count++;
+                } else {
+                    med.classList.add('hidden');
+                }
+            });
+            
+            searchResults.textContent = count > 0 
+                ? `✅ ${count} médicament(s) trouvé(s)` 
+                : '❌ Aucun médicament trouvé';
+        }
+        
+        // Réinitialiser la recherche
+        function reinitialiserRecherche() {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchResults').textContent = '';
+            const medicaments = document.querySelectorAll('.medicament');
+            medicaments.forEach(med => {
+                med.classList.remove('hidden');
+            });
+        }
+        
+        // Calculer le total
+        function calculerTotal() {
+            let total = 0;
+            const inputs = document.querySelectorAll('input[name="quantite"]');
+            
+            inputs.forEach(input => {
+                const quantite = parseInt(input.value) || 0;
+                const prix = parseInt(input.getAttribute('data-prix'));
+                total += quantite * prix;
+            });
+            
+            document.getElementById('total').textContent = total.toLocaleString();
+        }
+        
+        // Confirmer la commande
+        function confirmerCommande(event) {
+            event.preventDefault();
+            
+            // Vérifier qu'au moins un médicament est sélectionné
+            const inputs = document.querySelectorAll('input[name="quantite"]');
+            let hasItems = false;
+            let summary = '<strong style="color: #667eea; font-size: 18px;">Articles commandés :</strong><ul style="margin: 15px 0;">';
+            
+            inputs.forEach((input, index) => {
+                const quantite = parseInt(input.value) || 0;
+                if (quantite > 0) {
+                    hasItems = true;
+                    const medicamentDiv = input.closest('.medicament');
+                    const nom = medicamentDiv.querySelector('h3').textContent;
+                    const prix = parseInt(input.getAttribute('data-prix'));
+                    const total = quantite * prix;
+                    summary += `<li style="padding: 10px; color: #555;"><strong>${nom}</strong> - Quantité: ${quantite} - <strong style="color: #667eea;">${total.toLocaleString()} FCFA</strong></li>`;
+                }
+            });
+            
+            if (!hasItems) {
+                alert('⚠️ Veuillez sélectionner au moins un médicament.');
+                return false;
+            }
+            
+            summary += '</ul>';
+            summary += `<div style="padding: 15px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; border-radius: 10px; text-align: center; margin-top: 15px;"><strong style="font-size: 20px;">Total : ${document.getElementById('total').textContent} FCFA</strong></div>`;
+            
+            document.getElementById('commandeSummary').innerHTML = summary;
+            document.getElementById('confirmModal').style.display = 'block';
+            
+            return false;
+        }
+        
+        // Fermer le modal
+        function fermerModal() {
+            const modal = document.getElementById('confirmModal');
+            const modalContent = modal.querySelector('.modal-content');
+            modalContent.style.animation = 'modalPop 0.3s ease-in reverse';
+            setTimeout(() => {
+                modal.style.display = 'none';
+                modalContent.style.animation = '';
+            }, 300);
+        }
+        
+        // Envoyer la commande
+        function envoyerCommande() {
+            document.getElementById('commandeForm').submit();
+        }
+        
+        // Fermer le modal en cliquant à l'extérieur
+        window.onclick = function(event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target == modal) {
+                fermerModal();
+            }
+        }
+        
+        // Calcul initial du total
+        calculerTotal();
+    </script>
+</body>
+</html>

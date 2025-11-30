@@ -1,0 +1,775 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        /* Effet de particules en arrière-plan */
+        body::before {
+            content: '';
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                radial-gradient(circle at 20% 50%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 80%, rgba(255, 255, 255, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 40% 20%, rgba(255, 255, 255, 0.08) 0%, transparent 50%);
+            animation: float 15s ease-in-out infinite;
+            pointer-events: none;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-20px) scale(1.05); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+        }
+
+        /* En-tête */
+        .page-header {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            animation: slideInDown 0.6s ease-out;
+            text-align: center;
+        }
+
+        @keyframes slideInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .page-header h1 {
+            color: #667eea;
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .badge-count {
+            display: inline-block;
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 18px;
+            font-weight: 700;
+            margin-left: 15px;
+            box-shadow: 0 4px 15px rgba(245, 87, 108, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        /* Actions globales */
+        .header-actions {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 25px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            justify-content: center;
+            animation: slideInLeft 0.6s ease-out;
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            transform: translate(-50%, -50%);
+            transition: width 0.6s, height 0.6s;
+        }
+
+        .btn:hover::before {
+            width: 300px;
+            height: 300px;
+        }
+
+        .btn span {
+            position: relative;
+            z-index: 1;
+        }
+
+        .btn-accepter {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .btn-accepter:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(17, 153, 142, 0.4);
+        }
+
+        .btn-refuser {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .btn-refuser:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(235, 51, 73, 0.4);
+        }
+
+        .btn-supprimer {
+            background: linear-gradient(135deg, #868f96 0%, #596164 100%);
+            color: white;
+            padding: 8px 14px;
+            font-size: 18px;
+            font-weight: 700;
+            border-radius: 50%;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-supprimer:hover {
+            transform: rotate(90deg) scale(1.1);
+            box-shadow: 0 6px 20px rgba(134, 143, 150, 0.4);
+        }
+
+        .btn-tout-supprimer {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        .btn-tout-supprimer:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(235, 51, 73, 0.4);
+        }
+
+        .btn-marquer-tout-lu {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        .btn-marquer-tout-lu:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #868f96 0%, #596164 100%);
+            color: white;
+        }
+
+        .btn-secondary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(134, 143, 150, 0.4);
+        }
+
+        .btn-disabled {
+            background: #ccc;
+            color: #666;
+            cursor: not-allowed;
+            opacity: 0.6;
+        }
+
+        .btn-disabled:hover {
+            transform: none;
+        }
+
+        /* Notifications */
+        .notifications-list {
+            display: grid;
+            gap: 20px;
+        }
+
+        .notification {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+            transition: all 0.4s ease;
+            animation: slideInUp 0.6s ease-out backwards;
+            overflow: hidden;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .notification:nth-child(1) { animation-delay: 0.1s; }
+        .notification:nth-child(2) { animation-delay: 0.2s; }
+        .notification:nth-child(3) { animation-delay: 0.3s; }
+        .notification:nth-child(4) { animation-delay: 0.4s; }
+
+        .notification::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.05), transparent);
+            transition: left 0.5s;
+        }
+
+        .notification:hover::before {
+            left: 100%;
+        }
+
+        .notification:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 50px rgba(102, 126, 234, 0.3);
+        }
+
+        .non-lue {
+            border-left: 6px solid #667eea;
+            background: linear-gradient(to right, rgba(102, 126, 234, 0.08) 0%, rgba(255, 255, 255, 0.98) 10%);
+        }
+
+        .non-lue::after {
+            content: '●';
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            color: #667eea;
+            font-size: 20px;
+            animation: blink 2s infinite;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+
+        .lue {
+            opacity: 0.85;
+        }
+
+        .notification h3 {
+            color: #2c3e50;
+            font-size: 22px;
+            margin-bottom: 15px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .notification p {
+            color: #555;
+            font-size: 16px;
+            margin: 10px 0;
+            line-height: 1.6;
+        }
+
+        .notification small {
+            color: #999;
+            font-size: 14px;
+            display: block;
+            margin-top: 10px;
+        }
+
+        /* Badges de statut */
+        .statut-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .statut-acceptee {
+            background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+            color: white;
+        }
+
+        .statut-refusee {
+            background: linear-gradient(135deg, #eb3349 0%, #f45c43 100%);
+            color: white;
+        }
+
+        /* Zone d'actions */
+        .actions {
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 2px solid #f0f0f0;
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .actions p {
+            color: #666;
+            font-style: italic;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Conteneur de suppression */
+        .supprimer-container {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+        }
+
+        /* Boîte de confirmation */
+        .confirmation-dialog {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1) 0%, rgba(118, 75, 162, 0.1) 100%);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            animation: expandIn 0.3s ease-out;
+        }
+
+        @keyframes expandIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .confirmation-dialog p {
+            color: #333;
+            margin-bottom: 15px;
+        }
+
+        .confirmation-dialog strong {
+            color: #667eea;
+        }
+
+        /* Message d'envoi */
+        .message-envoi {
+            color: #667eea;
+            font-style: italic;
+            font-weight: 600;
+            animation: fadeIn 0.3s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* État de chargement */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+            animation: loadingPulse 1.5s infinite;
+        }
+
+        @keyframes loadingPulse {
+            0%, 100% { opacity: 0.6; }
+            50% { opacity: 0.3; }
+        }
+
+        /* Message vide */
+        .empty-message {
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(10px);
+            text-align: center;
+            padding: 60px 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        .empty-message p {
+            color: #666;
+            font-size: 18px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .page-header {
+                padding: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 28px;
+            }
+
+            .header-actions {
+                flex-direction: column;
+                padding: 20px;
+            }
+
+            .btn {
+                width: 100%;
+                justify-content: center;
+            }
+
+            .notification {
+                padding: 20px;
+                padding-right: 50px;
+            }
+
+            .notification h3 {
+                font-size: 18px;
+            }
+
+            .actions {
+                flex-direction: column;
+            }
+
+            .badge-count {
+                display: block;
+                margin: 10px auto 0;
+                width: fit-content;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête -->
+        <div class="page-header">
+            <h1>
+                🔔 Notifications
+                <span class="badge-count">{{ nombre_non_lues }} non lues</span>
+            </h1>
+        </div>
+        
+        <!-- Actions globales -->
+        <div class="header-actions">
+            <a href="{% url 'commandes_pharmacie' %}" class="btn btn-secondary">
+                <span>📦 Voir toutes les commandes</span>
+            </a>
+            <a href="{% url 'mes_medicaments_perso' %}" class="btn btn-secondary">
+                <span>← Retour à l'accueil</span>
+            </a>
+            <form action="{% url 'marquer_toutes_lues' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-marquer-tout-lu">
+                    <span>📭 Marquer tout comme lu</span>
+                </button>
+            </form>
+            
+            <form action="{% url 'supprimer_toutes_notifications' %}" method="post" style="display: inline;">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-tout-supprimer" 
+                        onclick="return confirm('⚠️ Êtes-vous sûr de vouloir supprimer toutes les notifications ?')">
+                    <span>🗑️ Supprimer tout</span>
+                </button>
+            </form>
+        </div>
+        
+        <!-- Liste des notifications -->
+        <div class="notifications-list">
+            {% for notification in notifications %}
+            <div class="notification {% if notification.lue %}lue{% else %}non-lue{% endif %}" id="notification-{{ notification.id }}">
+                
+                <!-- Bouton de suppression individuelle -->
+                <div class="supprimer-container">
+                    <form action="{% url 'supprimer_notification' notification.id %}" method="post">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-supprimer" 
+                                onclick="return confirm('Supprimer cette notification ?')">×</button>
+                    </form>
+                </div>
+                
+                <h3>
+                    {{ notification.get_type_notification_display }}
+                    {% if notification.commande %}
+                        {% if notification.commande.statut == 'acceptee' %}
+                            <span class="statut-badge statut-acceptee">✅ Acceptée</span>
+                        {% elif notification.commande.statut == 'refusee' %}
+                            <span class="statut-badge statut-refusee">❌ Refusée</span>
+                        {% endif %}
+                    {% endif %}
+                </h3>
+                
+                <p>{{ notification.message }}</p>
+                <small>📅 {{ notification.date_creation }}</small>
+                
+                {% if notification.commande and notification.type_notification == 'nouvelle_commande' %}
+                <div class="actions">
+                    <!-- Si la commande est déjà traitée -->
+                    {% if notification.commande.statut == 'acceptee' or notification.commande.statut == 'refusee' %}
+                        <p>
+                            ✅ Cette commande a déjà été traitée
+                        </p>
+                    
+                    <!-- Sinon, afficher les boutons d'action -->
+                    {% else %}
+                        <!-- Accepter avec confirmation -->
+                        <form action="{% url 'accepter_commande' notification.commande.id %}" method="post" class="form-accepter" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-accepter" onclick="demanderConfirmation({{ notification.commande.id }}, 'accepter', this)">
+                                <span>✅ Accepter la commande</span>
+                            </button>
+                            <span id="message-{{ notification.commande.id }}-accepter" class="message-envoi" style="display: none;"></span>
+                        </form>
+                        
+                        <!-- Refuser avec confirmation -->
+                        <form action="{% url 'refuser_commande' notification.commande.id %}" method="post" class="form-refuser" style="display: inline;">
+                            {% csrf_token %}
+                            <button type="button" class="btn btn-refuser" onclick="demanderConfirmation({{ notification.commande.id }}, 'refuser', this)">
+                                <span>❌ Refuser la commande</span>
+                            </button>
+                            <span id="message-{{ notification.commande.id }}-refuser" class="message-envoi" style="display: none;"></span>
+                        </form>
+
+                        <!-- Zone de confirmation -->
+                        <div id="confirmation-{{ notification.commande.id }}" class="confirmation-dialog" style="display: none;">
+                            <p><strong>Êtes-vous sûr de vouloir <span id="action-text-{{ notification.commande.id }}"></span> cette commande ?</strong></p>
+                            <p>Cette action enverra un email au client et ne pourra pas être annulée.</p>
+                            <div style="display: flex; gap: 12px; margin-top: 15px;">
+                                <button type="button" class="btn btn-accepter" onclick="confirmerAction({{ notification.commande.id }})">
+                                    <span>✅ Oui, confirmer</span>
+                                </button>
+                                <button type="button" class="btn btn-refuser" onclick="annulerConfirmation({{ notification.commande.id }})">
+                                    <span>❌ Annuler</span>
+                                </button>
+                            </div>
+                        </div>
+                    {% endif %}
+                </div>
+                {% endif %}
+            </div>
+            {% empty %}
+            <div class="empty-message">
+                <p style="font-size: 48px; margin-bottom: 20px;">📭</p>
+                <p style="font-size: 24px; font-weight: 700; color: #667eea; margin-bottom: 10px;">Aucune notification</p>
+                <p>Vous n'avez aucune notification pour le moment.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+    let commandeEnCours = null;
+    let actionEnCours = null;
+    let boutonOriginal = null;
+
+    function demanderConfirmation(commandeId, action, bouton) {
+        commandeEnCours = commandeId;
+        actionEnCours = action;
+        boutonOriginal = bouton;
+        
+        const confirmationDiv = document.getElementById(`confirmation-${commandeId}`);
+        const actionText = document.getElementById(`action-text-${commandeId}`);
+        
+        // Masquer tous les autres boutons d'action
+        document.querySelectorAll(`.form-accepter button, .form-refuser button`).forEach(btn => {
+            if (btn !== bouton) {
+                btn.style.display = 'none';
+            }
+        });
+        
+        // Changer le texte selon l'action
+        actionText.textContent = action === 'accepter' ? 'accepter' : 'refuser';
+        
+        // Afficher la confirmation
+        confirmationDiv.style.display = 'block';
+        
+        // Changer l'apparence du bouton cliqué
+        bouton.querySelector('span').textContent = '⏳ En attente de confirmation...';
+        bouton.classList.add('loading');
+    }
+
+    function annulerConfirmation(commandeId) {
+        // Réafficher tous les boutons
+        document.querySelectorAll(`.form-accepter button, .form-refuser button`).forEach(btn => {
+            btn.style.display = 'inline-flex';
+        });
+        
+        // Masquer la confirmation
+        document.getElementById(`confirmation-${commandeId}`).style.display = 'none';
+        
+        // Restaurer le bouton original
+        if (boutonOriginal) {
+            boutonOriginal.querySelector('span').textContent = actionEnCours === 'accepter' 
+                ? '✅ Accepter la commande' 
+                : '❌ Refuser la commande';
+            boutonOriginal.classList.remove('loading');
+        }
+        
+        // Réinitialiser
+        commandeEnCours = null;
+        actionEnCours = null;
+        boutonOriginal = null;
+    }
+
+    async function confirmerAction(commandeId) {
+        if (!commandeEnCours || !actionEnCours || !boutonOriginal) return;
+        
+        console.log(`Confirmation traitement commande ${commandeId}, action: ${actionEnCours}`);
+        
+        // Désactiver tous les boutons de confirmation
+        document.querySelectorAll(`#confirmation-${commandeId} button`).forEach(btn => {
+            btn.disabled = true;
+        });
+        
+        // Afficher le message d'envoi
+        const messageElement = document.getElementById(`message-${commandeId}-${actionEnCours}`);
+        messageElement.textContent = '⏳ Envoi en cours...';
+        messageElement.style.display = 'inline';
+        messageElement.style.marginLeft = '10px';
+        messageElement.style.color = '#667eea';
+        
+        try {
+            // 1. Envoyer l'email
+            const response = await fetch('/api/envoyer-email-commande/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken')
+                },
+                body: JSON.stringify({
+                    commande_id: commandeId,
+                    action: actionEnCours
+                })
+            });
+            
+            const result = await response.json();
+            console.log('Réponse API:', result);
+            
+            if (result.success) {
+                messageElement.textContent = '✓ Email envoyé! Traitement en cours...';
+                messageElement.style.color = '#11998e';
+                
+                // 2. Soumettre le formulaire
+                setTimeout(() => {
+                    const formulaire = actionEnCours === 'accepter' 
+                        ? document.querySelector(`.form-accepter[action*="${commandeId}"]`)
+                        : document.querySelector(`.form-refuser[action*="${commandeId}"]`);
+                    
+                    if (formulaire) {
+                        formulaire.submit();
+                    }
+                }, 1500);
+                
+            } else {
+                messageElement.textContent = `✗ Erreur: ${result.error}`;
+                messageElement.style.color = '#eb3349';
+                
+                setTimeout(() => {
+                    annulerConfirmation(commandeId);
+                }, 3000);
+            }
+            
+        } catch (error) {
+            console.error('Erreur:', error);
+            messageElement.textContent = `✗ Erreur: ${error.message}`;
+            messageElement.style.color = '#eb3349';
+            
+            setTimeout(() => {
+                annulerConfirmation(commandeId);
+            }, 3000);
+        }
+    }
+    
+    // Fonction pour récupérer le token CSRF
+    function getCookie(name) {
+        let cookieValue = null;
+        if (document.cookie && document.cookie !== '') {
+            const cookies = document.cookie.split(';');
+            for (let i = 0; i < cookies.length; i++) {
+                const cookie = cookies[i].trim();
+                if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                    cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                    break;
+                }
+            }
+        }
+        return cookieValue;
+    }
+
+    // Animation au chargement
+    document.addEventListener('DOMContentLoaded', function() {
+        const notifications = document.querySelectorAll('.notification');
+        notifications.forEach((notif, index) => {
+            notif.style.animationDelay = `${index * 0.1}s`;
+        });
+    });
+    </script>
+</body>
+</html>

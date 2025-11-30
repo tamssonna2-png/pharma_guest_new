@@ -8,6 +8,8 @@
             --dark-green: #45a049;
             --light-green: #e8f5e8;
             --accent-orange: #ff9800;
+            --primary-blue: #2196F3;
+            --dark-blue: #1976D2;
             --white: #ffffff;
             --light-gray: #f8f9fa;
             --text-dark: #2c3e50;
@@ -133,6 +135,62 @@
         .form-textarea {
             resize: vertical;
             min-height: 100px;
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-light);
+            font-size: 1.1em;
+        }
+        
+        .password-strength {
+            height: 4px;
+            background: #e0e0e0;
+            border-radius: 2px;
+            margin-top: 5px;
+            overflow: hidden;
+        }
+        
+        .strength-bar {
+            height: 100%;
+            width: 0%;
+            transition: all 0.3s ease;
+            border-radius: 2px;
+        }
+        
+        .strength-weak { background: #f44336; width: 33%; }
+        .strength-medium { background: #ff9800; width: 66%; }
+        .strength-strong { background: #4CAF50; width: 100%; }
+        
+        .password-requirements {
+            font-size: 0.85em;
+            color: var(--text-light);
+            margin-top: 5px;
+        }
+        
+        .requirement {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            margin-bottom: 2px;
+        }
+        
+        .requirement.valid {
+            color: var(--primary-green);
+        }
+        
+        .requirement.invalid {
+            color: var(--text-light);
         }
         
         .switch-container {
@@ -400,6 +458,64 @@
             color: #6c757d;
             border: 1px dashed #ccc;
         }
+
+        .custom-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(99, 102, 241, 0.3);
+            border: none;
+            cursor: pointer;
+        }
+
+        .custom-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.4);
+            color: white;
+            text-decoration: none;
+        }
+
+        .custom-btn:active {
+            transform: scale(0.98);
+        }
+
+        /* Styles pour la section compte utilisateur */
+        .account-section {
+            background: linear-gradient(135deg, #e3f2fd, #bbdefb);
+            border: 2px solid var(--primary-blue);
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 25px;
+        }
+
+        .account-warning {
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: #856404;
+        }
+
+        .password-match {
+            color: var(--primary-green);
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
+
+        .password-mismatch {
+            color: #f44336;
+            font-size: 0.9em;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -409,16 +525,122 @@
             ⬅️ Retour inventaire des Médicaments
         </a>
         <a href="{% url 'recherche_ia' %}" class="back-button">
-                    🔍 Recherche Intelligente
+            🔍 Recherche Intelligente
         </a>
 
         <!-- En-tête -->
         <div class="header-section">
             <h1 class="header-title">⚙️ Gestion de ma Pharmacie</h1>
-            <p class="header-subtitle">Modifiez les informations de votre établissement</p>
+            <p class="header-subtitle">Modifiez les informations de votre établissement et de votre compte</p>
         </div>
 
-        <!-- Formulaire de modification -->
+        <!-- NOUVELLE SECTION : COMPTE UTILISATEUR -->
+        <div class="form-section account-section">
+            <h2 class="section-title">👤 Compte Utilisateur</h2>
+            
+            <div class="account-warning">
+                <strong>⚠️ Attention :</strong> La modification de votre nom d'utilisateur ou mot de passe affectera votre connexion.
+            </div>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">
+                        🆔 Nom d'utilisateur actuel
+                    </label>
+                    <input type="text" 
+                           value="{{ request.user.username }}" 
+                           class="form-input" 
+                           disabled
+                           style="background: #f8f9fa;">
+                    <div class="help-text">
+                        Votre identifiant de connexion actuel
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        ✏️ Nouveau nom d'utilisateur
+                    </label>
+                    <input type="text" 
+                           name="new_username" 
+                           class="form-input" 
+                           placeholder="Laissez vide pour ne pas changer"
+                           id="newUsername">
+                    <div class="help-text">
+                        Doit être unique et contenir uniquement des lettres, chiffres et underscores
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="color: var(--primary-blue); margin: 25px 0 15px 0; display: flex; align-items: center; gap: 10px;">
+                🔒 Modification du mot de passe
+            </h3>
+            
+            <div class="form-grid">
+                <div class="form-group">
+                    <label class="form-label">
+                        🔑 Mot de passe actuel
+                    </label>
+                    <div class="password-container">
+                        <input type="password" 
+                               name="current_password" 
+                               class="form-input" 
+                               placeholder="Entrez votre mot de passe actuel"
+                               id="currentPassword">
+                        <button type="button" class="toggle-password" onclick="togglePassword('currentPassword')">
+                            👁️
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        🆕 Nouveau mot de passe
+                    </label>
+                    <div class="password-container">
+                        <input type="password" 
+                               name="new_password" 
+                               class="form-input" 
+                               placeholder="Entrez le nouveau mot de passe"
+                               id="newPassword"
+                               oninput="checkPasswordStrength()">
+                        <button type="button" class="toggle-password" onclick="togglePassword('newPassword')">
+                            👁️
+                        </button>
+                    </div>
+                    <div class="password-strength">
+                        <div class="strength-bar" id="strengthBar"></div>
+                    </div>
+                    <div class="password-requirements" id="passwordRequirements">
+                        <div class="requirement invalid" id="reqLength">✓ 8 caractères minimum</div>
+                        <div class="requirement invalid" id="reqUpper">✓ 1 majuscule minimum</div>
+                        <div class="requirement invalid" id="reqLower">✓ 1 minuscule minimum</div>
+                        <div class="requirement invalid" id="reqNumber">✓ 1 chiffre minimum</div>
+                        <div class="requirement invalid" id="reqSpecial">✓ 1 caractère spécial</div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label class="form-label">
+                        ✅ Confirmer le nouveau mot de passe
+                    </label>
+                    <div class="password-container">
+                        <input type="password" 
+                               name="confirm_password" 
+                               class="form-input" 
+                               placeholder="Confirmez le nouveau mot de passe"
+                               id="confirmPassword"
+                               oninput="checkPasswordMatch()">
+                        <button type="button" class="toggle-password" onclick="togglePassword('confirmPassword')">
+                            👁️
+                        </button>
+                    </div>
+                    <div id="passwordMatchMessage"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Formulaire de modification de la pharmacie (EXISTANT) -->
         <form method="post" class="form-section" id="pharmacyForm">
             {% csrf_token %}
             
@@ -482,8 +704,7 @@
                 <div class="garde-info">
                     <strong>💡 Information :</strong> 
                     En activant le statut de garde, votre pharmacie sera visible comme 
-                    <strong>pharmacie de garde</strong> pour les urgences. Ce statut est généralement 
-                    utilisé en dehors des heures d'ouverture normales.
+                    <strong>pharmacie de garde</strong> pour les urgences.
                 </div>
             </div>
 
@@ -491,7 +712,7 @@
             <h2 class="section-title">🌍 Localisation GPS</h2>
             
             <div class="security-warning">
-                ⚠️ ZONE SENSIBLE - Une erreur de localisation peut empêcher les patients de vous trouver en cas d'urgence !
+                ⚠️ ZONE SENSIBLE - Une erreur de localisation peut empêcher les patients de vous trouver !
             </div>
             
             <div class="coordinates-section" id="coordinatesSection">
@@ -501,7 +722,7 @@
                 
                 <div class="coordinates-info">
                     🎯 Ces coordonnées déterminent votre visibilité dans les recherches. 
-                    <strong>Ne modifiez que si nécessaire et avec précaution.</strong>
+                    <strong>Ne modifiez que si nécessaire.</strong>
                 </div>
                 
                 <div class="coordinates-inputs">
@@ -515,9 +736,6 @@
                                placeholder="Ex: 3.876716"
                                readonly
                                id="latitudeInput">
-                        <div class="help-text">
-                            Doit être entre -90 et 90
-                        </div>
                     </div>
                     
                     <div class="form-group">
@@ -530,35 +748,23 @@
                                placeholder="Ex: 11.550724"
                                readonly
                                id="longitudeInput">
-                        <div class="help-text">
-                            Doit être entre -180 et 180
-                        </div>
                     </div>
                 </div>
                 
-                <!-- Bouton de géolocalisation automatique -->
                 <button type="button" class="current-location-btn" id="currentLocationBtn" disabled>
                     📍 Utiliser ma position actuelle
                 </button>
                 
-                <!-- Aperçu de la localisation -->
                 <div class="map-preview" id="mapPreview">
                     🔓 Déverrouillez pour voir l'aperçu
                 </div>
                 
-                <!-- Étape de vérification -->
                 <div class="verification-step" id="verificationStep" style="display: none;">
                     <h4>✅ Vérification de sécurité requise</h4>
                     <div class="verification-checkbox">
                         <input type="checkbox" id="confirmLocation" required>
                         <label for="confirmLocation">
-                            Je confirme que ces coordonnées correspondent exactement à l'emplacement physique de ma pharmacie
-                        </label>
-                    </div>
-                    <div class="verification-checkbox">
-                        <input type="checkbox" id="understandRisk" required>
-                        <label for="understandRisk">
-                            Je comprends qu'une erreur peut empêcher des patients de trouver la pharmacie en cas d'urgence
+                            Je confirme que ces coordonnées correspondent à l'emplacement physique de ma pharmacie
                         </label>
                     </div>
                 </div>
@@ -571,8 +777,12 @@
                 </button>
                 
                 <button type="submit" class="btn btn-primary" id="submitBtn">
-                    💾 Enregistrer les modifications
+                    💾 Enregistrer toutes les modifications
                 </button>
+                
+                <a href="{% url 'info_personel' %}" class="custom-btn">
+                    👥 Personnel pharmacie
+                </a>
             </div>
         </form>
 
@@ -584,10 +794,9 @@
                 <div style="display: flex; align-items: start; gap: 15px; padding: 15px; background: #e8f5e8; border-radius: 8px;">
                     <div style="font-size: 1.5em;">🔒</div>
                     <div>
-                        <strong>Sécurité des données</strong>
+                        <strong>Sécurité du compte</strong>
                         <p style="margin-top: 5px; color: var(--text-light);">
-                            Vos informations sont sécurisées et uniquement utilisées pour aider 
-                            les patients à vous localiser.
+                            Choisissez un mot de passe fort et unique pour protéger votre compte.
                         </p>
                     </div>
                 </div>
@@ -597,8 +806,7 @@
                     <div>
                         <strong>Localisation précise</strong>
                         <p style="margin-top: 5px; color: var(--text-light);">
-                            Des coordonnées GPS incorrectes peuvent rendre votre pharmacie 
-                            <strong>invisible</strong> aux patients qui vous cherchent.
+                            Des coordonnées GPS incorrectes peuvent rendre votre pharmacie invisible aux patients.
                         </p>
                     </div>
                 </div>
@@ -607,7 +815,74 @@
     </div>
 
     <script>
-        // Éléments DOM
+        // =============================================
+        // FONCTIONS POUR LA GESTION DES MOTS DE PASSE
+        // =============================================
+        
+        // Fonction pour afficher/masquer le mot de passe
+        function togglePassword(inputId) {
+            const passwordInput = document.getElementById(inputId);
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+            } else {
+                passwordInput.type = 'password';
+            }
+        }
+
+        // Vérification de la force du mot de passe
+        function checkPasswordStrength() {
+            const password = document.getElementById('newPassword').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const requirements = {
+                length: password.length >= 8,
+                upper: /[A-Z]/.test(password),
+                lower: /[a-z]/.test(password),
+                number: /[0-9]/.test(password),
+                special: /[!@#$%^&*(),.?":{}|<>]/.test(password)
+            };
+
+            // Mettre à jour les indicateurs visuels
+            document.getElementById('reqLength').className = requirements.length ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('reqUpper').className = requirements.upper ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('reqLower').className = requirements.lower ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('reqNumber').className = requirements.number ? 'requirement valid' : 'requirement invalid';
+            document.getElementById('reqSpecial').className = requirements.special ? 'requirement valid' : 'requirement invalid';
+
+            // Calculer la force
+            const strength = Object.values(requirements).filter(Boolean).length;
+            strengthBar.className = 'strength-bar';
+            
+            if (password.length === 0) {
+                strengthBar.style.width = '0%';
+            } else if (strength <= 2) {
+                strengthBar.classList.add('strength-weak');
+            } else if (strength <= 4) {
+                strengthBar.classList.add('strength-medium');
+            } else {
+                strengthBar.classList.add('strength-strong');
+            }
+        }
+
+        // Vérification de la correspondance des mots de passe
+        function checkPasswordMatch() {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const messageElement = document.getElementById('passwordMatchMessage');
+            
+            if (confirmPassword.length === 0) {
+                messageElement.innerHTML = '';
+            } else if (newPassword === confirmPassword) {
+                messageElement.innerHTML = '<div class="password-match">✅ Les mots de passe correspondent</div>';
+            } else {
+                messageElement.innerHTML = '<div class="password-mismatch">❌ Les mots de passe ne correspondent pas</div>';
+            }
+        }
+
+        // =============================================
+        // FONCTIONS EXISTANTES POUR LES COORDONNÉES GPS
+        // =============================================
+        
+        // Éléments DOM pour les coordonnées
         const lockToggle = document.getElementById('lockToggle');
         const coordinatesInputs = document.querySelectorAll('.coordinates-input');
         const currentLocationBtn = document.getElementById('currentLocationBtn');
@@ -617,15 +892,13 @@
         const longitudeInput = document.getElementById('longitudeInput');
         const mapPreview = document.getElementById('mapPreview');
         const confirmLocation = document.getElementById('confirmLocation');
-        const understandRisk = document.getElementById('understandRisk');
 
         let isUnlocked = false;
 
         // Fonction pour verrouiller/déverrouiller les coordonnées
         lockToggle.addEventListener('click', function() {
             if (!isUnlocked) {
-                // Demander confirmation pour déverrouiller
-                if (confirm('⚠️ Êtes-vous sûr de vouloir modifier les coordonnées GPS ?\n\nUne erreur peut rendre votre pharmacie invisible aux patients.')) {
+                if (confirm('⚠️ Êtes-vous sûr de vouloir modifier les coordonnées GPS ?')) {
                     unlockCoordinates();
                 }
             } else {
@@ -643,7 +916,6 @@
             document.getElementById('coordinatesSection').style.background = '#f0fff0';
             verificationStep.style.display = 'block';
             updateMapPreview();
-            validateCoordinates();
         }
 
         function lockCoordinates() {
@@ -661,7 +933,7 @@
         // Géolocalisation automatique
         currentLocationBtn.addEventListener('click', function() {
             if (!navigator.geolocation) {
-                showLocationStatus('La géolocalisation n\'est pas supportée par votre navigateur', 'error');
+                showLocationStatus('La géolocalisation n\'est pas supportée', 'error');
                 return;
             }
 
@@ -676,63 +948,13 @@
                     longitudeInput.value = lng.toFixed(6);
                     
                     showLocationStatus('✅ Position actuelle détectée', 'success');
-                    validateCoordinates();
                     updateMapPreview();
                 },
                 function(error) {
-                    let message = 'Erreur de géolocalisation: ';
-                    switch(error.code) {
-                        case error.PERMISSION_DENIED:
-                            message += 'Permission refusée';
-                            break;
-                        case error.POSITION_UNAVAILABLE:
-                            message += 'Position indisponible';
-                            break;
-                        case error.TIMEOUT:
-                            message += 'Timeout';
-                            break;
-                        default:
-                            message += 'Erreur inconnue';
-                    }
-                    showLocationStatus(message, 'error');
-                },
-                {
-                    enableHighAccuracy: true,
-                    timeout: 10000,
-                    maximumAge: 60000
+                    showLocationStatus('❌ Erreur de géolocalisation', 'error');
                 }
             );
         });
-
-        // Validation des coordonnées
-        function validateCoordinates() {
-            const lat = parseFloat(latitudeInput.value);
-            const lng = parseFloat(longitudeInput.value);
-            
-            if (isNaN(lat) || isNaN(lng)) {
-                return false;
-            }
-            
-            // Validation des plages
-            if (lat < -90 || lat > 90) {
-                showLocationStatus('La latitude doit être entre -90 et 90', 'error');
-                return false;
-            }
-            
-            if (lng < -180 || lng > 180) {
-                showLocationStatus('La longitude doit être entre -180 et 180', 'error');
-                return false;
-            }
-            
-            // Vérification de la localisation (Cameroun approximatif)
-            if (lng < 8 || lng > 16 || lat < 2 || lat > 13) {
-                if (!confirm('⚠️ Ces coordonnées semblent être en dehors du Cameroun. Êtes-vous sûr de vouloir continuer ?')) {
-                    return false;
-                }
-            }
-            
-            return true;
-        }
 
         // Mise à jour de l'aperçu carte
         function updateMapPreview() {
@@ -744,8 +966,7 @@
                 mapPreview.innerHTML = 
                     `<a href="${mapUrl}" target="_blank" style="color: #007bff; text-decoration: none; text-align: center;">
                         <div style="font-size: 2em;">🗺️</div>
-                        <strong>Vérifier sur Google Maps</strong><br>
-                        <small>(ouvre dans un nouvel onglet)</small>
+                        <strong>Vérifier sur Google Maps</strong>
                     </a>`;
             } else {
                 mapPreview.innerHTML = '📍 Entrez des coordonnées pour voir l\'aperçu';
@@ -758,7 +979,6 @@
             statusDiv.className = `location-status location-${type}`;
             statusDiv.textContent = message;
             
-            // Supprimer les anciens statuts
             const oldStatus = document.querySelector('.location-status');
             if (oldStatus) {
                 oldStatus.remove();
@@ -766,7 +986,6 @@
             
             currentLocationBtn.parentNode.insertBefore(statusDiv, currentLocationBtn.nextSibling);
             
-            // Auto-suppression après 5 secondes
             setTimeout(() => {
                 if (statusDiv.parentNode) {
                     statusDiv.remove();
@@ -775,43 +994,44 @@
         }
 
         // Événements de validation
-        latitudeInput.addEventListener('blur', function() {
-            if (isUnlocked) {
-                validateCoordinates();
-                updateMapPreview();
-            }
-        });
-
-        longitudeInput.addEventListener('blur', function() {
-            if (isUnlocked) {
-                validateCoordinates();
-                updateMapPreview();
-            }
-        });
+        latitudeInput.addEventListener('blur', updateMapPreview);
+        longitudeInput.addEventListener('blur', updateMapPreview);
 
         // Validation avant soumission
         document.getElementById('pharmacyForm').addEventListener('submit', function(e) {
+            const newPassword = document.getElementById('newPassword').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            
+            // Vérification de la correspondance des mots de passe
+            if (newPassword && newPassword !== confirmPassword) {
+                e.preventDefault();
+                alert('❌ Les mots de passe ne correspondent pas.');
+                return;
+            }
+
+            // Vérification des coordonnées GPS si déverrouillées
             if (isUnlocked) {
-                if (!validateCoordinates()) {
+                if (!confirmLocation.checked) {
                     e.preventDefault();
-                    alert('❌ Veuillez corriger les coordonnées GPS avant de soumettre le formulaire.');
+                    alert('❌ Veuillez confirmer la vérification de sécurité pour les coordonnées GPS.');
                     return;
                 }
                 
-                if (!confirmLocation.checked || !understandRisk.checked) {
-                    e.preventDefault();
-                    alert('❌ Veuillez confirmer les vérifications de sécurité pour les coordonnées GPS.');
-                    return;
-                }
-                
-                if (!confirm('⚠️ CONFIRMATION FINALE\n\nVous êtes sur le point de modifier les coordonnées GPS de votre pharmacie. Cette action peut affecter la visibilité de votre établissement.\n\nConfirmer la modification ?')) {
+                if (!confirm('⚠️ Confirmez-vous la modification des coordonnées GPS ?')) {
                     e.preventDefault();
                     return;
                 }
             }
+
+            // Vérification du mot de passe actuel si modification demandée
+            if (newPassword && !document.getElementById('currentPassword').value) {
+                e.preventDefault();
+                alert('❌ Veuillez entrer votre mot de passe actuel pour modifier le mot de passe.');
+                return;
+            }
         });
 
-        // Mise à jour dynamique du statut (existant)
+        // Mise à jour dynamique du statut de garde
         const toggleSwitch = document.querySelector('input[name="deGarde"]');
         const statusIndicator = document.querySelector('.status-indicator');
         
@@ -831,6 +1051,11 @@
                 window.history.back();
             }
         }
+
+        // Initialisation
+        document.addEventListener('DOMContentLoaded', function() {
+            checkPasswordStrength();
+        });
     </script>
 </body>
 </html>
