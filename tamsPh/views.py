@@ -1564,6 +1564,7 @@ from .form import InscriptionClient
 def inscription_client(request):
     if request.method=='POST':
         form=InscriptionClient(request.POST)
+        pharmacie_id = request.POST.get('pharmacie_id')
         if form.is_valid():
             user=User.objects.create_user(
                 username=form.cleaned_data['username'],
@@ -1582,7 +1583,7 @@ def inscription_client(request):
             )
             from django.contrib.auth import login
             login(request, user)
-            return redirect('passer_commande',pharmacie_id=1)
+            return redirect('passer_commande',pharmacie_id=pharmacie_id)
     else:
         form=InscriptionClient()
     return render(request, 'inscription_client.html', {'form': form})
