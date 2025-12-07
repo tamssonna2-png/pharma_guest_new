@@ -56,4 +56,5 @@ urlpatterns = [
     path('commandes/marquer-recuperee/<int:commande_id>/', views.marquer_recuperee, name='marquer_recuperee'),
     path('commandes/historique/', views.historique_commandes, name='historique_commandes'),
     path('commandes/pdf/<int:commande_id>/', views.generer_pdf_commande, name='generer_pdf_commande'),
+    path('test-email-config/', views.test_email_config, name='test_email_config'),
 ]

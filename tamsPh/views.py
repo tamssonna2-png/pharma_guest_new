@@ -1898,64 +1898,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 
 @csrf_exempt
-def envoyeremail_commande(request):
-    if request.method == 'POST':
-        try:
-            data = json.loads(request.body)
-            commande_id = data.get('commande_id')
-            action = data.get('action')
-            
-            commande = Commande.objects.get(id=commande_id)
-            pharmacie = commande.pharmacie
-            
-            if action == 'accepter':
-                sujet = f"✅ Commande #{commande.id} acceptée - {pharmacie.nom}"
-                statut_text = "acceptée"
-            else:
-                sujet = f"❌ Commande #{commande.id} refusée - {pharmacie.nom}" 
-                statut_text = "refusée"
-            
-            # CALCULER LE TOTAL MANUELLEMENT (puisque pas de champ total)
-            total_commande = 0
-            if commande.medicaments.exists():
-                for medicament in commande.medicaments.all():
-                    # Suppose que medicament a un champ 'prix'
-                    total_commande += medicament.prix * medicament.quantite
-            
-            message = f"""
-Bonjour {commande.client.user.first_name},
 
-Votre commande #{commande.id} a été {statut_text} par la pharmacie {pharmacie.nom}.
-
-📋 Détails :
-- Numéro : #{commande.id}  
-- Date : {commande.date_creation.strftime('%d/%m/%Y à %H:%M')}
-- Statut : {statut_text.capitalize()}
-- Total : {total_commande} €
-
-Cordialement,
-{pharmacie.nom}
-{pharmacie.adresse}
-Téléphone : {pharmacie.telephone}
-"""
-            
-            # Envoyer l'email (pour tester, on va d'abord simuler l'envoi)
-            print("=== EMAIL SIMULÉ ===")
-            print(f"De: {pharmacie.email}")
-            print(f"À: {commande.client.user.email}") 
-            print(f"Sujet: {sujet}")
-            print(f"Message: {message}")
-            print("=====================")
-            
-            return JsonResponse({'success': True, 'message': 'Email simulé avec succès'})
-            
-        except Exception as e:
-            print(f"Erreur: {str(e)}")
-            return JsonResponse({'success': False, 'error': str(e)})
-    
-    return JsonResponse({'success': False, 'error': 'Méthode non autorisée'})
-
-@csrf_exempt
 def envoyer_email_commande(request):
     if request.method == 'POST':
         try:
@@ -2024,6 +1967,8 @@ Cordialement,
 
 
 from django.shortcuts import render, get_object_or_404, redirect
+
+
 from django.http import JsonResponse, HttpResponse
 from django.contrib import messages
 from django.db.models import Q
@@ -2219,3 +2164,38 @@ def generer_pdf_commande(request, commande_id):
     except Exception as e:
         messages.error(request, f"Erreur génération PDF: {str(e)}")
         return redirect('commandes_pharmacie')
+    
+
+# Dans urls.py
+from django.core.mail import send_mail
+from django.http import HttpResponse
+from django.conf import settings
+
+def test_email_config(request):
+    response = []
+    
+    response.append(f"<h1>Configuration Email Test</h1>")
+    response.append(f"<p>DEBUG: {settings.DEBUG}</p>")
+    response.append(f"<p>EMAIL_BACKEND: {settings.EMAIL_BACKEND}</p>")
+    response.append(f"<p>EMAIL_HOST_USER: {settings.EMAIL_HOST_USER}</p>")
+    
+    try:
+        # Test d'envoi
+        send_mail(
+            'Test Configuration',
+            f'Ceci est un test. DEBUG={settings.DEBUG}',
+            settings.EMAIL_HOST_USER,
+            ['tamssonna@gmail.com'],
+            fail_silently=False,
+        )
+        
+        if settings.DEBUG:
+            response.append(f"<p style='color: green;'>✅ Email SIMULÉ (affiché dans console)</p>")
+        else:
+            response.append(f"<p style='color: green;'>✅ Email RÉEL envoyé à tamssonna@gmail.com</p>")
+            
+    except Exception as e:
+        response.append(f"<p style='color: red;'>❌ Erreur: {e}</p>")
+    
+    return HttpResponse(''.join(response))
+#http://127.0.0.1:8000/test-email-config/

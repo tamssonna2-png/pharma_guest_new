@@ -187,7 +187,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # Quick-start development settings
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-@*9%h!#j_=%(^#ql3qghf_dc3(^zdb@)3s*o_m0c!w*6$t(i&(')
-DEBUG = config('DEBUG', default=True, cast=bool)
+DEBUG = config('DEBUG', default=False, cast=bool)
 ALLOWED_HOSTS = ['*']
 
 # Application definition
@@ -301,9 +301,28 @@ MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '')
 
 # settings.py
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+"""EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'tamssonna2@gmail.com'  # Ton compte Gmail
-EMAIL_HOST_PASSWORD = 'xymj drrf yubz izkv '  # Mot de passe d'application
+EMAIL_HOST_PASSWORD = '' # Mot de passe d'application"""
+if DEBUG:
+    # En développement local
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_HOST_USER = 'notifications.pharmacie@gmail.com'  # Ajoute ceci
+    DEFAULT_FROM_EMAIL = 'notifications.pharmacie@gmail.com'  # Et ceci
+    print("Mode DEBUG activé - L'email n'a pas été envoyé")
+else:
+    # En production
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 465
+    EMAIL_USE_SSL = True
+    EMAIL_USE_TLS = False
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='tamssonna2@gmail.com')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='notifications.pharmacie@gmail.com')
+    DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+# Dans settings.py, ajoute ce debug
+"""print(f"🔍 DEBUG value: {DEBUG}")
+print(f"🔍 EMAIL_BACKEND: {EMAIL_BACKEND}")"""
