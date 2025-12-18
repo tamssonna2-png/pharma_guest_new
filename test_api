@@ -1,0 +1,111 @@
+#!/usr/bin/env python3
+
+import google.generativeai as genai
+import base64
+import mimetypes
+
+
+import googleapiclient.discovery
+
+def get_video_comments(video_id, api_key):
+    """
+    Récupère les commentaires de niveau supérieur d'une vidéo YouTube.
+
+    Args:
+        video_id (str): L'ID de la vidéo YouTube.
+        api_key (str): Votre clé API YouTube Data API v3.
+
+    Returns:
+        list: Une liste de dictionnaires, où chaque dictionnaire représente un commentaire
+              avec l'auteur et le texte du commentaire.
+              Retourne une liste vide si aucun commentaire n'est trouvé ou en cas d'erreur.
+    """
+    try:
+        # Initialisation du client API
+        youtube = googleapiclient.discovery.build(
+            "youtube", "v3", developerKey=api_key
+        )
+
+        comments_data = []
+        next_page_token = None
+
+        while True:
+            # Requête pour les threads de commentaires (commentaires de niveau supérieur)
+            request = youtube.commentThreads().list(
+                part="snippet",
+                videoId=video_id,
+                textFormat="plainText",
+                maxResults=100,  # Vous pouvez ajuster le nombre de résultats par page (max 100)
+                pageToken=next_page_token
+            )
+            response = request.execute()
+
+            for item in response["items"]:
+                comment_snippet = item["snippet"]["topLevelComment"]["snippet"]
+                author = comment_snippet["authorDisplayName"]
+                comment_text = comment_snippet["textDisplay"]
+                comments_data.append({"author": author, "comment": comment_text})
+
+            next_page_token = response.get("nextPageToken")
+
+            if not next_page_token:
+                break  # Plus de pages de commentaires
+
+        return comments_data
+
+    except googleapiclient.errors.HttpError as e:
+        print(f"Une erreur HTTP s'est produite : {e}")
+        # Gérer les erreurs spécifiques comme les vidéos sans commentaires ou les quotas dépassés
+        if e.resp.status == 403:
+            print("Vérifiez que l'API est activée et que votre clé est correcte.")
+        elif e.resp.status == 404:
+            print("Vidéo introuvable ou les commentaires sont désactivés pour cette vidéo.")
+        return []
+    except Exception as e:
+        print(f"Une erreur inattendue s'est produite : {e}")
+        return []
+
+
+
+# ⚠️ METTEZ VOTRE CLÉ API ICI
+API_KEY = "AIzaSyDOQXRcsHhst_E04U0bp4qX31XTLUcHg8g" # c'est pour l'utilisation de l'IA gemeni
+API_KEY = "AIzaSyDMe-6wbL_WDDfODkfgsxb_FN8q4Rg-Rmo"
+def test_text_generation(comment):
+    """Tester la génération de texte"""
+    genai.configure(api_key=API_KEY)
+    
+    model = genai.GenerativeModel('models/gemini-2.0-flash')
+    
+    texte_comments="\n".join([f"- {c['comment']}" for c in comment[:100]])
+    prompt= f"""
+    Analyse ces commentaires YouTube et donne-moi un résumé:
+    
+    {texte_comments}
+    
+    Résume les thèmes principaux et le sentiment général.
+    """
+    response = model.generate_content(prompt)
+    
+    print("✅ Génération texte réussie!")
+    print("Réponse:", response.text)
+
+if __name__ == "__main__":
+
+    YOUR_API_KEY = "AIzaSyAbcvU9LPjs45-GyDbqZMjD-N5DVYcSHww"  # Remplacez par votre clé API # c'est pour avoir les commentaires des videos youtubes
+    VIDEO_ID = "mK3P-ok-vB4"            # Remplacez par l'ID de la vidéo
+
+    if YOUR_API_KEY == "YOUR_YOUTUBE_API_KEY" or VIDEO_ID == "YOUR_VIDEO_ID":
+        print("Veuillez remplacer 'YOUR_YOUTUBE_API_KEY' et 'YOUR_VIDEO_ID' par vos propres valeurs.")
+    else:
+        print(f"Récupération des commentaires pour la vidéo : {VIDEO_ID}")
+        comments = get_video_comments(VIDEO_ID, YOUR_API_KEY)
+
+    print("🎯 Votre compte a accès aux modèles récents!")
+    
+    # Test texte d'abord
+    test_text_generation(comments)
+    
+
+    #/home/tamekem/myglobalenv/bin/python /home/tamekem/Bureau/school/programmes/NIVEAU_3/INF331/test_api  la commande pour executer ce code sur ubuntu
+    #se rassurer d'etre dans un evironement virtuel :source ~/myglobalenv/bin/activate
+

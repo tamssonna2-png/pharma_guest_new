@@ -352,8 +352,29 @@
                     🔍 Recherche Intelligente
                 </a>
                 <a href="{% url 'notifications_pharmacie' %}" class="navigation-btn btn-search" style="background: #6c757d;">
-                    Notifications commande
+                    🔔 Notifications commande:
+                    {{ nombre_non_lues }} non lues
+                    <span class="pulse"></span>
                 </a>
+
+<style>
+.pulse {
+    width: 30px;
+    height: 30px;
+    background: #ef4444;
+    border-radius: 50%;
+    animation: blink 1s infinite;
+}
+@keyframes blink { 
+    0%, 100% { opacity: 1; } 
+    50% { opacity: 0.3; } 
+}
+@keyframes pulse {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.5); }
+    70% { box-shadow: 0 0 0 10px rgba(59, 130, 246, 0); }
+    100% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0); }
+}
+</style>
                 <a href="{% url 'commandes_pharmacie'%}" class="navigation-btn btn-search">
                    Commandes de medicaments
                 </a>

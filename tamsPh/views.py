@@ -234,10 +234,18 @@ def mes_medicaments_connecte(request):
         # ⭐ CORRECTION : Cherchez la pharmacie qui a cet utilisateur
         pharmacie = Pharmacie.objects.get(utilisateur=request.user)
         medicaments = Medicament.objects.filter(pharmacie=pharmacie)
+        
+        # Récupérer les notifications non lues ou liées aux commandes en attente
+        notifications = Notification.objects.filter(pharmacie=pharmacie).order_by('-date_creation')
+        
+        nombre_non_lues = notifications.filter(lue=False).count()
+
+
         return render(request
         , 'mes_medicaments.html', {
             'pharmacie': pharmacie,
-            'medicaments': medicaments
+            'medicaments': medicaments,
+            'nombre_non_lues':nombre_non_lues
         })
     except Pharmacie.DoesNotExist:
         # ⭐ CORRECTION : Utilisez le template qui existe
@@ -734,7 +742,7 @@ def recherche_intelligente(request):
         'tendances_bi': tendances,
         'rapport_performance': rapport_performance,
         'ai_enabled': True,
-        'timestamp': datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        'timestamp': timezone.now().strftime("%Y-%m-%d %H:%M:%S")
     }
     
     return render(request, 'recherche_ia.html', context)
@@ -809,7 +817,7 @@ def tableau_bord_pharmacien(request):
         context = {
             'donnees_bi': donnees_bi,
             'recommandations': recommandations,
-            'timestamp': datetime.now().strftime("%d/%m/%Y à %H:%M")
+            'timestamp': timezone.now().strftime("%d/%m/%Y à %H:%M")
         }
         
         return render(request, 'tableau_bord_pharmacien.html', context)
@@ -838,7 +846,7 @@ def tableau_bord_pharmacien(request):
                 }
             },
             'recommandations': ["🤖 Système en cours de configuration...", "📊 Données bientôt disponibles"],
-            'timestamp': datetime.now().strftime("%d/%m/%Y à %H:%M"),
+            'timestamp': timezone.now().strftime("%d/%m/%Y à %H:%M"),
             'erreur': str(e)
         })
 
@@ -954,7 +962,7 @@ def recherche_intelligente_pharmacie(request):
             'recommandations_ia': recommandations_ia,
             'stats_pharmacie': stats_pharmacie,
             'ai_enabled': True,
-            'timestamp': datetime.now().strftime("%d/%m/%Y à %H:%M")
+            'timestamp': timezone.now().strftime("%d/%m/%Y à %H:%M")
         }
         
         return render(request, 'recherche_ia.html', context)
@@ -1072,6 +1080,7 @@ def get_contexte_pharmacie(pharmacie):
     
     return contexte
 
+from django.utils import timezone 
 
 def converser_avec_ia(pharmacie, prompt, context="general"):
     # VÉRIFICATION CRITIQUE DE LA CLÉ API
@@ -1096,7 +1105,9 @@ Tu es un assistant expert pour les pharmacies. Utilise les données ci-dessus po
 - Sois précis et utilitaire
 """
     
-    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent"
+    #url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-001:generateContent"
+    # Mettre à jour l'URL de l'API :
+    url = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-lite:generateContent"
     headers = {
         'Content-Type': 'application/json'
     }
@@ -1129,7 +1140,8 @@ Tu es un assistant expert pour les pharmacies. Utilise les données ci-dessus po
                 Pharmacie=pharmacie,
                 message=prompt,
                 reponse=reponse_texte,
-                type_conversation=context
+                type_conversation=context,
+                #timestamp=timezone.now()
             )
             return reponse_texte
             
@@ -1158,7 +1170,7 @@ Tu es un assistant expert pour les pharmacies. Utilise les données ci-dessus po
 
 
 
-"""def test_ia(request):
+def test_ia(request):
     from .models import Pharmacie
     
     # Prend la première pharmacie de ta base
@@ -1171,17 +1183,17 @@ Tu es un assistant expert pour les pharmacies. Utilise les données ci-dessus po
     reponse = converser_avec_ia(
         pharmacie_test, 
         "buenos dias"
-    )"""
+    )
     
     #Affiche le résultat brut pour debug
-    #return HttpResponse(f"""{reponse}
-    #""")
+    return HttpResponse(f"""{reponse}
+    """)
 
 #http://localhost:8000/test-ia/
 
 
 
-"""def lister_modeles(request):
+def lister_modeles(request):
     url = "https://generativelanguage.googleapis.com/v1beta/models"
     params = {'key': settings.GOOGLE_AI_API_KEY}
     
@@ -1208,7 +1220,7 @@ from django.contrib.auth.decorators import login_required
 def chat_ia(request, pharmacie_id):
     pharmacie = get_object_or_404(Pharmacie, id=pharmacie_id, utilisateur=request.user)
     from datetime import datetime, timedelta
-    yesterday = datetime.now() - timedelta(days=1)
+    yesterday = timezone.now() - timedelta(days=1)
     conversations = MonIA.objects.filter(Pharmacie=pharmacie,timestamp__gte=yesterday).order_by('timestamp')
     
     reponse_ia = None
@@ -1853,6 +1865,7 @@ def supprimer_notification(request, notification_id):
     
     return redirect('notifications_pharmacie')
 
+
 @login_required
 def supprimer_toutes_notifications(request):
     """Supprimer toutes les notifications de l'utilisateur"""
@@ -1896,7 +1909,13 @@ def marquer_toutes_lues(request):
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
-
+import nexmo as nx
+import os
+import json
+from django.http import JsonResponse
+from django.core.mail import send_mail
+from dotenv import load_dotenv
+from decouple import config 
 @csrf_exempt
 
 def envoyer_email_commande(request):
@@ -1956,11 +1975,60 @@ Cordialement,
             
             print(f"✅ Email RÉEL envoyé à: {commande.client.user.email}")
             
+            # 1. Récupérer les identifiants SÉCURISÉMENT
+            from twilio.rest import Client
+            TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
+            TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
+            TWILIO_NUMBER = config('TWILIO_PHONE_NUMBER', '+14155238886')
+            
+            if not TWILIO_ACCOUNT_SID or not TWILIO_AUTH_TOKEN:
+                print("⚠️ Identifiants Twilio non configurés dans .env")
+                return JsonResponse({'success': True, 'sms': 'non_envoye'})
+            
+            # 2. Formater le numéro pour Twilio
+            telephone = commande.client.telephone
+            if not telephone.startswith('+'):
+                if telephone.startswith('237'):
+                    telephone = f"+{telephone}"  # +237694218608
+                else:
+                    telephone = f"+237{telephone}"  # +237694218608
+            
+            # 3. Message COURT pour SMS (max 160 caractères)
+            message_sms = f"{pharmacie.nom}: Cmd #{commande.id} {statut_text}. Total: {total_commande} FCFA"
+            
+            # 4. Initialiser le client Twilio
+            client = Client(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
+            
+            # 5. Envoyer le SMS
+            try:
+                sms = client.messages.create(
+                    body=message_sms,
+                    from_=TWILIO_NUMBER,
+                    to=telephone
+                )
+                
+                # 6. Analyser la réponse
+                print(f"📱 SMS Twilio à {telephone}")
+                print(f"   Status: {sms.status}")
+                print(f"   SID: {sms.sid}")
+                print(f"   Prix: {sms.price if sms.price else 'Gratuit (test)'}")
+                
+                if sms.status in ['queued', 'sent', 'delivered']:
+                    print(f"✅ SMS envoyé avec succès!")
+                else:
+                    print(f"⚠️ Statut SMS: {sms.status}")
+                    
+            except Exception as e_sms:
+                print(f"❌ Erreur Twilio: {e_sms}")
+                # Ne pas bloquer si SMS échoue
+                
+            # ========================================================
+            
             return JsonResponse({'success': True, 'message': 'Email simulé avec succès'})
             
         except Exception as e:
             print(f"Erreur: {str(e)}")
-            return JsonResponse({'success': False, 'error': str(e)})
+            return JsonResponse({'success': False, 'error': str(e)})#T@mekem123
     
     return JsonResponse({'success': False, 'error': 'Méthode non autorisée'})
 

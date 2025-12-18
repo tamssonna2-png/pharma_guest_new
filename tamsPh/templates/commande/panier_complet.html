@@ -636,14 +636,17 @@
                     <div class="medicament-info">
                         <p><strong>💊 Catégorie :</strong> {{ medicament.categorie }}</p>
                         <p><strong>💰 Prix :</strong> {{ medicament.prix }} FCFA</p>
-                        <p>
+                        <!--<p>
+                            
                             <strong>📦 Stock :</strong> 
+
                             {% if medicament.quantite < 10 %}
                             <span class="stock-badge stock-low">{{ medicament.quantite }} restants</span>
                             {% else %}
                             <span class="stock-badge stock-ok">{{ medicament.quantite }} disponibles</span>
                             {% endif %}
-                        </p>
+
+                        </p>-->
                     </div>
                     
                     <p><strong>📝 Description :</strong> {{ medicament.description }}</p>
