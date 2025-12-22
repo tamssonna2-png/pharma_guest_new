@@ -1976,7 +1976,7 @@ Cordialement,
             print(f"✅ Email RÉEL envoyé à: {commande.client.user.email}")
             
             # 1. Récupérer les identifiants SÉCURISÉMENT
-            from twilio.rest import Client
+            """from twilio.rest import Client
             TWILIO_ACCOUNT_SID = config('TWILIO_ACCOUNT_SID')
             TWILIO_AUTH_TOKEN = config('TWILIO_AUTH_TOKEN')
             TWILIO_NUMBER = config('TWILIO_PHONE_NUMBER', '+14155238886')
@@ -2020,7 +2020,7 @@ Cordialement,
                     
             except Exception as e_sms:
                 print(f"❌ Erreur Twilio: {e_sms}")
-                # Ne pas bloquer si SMS échoue
+                # Ne pas bloquer si SMS échoue"""
                 
             # ========================================================
             
