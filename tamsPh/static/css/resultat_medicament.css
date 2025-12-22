@@ -1,0 +1,304 @@
+/* Inherits variables from home.css */
+:root {
+    --palegreen: #00b894;
+    --green: #0ac92b;
+    --dark: #2d3436;
+    --gray-text: #636e72;
+    --light: #f9f9f9;
+    --white: #ffffff;
+    --border-color: #dfe6e9;
+    --blue: #0984e3;
+}
+
+body {
+    background-color: var(--light);
+}
+
+.main-wrapper {
+    padding: 2rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 80vh;
+}
+
+/* Search Header Card */
+.search-header-card {
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    margin-bottom: 2rem;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    border-top: 5px solid var(--palegreen);
+}
+
+.header-content h1 {
+    font-size: 1.8rem;
+    color: var(--dark);
+    margin-bottom: 5px;
+}
+
+.header-content p {
+    color: var(--gray-text);
+    margin-bottom: 20px;
+}
+
+/* Search Bar Styling */
+.search-bar-container {
+    display: flex;
+    width: 100%;
+    max-width: 700px;
+    gap: 10px;
+}
+
+.input-wrapper {
+    position: relative;
+    flex-grow: 1;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #b2bec3;
+}
+
+.input-wrapper input {
+    width: 100%;
+    padding: 15px 15px 15px 45px;
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    transition: 0.3s;
+    background: #fdfdfd;
+}
+
+.input-wrapper input:focus {
+    border-color: var(--palegreen);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+}
+
+.btn-search {
+    padding: 0 30px;
+    background: var(--palegreen);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1rem;
+}
+
+.btn-search:hover {
+    background: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+}
+
+/* Status Messages */
+.status-message {
+    margin-top: 15px;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    display: inline-block;
+}
+
+.status-message.hidden { display: none; }
+.status-loading { background: #e3f2fd; color: var(--blue); }
+.status-success { background: #e8f5e9; color: var(--green); }
+.status-error { background: #ffebee; color: #d63031; }
+
+/* Results Grid */
+.results-meta {
+    margin-bottom: 20px;
+    color: var(--gray-text);
+    font-size: 0.95rem;
+}
+
+.medicaments-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 25px;
+}
+
+/* Medicine Card */
+.med-card {
+    background: var(--white);
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+    border: 1px solid #f0f0f0;
+    padding: 25px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+}
+
+.med-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+    border-color: rgba(0, 184, 148, 0.3);
+}
+
+.med-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.category-tag {
+    font-size: 0.75rem;
+    color: var(--blue);
+    background: #e3f2fd;
+    padding: 3px 8px;
+    border-radius: 4px;
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.med-info h2 {
+    font-size: 1.2rem;
+    color: var(--dark);
+    margin-top: 5px;
+}
+
+.med-price {
+    font-weight: 700;
+    color: var(--palegreen);
+    font-size: 1.1rem;
+    background: rgba(0, 184, 148, 0.1);
+    padding: 5px 10px;
+    border-radius: 8px;
+}
+
+.med-price span {
+    font-size: 0.7rem;
+    color: var(--dark);
+}
+
+.med-desc {
+    font-size: 0.9rem;
+    color: var(--gray-text);
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+/* Pharmacy Block */
+.pharmacy-block {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    border-left: 3px solid var(--blue);
+}
+
+.pharmacy-name {
+    font-weight: 600;
+    color: var(--dark);
+    margin-bottom: 5px;
+    font-size: 0.95rem;
+}
+
+.pharmacy-meta {
+    font-size: 0.85rem;
+    color: var(--gray-text);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.badge-distance {
+    background: var(--dark);
+    color: white;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+}
+
+/* Card Actions */
+.card-actions {
+    margin-top: auto; /* Pushes buttons to bottom */
+    display: grid;
+    grid-template-columns: 1fr 1.5fr;
+    gap: 10px;
+}
+
+.btn-primary, .btn-secondary {
+    padding: 10px;
+    border-radius: 6px;
+    text-align: center;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: 0.2s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
+
+.btn-primary {
+    background: var(--palegreen);
+    color: white;
+}
+
+.btn-primary:hover {
+    background: var(--green);
+}
+
+.btn-secondary {
+    background: transparent;
+    border: 1px solid var(--border-color);
+    color: var(--dark);
+}
+
+.btn-secondary:hover {
+    background: #f1f2f6;
+    color: var(--dark);
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 50px 20px;
+    background: white;
+    border-radius: 15px;
+    border: 1px dashed var(--border-color);
+}
+
+.icon-bg {
+    font-size: 3rem;
+    color: #dfe6e9;
+    margin-bottom: 15px;
+}
+
+.empty-state h3 {
+    color: var(--dark);
+    margin-bottom: 10px;
+}
+
+.empty-state p {
+    color: var(--gray-text);
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    .search-bar-container {
+        flex-direction: column;
+    }
+    .btn-search {
+        padding: 12px;
+        justify-content: center;
+    }
+}

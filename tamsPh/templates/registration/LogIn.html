@@ -1,0 +1,78 @@
+ {% load static %} <!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - MedOnline</title>
+    <link rel="stylesheet" href="{% static '/css/home.css' %}">
+    <link rel="stylesheet" href="{% static '/css/authentification.css' %}">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Med</span>Online</i>
+        <nav>
+            <ul>
+                <li><a href="/html/index.html">Accueil</a></li>
+                <li><a href="#">Pharmacies</a></li>
+                <li><a href="#">Produits</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Connecter à mon compte</h2>
+
+            <form id="loginForm">
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="loginEmail" placeholder="paul@gmail.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="loginPassword" placeholder="********" required>
+                </div>
+
+                <button type="submit" class="btn-submit">Se connecter</button>
+            </form>
+
+            <p class="auth-footer">Vous n'avez pas encore de compte ? <a href="/html/SignUp.html">Sign Up</a></p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo"><span>Med</span>Online</div>
+                <p>Votre partenaire santé de confiance, accessible partout et à tout moment.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Liens</h4>
+                <ul>
+                    <li><a href="#">Nos Pharmacies</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Adresse</h4>
+                <p>Yaoundé, Cameroun</p>
+                <p>+237 678 502 795</p>
+                <p>support@medonline.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MedOnline. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="{% static '/js/authentification.js' %}"></script>
+</body>
+
+</html>

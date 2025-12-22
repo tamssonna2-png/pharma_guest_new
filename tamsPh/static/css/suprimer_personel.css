@@ -1,0 +1,175 @@
+/* Inherits base variables from home.css */
+:root {
+    --danger-red: #d63031; /* Chi-Gong Red */
+    --danger-bg: #ffe6e6;
+    --dark: #2d3436;
+    --gray-text: #636e72;
+    --white: #ffffff;
+    --light: #f9f9f9;
+}
+
+body {
+    background-color: var(--light);
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 20px;
+}
+
+/* Confirmation Card */
+.confirmation-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 500px;
+    border-radius: 15px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+    overflow: hidden;
+    text-align: center;
+    border-top: 5px solid var(--danger-red); /* Danger Accent */
+    animation: slideUp 0.5s ease-out;
+}
+
+@keyframes slideUp {
+    from { transform: translateY(20px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
+}
+
+/* Icon Header */
+.icon-wrapper {
+    margin-top: 40px;
+    margin-bottom: 20px;
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    width: 80px;
+    height: 80px;
+    background-color: var(--danger-bg);
+    border-radius: 50%;
+    color: var(--danger-red);
+    font-size: 2.5rem;
+}
+
+.card-content {
+    padding: 0 40px 40px 40px;
+}
+
+.card-content h1 {
+    color: var(--dark);
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.warning-text {
+    color: var(--gray-text);
+    margin-bottom: 25px;
+    line-height: 1.6;
+}
+
+.danger-highlight {
+    color: var(--danger-red);
+    font-weight: 600;
+}
+
+/* Details Box */
+.details-box {
+    background: #f8f9fa;
+    border: 1px solid #dfe6e9;
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    font-size: 1rem;
+}
+
+.detail-row:last-child {
+    margin-bottom: 0;
+}
+
+.detail-row .label {
+    color: var(--gray-text);
+    font-weight: 500;
+}
+
+.detail-row .label i {
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    color: #b2bec3;
+}
+
+.detail-row .value {
+    color: var(--dark);
+    font-weight: 600;
+}
+
+/* Actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+/* Cancel Button (Matches site standard) */
+.btn-cancel {
+    padding: 12px 25px;
+    border: 1px solid #dfe6e9;
+    background: white;
+    color: var(--gray-text);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-cancel:hover {
+    background: #f1f2f6;
+    color: var(--dark);
+}
+
+/* Delete Button (Specific to this page) */
+.btn-delete {
+    padding: 12px 25px;
+    border: none;
+    background: var(--danger-red);
+    color: white;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-delete:hover {
+    background: #c0392b; /* Darker red */
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(214, 48, 49, 0.3);
+}
+
+@media (max-width: 480px) {
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    .confirmation-card {
+        margin: 0 10px;
+    }
+}

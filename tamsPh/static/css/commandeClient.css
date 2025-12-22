@@ -1,0 +1,182 @@
+/* Importation implicite des variables depuis home.css si chargé avant */
+
+.product-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem 5%;
+    min-height: 80vh;
+}
+
+/* Fil d'ariane */
+.breadcrumb {
+    margin-bottom: 2rem;
+    color: #666;
+    font-size: 0.9rem;
+}
+.breadcrumb a {
+    text-decoration: none;
+    color: var(--dark);
+}
+.breadcrumb span {
+    color: var(--palegreen);
+}
+
+/* Grille Produit */
+.product-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 3rem;
+    margin-bottom: 3rem;
+    background: var(--white);
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* Image */
+.product-image {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--light);
+    border-radius: 10px;
+    padding: 20px;
+}
+.product-image img {
+    max-width: 100%;
+    max-height: 400px;
+    object-fit: contain;
+}
+
+/* Détails */
+.product-details h1 {
+    font-size: 2.5rem;
+    color: var(--dark);
+    margin-bottom: 0.5rem;
+}
+
+.stock-status {
+    background-color: #d1fae5;
+    color: var(--green);
+    padding: 5px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+.pharmacy-ref {
+    color: #777;
+    margin-bottom: 1.5rem;
+}
+
+.price-tag {
+    font-size: 2rem;
+    font-weight: bold;
+    color: var(--palegreen);
+    margin-bottom: 1.5rem;
+}
+
+.description {
+    line-height: 1.8;
+    color: #555;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 1rem;
+}
+
+/* Selecteur Quantité */
+.quantity-selector {
+    margin-bottom: 1.5rem;
+}
+.qty-controls {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+.qty-controls button {
+    width: 40px;
+    height: 40px;
+    border: 1px solid #ddd;
+    background: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.3s;
+}
+.qty-controls button:hover {
+    background: var(--palegreen);
+    color: white;
+    border-color: var(--palegreen);
+}
+.qty-controls input {
+    width: 60px;
+    height: 40px;
+    text-align: center;
+    border: 1px solid #ddd;
+    border-left: none;
+    border-right: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+}
+
+/* Total et Boutons */
+.total-section {
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.btn-order {
+    flex: 2;
+    padding: 15px 30px;
+    background-color: var(--palegreen);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1.1rem;
+    font-weight: bold;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.btn-whatsapp {
+    flex: 1;
+    padding: 15px;
+    background-color: #25D366; /* Vert WhatsApp */
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.btn-order:hover, .btn-whatsapp:hover {
+    transform: translateY(-3px);
+    opacity: 0.9;
+}
+
+/* Info Section */
+.more-info {
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+.more-info h3 {
+    color: var(--palegreen);
+    margin-bottom: 15px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .product-wrapper {
+        grid-template-columns: 1fr;
+    }
+}

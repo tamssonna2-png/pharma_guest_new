@@ -1,0 +1,109 @@
+{% load static %} <!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Commander - MedOnline</title>
+    <link rel="stylesheet" href="{% static '/css/home.css' %}">
+    <link rel="stylesheet" href="{% static '/css/commandeClient.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Med</span>Online</i>
+        <nav>
+            <ul>
+                <li><a href="/html/index.html">Accueil</a></li>
+                <li><a href="#">Pharmacies</a></li>
+                <li><a href="#">Produits</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+
+         <div class="Account-btn" id="auth-container">
+            <button class="LogIn" onclick="window.location.href='/html/connexion.html'">Log In</button>
+            <button class="SignUp" onclick="window.location.href='/html/inscription.html'">Sign Up</button>
+        </div>
+    </header>
+
+    <main class="product-container">
+
+        <div class="product-wrapper">
+            <div class="product-image">
+                <img id="prod-img" src="" alt="Image du médicament">
+            </div>
+
+            <div class="product-details">
+                <span class="stock-status">En Stock</span>
+                <h1 id="prod-name">/* from the database </h1>
+                <p class="pharmacy-ref">Vendu par : <strong id="pharmacy-name"> /* from the database</strong></p>
+
+                <div class="price-tag">
+                    <span id="prod-price">/* from the database</span> FCFA
+                </div>
+
+                <p class="description" id="prod-desc">
+                    Description du produit...
+                    /* from the database
+                </p>
+
+                <div class="quantity-selector">
+                    <label>Quantité :</label>
+                    <div class="qty-controls">
+                        <button type="button" id="btn-minus">-</button>
+                        <input type="number" id="qty-input" value="1" min="1" readonly>
+                        <button type="button" id="btn-plus">+</button>
+                    </div>
+                </div>
+
+                <div class="total-section">
+                    Total à payer : <span id="total-price">0</span> FCFA
+                </div>
+
+                <div class="action-buttons">
+                    <button class="btn-order" id="confirm-order">Commander</button>
+                </div>
+            </div>
+        </div>
+
+        <section class="more-info">
+            <h3>Posologie & Conseils</h3>
+            <p>Respectez toujours la dose prescrite par votre médecin. En cas de doute, demandez conseil à votre
+                pharmacien.</p>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo"><span>Med</span>Online</div>
+                <p>Votre partenaire santé de confiance, accessible partout et à tout moment.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Liens</h4>
+                <ul>
+                    <li><a href="#">Nos Pharmacies</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Adresse</h4>
+                <p>Yaoundé, Cameroun</p>
+                <p>+237 678 502 795</p>
+                <p>support@medonline.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MedOnline. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/commandeClient.js' %}"></script>
+</body>
+
+</html>

@@ -1,0 +1,97 @@
+{% load static %} <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - MedOnline</title>
+    <link rel="stylesheet" href="{% static '/css/home.css' %}">
+    <link rel="stylesheet" href="{% static '/css/authentification.css'%}"> 
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+</head>
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Med</span>Online</i>
+        <nav>
+            <ul>
+                <li><a href="/html/index.html">Accueil</a></li>
+                <li><a href="#">Pharmacies</a></li>
+                <li><a href="#">Produits</a></li>
+                <li><a href="#">Contact</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="auth-container">
+        <div class="auth-card">
+            <h2>Créer un compte</h2>
+        
+            <form id="registrationForm">
+                <div class="input-group">
+                    <label for="fullname">Nom Complet</label>
+                    <input type="text" id="fullname" placeholder="Ex: Paul Atangana " required>
+                </div>
+
+                <div class="input-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="loginEmail" placeholder="paul@gmail.com" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="telephone">Numéro de Telephone</label>
+                    <input type="tel" id="telephone" placeholder="Ex: 695875421" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="residence">Résidence</label>
+                    <input type="text" id="residence" placeholder="Ex: Ecole de poste" required>
+                </div>
+
+
+                <div class="input-group">
+                    <label for="password">Mot de passe</label>
+                    <input type="password" id="loginPassword" placeholder="********" required>
+                </div>
+
+                <div class="input-group">
+                    <label for="confirmPassword">Confirmer le mot de passe</label>
+                    <input type="password" id="confirmPassword" placeholder="********" required>
+                <small id="passwordError" style="color: #e74c3c; display: none;">Les mots de passe ne correspondent pas.</small>
+                </div>
+
+                <button type="submit" class="btn-submit">S'inscrire</button>
+            </form>
+
+            <p class="auth-footer">Vous avez déjà un compte ? <a href="/html/LogIn.html">Log In</a></p>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo"><span>Med</span>Online</div>
+                <p>Votre partenaire santé de confiance, accessible partout et à tout moment.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Liens</h4>
+                <ul>
+                    <li><a href="#">Nos Pharmacies</a></li>
+                    <li><a href="#">Services</a></li>
+                    <li><a href="#">Contact</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Adresse</h4>
+                <p>Yaoundé, Cameroun</p>
+                <p>+237 678 502 795</p>
+                <p>support@medonline.com</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MedOnline. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="{% static '/js/authentification.js' %}"></script>
+</body>
+</html>

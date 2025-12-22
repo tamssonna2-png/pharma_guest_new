@@ -1,0 +1,144 @@
+{% load static %} <!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - {{ donnees_bi.pharmacie.nom }}</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}"> <link rel="stylesheet" href="{% static 'css/tableau_bord.css' %}"> </head>
+
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Pharma</span>Gest</i>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="#" class="active" style="color: var(--palegreen);">Tableau de Bord</a></li>
+                <li><a href="{% url 'mes_medicaments_perso' %}">Mon Stock</a></li>
+            </ul>
+        </nav>
+
+        <div class="Account-btn" id="auth-container">
+            <div class="user-profile">
+                <span style="font-weight: 600; margin-right:5px;">Pharmacien</span>
+                <img src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?auto=format&fit=crop&w=100&q=80" 
+                     alt="Admin" 
+                     class="profile-pic">
+            </div>
+        </div>
+    </header>
+
+    <div class="dashboard-container">
+        
+        <div class="dashboard-header">
+            <div class="header-content">
+                <h1><i class="fas fa-hospital-alt"></i> {{ donnees_bi.pharmacie.nom }}</h1>
+                <p><i class="fas fa-map-marker-alt"></i> {{ donnees_bi.pharmacie.address }}</p>
+                <span class="last-update"><i class="far fa-clock"></i> MàJ : {{ timestamp }}</span>
+            </div>
+            <div class="header-actions">
+                <a href="{% url 'recherche_ia' %}" class="btn-action">
+                    <i class="fas fa-search"></i> Recherche IA
+                </a>
+                <a href="{% url 'mes_medicaments_perso' %}" class="btn-action primary">
+                    <i class="fas fa-pills"></i> Gérer Stock
+                </a>
+            </div>
+        </div>
+
+        <div class="metrics-grid">
+            <div class="stat-card">
+                <h1>{{ donnees_bi.statistiques.total_medicaments }}</h1>
+                <p><i class="fas fa-box"></i> Médicaments en Stock</p>
+            </div>
+            <div class="stat-card">
+                <h1>{{ donnees_bi.statistiques.taux_disponibilite }}%</h1>
+                <p><i class="fas fa-check-circle"></i> Taux de Disponibilité</p>
+            </div>
+            <div class="stat-card">
+                <h1>{{ donnees_bi.statistiques.clients_quotidiens }}</h1>
+                <p><i class="fas fa-users"></i> Clients/Jour (Est.)</p>
+            </div>
+            <div class="stat-card highlight">
+                <h1>{{ donnees_bi.statistiques.chiffre_affaires_estime }}</h1>
+                <p><i class="fas fa-coins"></i> CA Mensuel (FCFA)</p>
+            </div>
+        </div>
+
+        <div class="content-split">
+            
+            <div class="column-left">
+                <div class="section-title">
+                    <h3><i class="fas fa-exclamation-triangle"></i> Alertes de Stock</h3>
+                </div>
+                
+                {% if donnees_bi.alertes_stock %}
+                    {% for medicament in donnees_bi.alertes_stock %}
+                    <div class="card alert-card {% if medicament.quantite == 0 %}critical{% endif %}">
+                        <div class="alert-icon">
+                            {% if medicament.quantite == 0 %}
+                                <i class="fas fa-times-circle"></i>
+                            {% else %}
+                                <i class="fas fa-exclamation-circle"></i>
+                            {% endif %}
+                        </div>
+                        <div class="alert-info">
+                            <h4>{{ medicament.nom }}</h4>
+                            <p>{{ medicament.quantite }} unités restantes</p>
+                        </div>
+                        <span class="badge">
+                            {% if medicament.quantite == 0 %}RUPTURE{% else %}FAIBLE{% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-state">
+                        <i class="fas fa-check-circle"></i>
+                        <p>Tout est en ordre. Aucune alerte.</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="column-right">
+                <div class="section-title">
+                    <h3><i class="fas fa-lightbulb"></i> Recommandations IA</h3>
+                </div>
+
+                {% for reco in recommandations %}
+                <div class="card reco-card">
+                    <div class="reco-content">
+                        {{ reco|safe }}
+                    </div>
+                    <i class="fas fa-arrow-right arrow-icon"></i>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo"><span>Pharma</span>Gest</div>
+                <p>Outils d'aide à la décision pour pharmaciens.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Support</h4>
+                <ul>
+                    <li><a href="#">Documentation</a></li>
+                    <li><a href="#">Signaler un bug</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 PharmaGest. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/tableau_bord.js' %}"></script>
+</body>
+</html>

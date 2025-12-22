@@ -1,0 +1,240 @@
+/* Inherits variables from home.css, but we declare them here for preview context */
+:root {
+    --palegreen: #00b894;
+    --green: #0ac92b;
+    --blue: #0984e3;
+    --dark: #2d3436;
+    --light: #f9f9f9;
+    --white: #ffffff;
+    --gray-border: #dfe6e9;
+}
+
+body {
+    background-color: var(--light);
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    padding: 3rem 5%;
+    min-height: 80vh;
+}
+
+/* Card Style imitating .stat-card from home.css */
+.form-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 800px;
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    border-top: 5px solid var(--palegreen); /* Brand Accent */
+}
+
+.form-header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.form-header h1 {
+    color: var(--dark);
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.form-header h1 i {
+    color: var(--palegreen);
+}
+
+.form-header p {
+    color: #636e72;
+}
+
+/* Form Sections */
+.form-section {
+    margin-bottom: 2rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px dashed var(--gray-border);
+}
+
+.form-section:last-child {
+    border-bottom: none;
+}
+
+.section-title {
+    color: var(--palegreen);
+    font-size: 1.1rem;
+    margin-bottom: 1.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+/* Grid Layouts */
+.grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+@media (max-width: 768px) {
+    .grid-2 {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* Inputs styling */
+.input-group {
+    margin-bottom: 1.5rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group label {
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--dark);
+    font-size: 0.95rem;
+}
+
+.input-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.input-icon {
+    position: absolute;
+    left: 15px;
+    color: #b2bec3;
+    transition: 0.3s;
+}
+
+.input-group input, 
+.input-group select, 
+.input-group textarea {
+    width: 100%;
+    padding: 12px 15px 12px 45px; /* Space for icon */
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    font-family: 'Inter', sans-serif;
+    font-size: 1rem;
+    color: var(--dark);
+    background: #fdfdfd;
+    transition: all 0.3s ease;
+}
+
+.input-group textarea {
+    padding-left: 15px; /* No icon for textarea usually */
+    resize: vertical;
+}
+
+/* Focus States */
+.input-group input:focus, 
+.input-group select:focus, 
+.input-group textarea:focus {
+    border-color: var(--palegreen);
+    box-shadow: 0 0 0 3px rgba(0, 184, 148, 0.1);
+    outline: none;
+}
+
+.input-group input:focus + .input-icon,
+.input-wrapper:focus-within .input-icon {
+    color: var(--palegreen);
+}
+
+/* Character Count */
+.char-count {
+    text-align: right;
+    font-size: 0.8rem;
+    color: #b2bec3;
+    margin-top: 5px;
+}
+
+/* File Upload Specifics */
+.file-upload-container {
+    border: 2px dashed var(--gray-border);
+    border-radius: 10px;
+    padding: 30px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.3s;
+    background: #fafafa;
+    position: relative;
+    overflow: hidden;
+}
+
+.file-upload-container:hover {
+    border-color: var(--palegreen);
+    background: rgba(0, 184, 148, 0.02);
+}
+
+.upload-icon {
+    font-size: 3rem;
+    color: #dfe6e9;
+    margin-bottom: 10px;
+    transition: 0.3s;
+}
+
+.file-upload-container:hover .upload-icon {
+    color: var(--palegreen);
+    transform: translateY(-5px);
+}
+
+.image-preview {
+    margin-top: 15px;
+    display: none;
+}
+
+.image-preview img {
+    max-height: 150px;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+}
+
+/* Buttons */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+}
+
+/* Matches .LogIn button style */
+.btn-cancel {
+    padding: 12px 25px;
+    border: 1px solid var(--dark);
+    background: transparent;
+    color: var(--dark);
+    border-radius: 8px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: 0.3s;
+    cursor: pointer;
+}
+
+.btn-cancel:hover {
+    background: #dfe6e9;
+}
+
+/* Matches .SignUp button style */
+.btn-submit {
+    padding: 12px 30px;
+    border: none;
+    background: var(--palegreen);
+    color: var(--white);
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.btn-submit:hover {
+    background: var(--green);
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(0, 184, 148, 0.3);
+}

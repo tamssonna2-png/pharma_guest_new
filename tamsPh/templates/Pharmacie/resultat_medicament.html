@@ -1,0 +1,156 @@
+{% load static %} <!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats de recherche - MedOnline</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <link rel="stylesheet" href="{% static 'css/home.css' %}">
+    <link rel="stylesheet" href="{% static 'css/resultat_medicament.css' %}">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Med</span>Online</i>
+        <nav>
+            <ul>
+                <li><a href="/">Accueil</a></li>
+                <li><a href="#" class="active" style="color: var(--palegreen);">Recherche</a></li>
+                <li><a href="#">Pharmacies</a></li>
+            </ul>
+        </nav>
+        <div class="Account-btn" id="auth-container">
+            </div>
+    </header>
+
+    <div class="main-wrapper">
+        
+        <div class="search-header-card">
+            <div class="header-content">
+                <h1><i class="fas fa-search-plus"></i> Résultats</h1>
+                <p>Trouvez la disponibilité de vos produits dans les pharmacies proches.</p>
+            </div>
+            
+            <form id="searchForm" method="get" action="{% url 'rechercher_medicament_client' %}" class="search-bar-container">
+                <div class="input-wrapper">
+                    <i class="fas fa-pills input-icon"></i>
+                    <input type="text" 
+                           name="nom_medic" 
+                           id="medicInput"
+                           value="{{ terme_recherche }}" 
+                           placeholder="Nom du médicament..." 
+                           required>
+                </div>
+                
+                <input type="hidden" name="lat" id="latField">
+                <input type="hidden" name="lon" id="lonField">
+                
+                <button type="button" onclick="localiserEtRechercherPharmacies()" class="btn-search">
+                    <span class="btn-text">Rechercher</span>
+                    <i class="fas fa-search"></i>
+                </button>
+            </form>
+
+            <div id="statut_recherche" class="status-message hidden"></div>
+        </div>
+
+        {% if erreur %}
+            <div class="alert-box error">
+                <i class="fas fa-exclamation-circle"></i>
+                <div>
+                    <h3>Oups !</h3>
+                    <p>{{ erreur }}</p>
+                </div>
+            </div>
+        {% endif %}
+
+        <div class="results-wrapper">
+            {% if medicaments %}
+                <div class="results-meta">
+                    <span class="count">{{ medicaments|length }} résultat(s)</span>
+                    {% if terme_recherche %}
+                        <span class="term">pour "<strong>{{ terme_recherche }}</strong>"</span>
+                    {% endif %}
+                </div>
+
+                <div class="medicaments-grid">
+                    {% for med in medicaments %}
+                        <div class="med-card">
+                            <div class="med-card-header">
+                                <div class="med-info">
+                                    <span class="category-tag">{{ med.categorie }}</span>
+                                    <h2>{{ med.nom }}</h2>
+                                </div>
+                                <div class="med-price">
+                                    {{ med.prix }} <span>FCFA</span>
+                                </div>
+                            </div>
+                            
+                            {% if med.description %}
+                                <p class="med-desc">{{ med.description|truncatechars:80 }}</p>
+                            {% endif %}
+
+                            <div class="pharmacy-block">
+                                <div class="pharmacy-name">
+                                    <i class="fas fa-hospital-alt"></i> {{ med.pharmacie_nom }}
+                                </div>
+                                <div class="pharmacy-meta">
+                                    <span><i class="fas fa-map-marker-alt"></i> {{ med.pharmacie_zone }}</span>
+                                    {% if med.distance %}
+                                        <span class="badge-distance">{{ med.distance }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+
+                            <div class="card-actions">
+                                <a href="{% url 'info_pharmacie' med.pharmacie_id %}" class="btn-secondary">
+                                    <i class="fas fa-info-circle"></i> Info
+                                </a>
+                                <a href="{% url 'inscription_client' med.pharmacie_id %}?pharmacie_id={{ med.pharmacie_id }}&medicament_id={{med.id}}" class="btn-primary">
+                                    <i class="fas fa-shopping-cart"></i> Commander
+                                </a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% if not erreur %}
+                    <div class="empty-state">
+                        <div class="icon-bg"><i class="fas fa-search"></i></div>
+                        <h3>Aucun résultat trouvé</h3>
+                        <p>Nous n'avons trouvé aucun médicament correspondant à "{{ terme_recherche }}" dans votre zone.</p>
+                        <a href="/" class="btn-secondary">Retour à l'accueil</a>
+                    </div>
+                {% endif %}
+            {% endif %}
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo"><span>Med</span>Online</div>
+                <p>Votre santé, notre priorité. Trouvez vos médicaments instantanément.</p>
+            </div>
+            <div class="footer-col">
+                <h4>Liens Rapides</h4>
+                <ul>
+                    <li><a href="/">Accueil</a></li>
+                    <li><a href="#">Pharmacies de Garde</a></li>
+                    <li><a href="#">Mon Compte</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 MedOnline. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/home.js' %}"></script>
+    <script src="{% static 'js/resultat_medicament.js' %}"></script>
+</body>
+</html>

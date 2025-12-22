@@ -1,0 +1,279 @@
+/* Inherits base variables from home.css */
+:root {
+    --palegreen: #00b894;
+    --dark: #2d3436;
+    --blue: #0984e3;
+    --purple: #6c5ce7; /* AI/Tech Accent */
+    --light: #f9f9f9;
+    --white: #ffffff;
+    --gray-text: #636e72;
+    --border: #dfe6e9;
+}
+
+body {
+    background-color: var(--light);
+}
+
+.main-wrapper {
+    padding: 2rem 5%;
+    max-width: 1400px;
+    margin: 0 auto;
+    min-height: 80vh;
+}
+
+/* Header Section */
+.ia-header {
+    background: linear-gradient(135deg, var(--blue), var(--purple));
+    padding: 40px;
+    border-radius: 15px;
+    color: white;
+    margin-bottom: 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    box-shadow: 0 10px 20px rgba(9, 132, 227, 0.15);
+}
+
+.badge-ia {
+    background: rgba(255,255,255,0.2);
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.header-content h1 {
+    font-size: 2rem;
+    margin-bottom: 5px;
+}
+
+.header-content p {
+    opacity: 0.9;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+}
+
+.btn-dashboard, .btn-secondary {
+    padding: 12px 20px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-dashboard {
+    background: white;
+    color: var(--blue);
+}
+
+.btn-dashboard:hover {
+    background: #f0f0f0;
+    transform: translateY(-2px);
+}
+
+.btn-secondary {
+    background: rgba(255,255,255,0.1);
+    border: 1px solid rgba(255,255,255,0.3);
+    color: white;
+}
+
+.btn-secondary:hover {
+    background: rgba(255,255,255,0.2);
+}
+
+/* Dashboard Grid */
+.dashboard-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 30px;
+}
+
+.section-title {
+    font-size: 1.5rem;
+    color: var(--dark);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Prediction Cards */
+.cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 20px;
+}
+
+.prediction-card {
+    background: var(--white);
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.03);
+    border: 1px solid var(--border);
+    transition: 0.3s;
+}
+
+.prediction-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.08);
+}
+
+.card-top {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 15px;
+}
+
+.icon-box {
+    width: 45px;
+    height: 45px;
+    background: #e3f2fd;
+    color: var(--blue);
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.2rem;
+}
+
+.confidence-badge {
+    font-size: 0.75rem;
+    padding: 4px 8px;
+    border-radius: 6px;
+    font-weight: 600;
+    background: #eee;
+    color: #666;
+}
+
+/* Sidebar - AI Assistant */
+.ai-assistant-box {
+    background: linear-gradient(135deg, #2d3436, #000000);
+    color: white;
+    padding: 25px;
+    border-radius: 15px;
+    text-align: center;
+    margin-bottom: 30px;
+    box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+}
+
+.assistant-header {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.avatar-ia {
+    width: 50px;
+    height: 50px;
+    background: var(--purple);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+    box-shadow: 0 0 15px rgba(108, 92, 231, 0.5);
+}
+
+.status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    background: #00b894;
+    border-radius: 50%;
+    margin-right: 5px;
+}
+
+.btn-chat {
+    display: block;
+    margin-top: 15px;
+    padding: 12px;
+    background: var(--purple);
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+.btn-chat:hover {
+    background: #5649c0;
+    transform: scale(1.02);
+}
+
+/* Sidebar - Trends */
+.trends-box {
+    background: var(--white);
+    padding: 25px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+}
+
+.trends-box h3 {
+    font-size: 1.1rem;
+    margin-bottom: 20px;
+    color: var(--dark);
+}
+
+.trend-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 0;
+    border-bottom: 1px solid #f1f2f6;
+}
+
+.trend-item:last-child {
+    border-bottom: none;
+}
+
+.trend-name {
+    font-weight: 600;
+    display: block;
+    color: var(--dark);
+}
+
+.trend-level {
+    font-size: 0.8rem;
+    color: var(--gray-text);
+}
+
+.stock-status {
+    display: block;
+    font-size: 0.75rem;
+    margin-top: 2px;
+    font-weight: 600;
+}
+
+.stock-status.bas { color: #d63031; }
+.stock-status.normal { color: #00b894; }
+.stock-status.élevé { color: var(--blue); }
+
+/* Responsive */
+@media (max-width: 900px) {
+    .dashboard-grid {
+        grid-template-columns: 1fr;
+    }
+    .ia-header {
+        flex-direction: column;
+        text-align: center;
+        gap: 20px;
+    }
+    .header-actions {
+        flex-direction: column;
+        width: 100%;
+    }
+    .btn-dashboard, .btn-secondary {
+        justify-content: center;
+    }
+}

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Notifications & Commandes - PharmaGest</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <link rel="stylesheet" href="css/home.css">
+    <link rel="stylesheet" href="css/notifications.css">
+</head>
+
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Pharma</span>Gest</i>
+        <nav>
+            <ul>
+                <li><a href="index.html">Accueil</a></li>
+                <li><a href="tableau_bord_pharmacien.html">Tableau de Bord</a></li>
+                <li><a href="#" class="active" style="color: var(--palegreen);">
+                    <i class="fas fa-bell"></i> Commandes
+                    {% if notifications|length > 0 %}
+                        <span class="nav-badge">{{ notifications|length }}</span>
+                    {% endif %}
+                </a></li>
+            </ul>
+        </nav>
+        <div class="Account-btn" id="auth-container">
+            </div>
+    </header>
+
+    <div class="main-wrapper">
+        
+        <div class="notifications-header">
+            <div class="header-content">
+                <h1>Centre de Notifications</h1>
+                <p>Gérez les commandes entrantes et les alertes clients en temps réel.</p>
+            </div>
+            <div class="header-stats">
+                <span class="stat-badge">
+                    <i class="fas fa-inbox"></i> {{ notifications|length }} en attente
+                </span>
+            </div>
+        </div>
+
+        <div class="notifications-list">
+            {% if notifications %}
+                {% for n in notifications %}
+                <div class="notification-card" id="commande-{{ n.id }}">
+                    
+                    <div class="status-stripe"></div>
+
+                    <div class="card-body">
+                        <div class="notif-icon">
+                            <i class="fas fa-shopping-bag"></i>
+                        </div>
+                        
+                        <div class="notif-content">
+                            <div class="notif-top">
+                                <h3>Nouvelle Commande</h3>
+                                <span class="time-badge"><i class="far fa-clock"></i> {{ n.date_creation|timesince }}</span>
+                            </div>
+                            
+                            <p class="notif-message">
+                                <strong>{{ n.client_nom }}</strong> souhaite commander :<br>
+                                <span class="highlight-med">{{ n.medicament_nom }}</span> 
+                                <span class="highlight-qty">x{{ n.quantite }}</span>
+                            </p>
+
+                            <div class="action-area" id="action-area-{{ n.id }}">
+                                <button class="btn-confirm" onclick="confirmerCommande({{ n.id }}, this)">
+                                    <i class="fas fa-check"></i> Traiter la commande
+                                </button>
+                            </div>
+                            
+                            <div id="message-{{ n.id }}" class="feedback-message" style="display:none;"></div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="empty-state">
+                    <div class="icon-bg"><i class="far fa-bell-slash"></i></div>
+                    <h3>Tout est calme</h3>
+                    <p>Aucune nouvelle notification pour le moment.</p>
+                </div>
+            {% endif %}
+        </div>
+
+    </div>
+
+    <footer class="footer">
+        <div class="footer-container">
+            <div class="footer-col">
+                <div class="logo"><span>Pharma</span>Gest</div>
+                <p>Gestion efficace des flux de commandes.</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 PharmaGest. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="js/home.js"></script>
+    <script src="js/notifications.js"></script>
+</body>
+</html>

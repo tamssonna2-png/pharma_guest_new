@@ -1,0 +1,115 @@
+{% load static %} <!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mon Espace - MedOnline</title>
+    <link rel="stylesheet" href="{% static '/css/home.css' %}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <link rel="stylesheet" href="{% static '/css/dashboard.css' %}"> 
+</head>
+<body>
+
+    <header class="navbar">
+        <i class="logo"><span>Med</span>Online</i>
+        <nav>
+            <ul>
+                <li><a href="/html/index.html">Accueil</a></li>
+                <li><a href="#">Pharmacies</a></li>
+                <li><a href="#">Produits</a></li>
+                <li><a href="#" class="active"></a></li>
+            </ul>
+        </nav>
+        <div class="Account-btn" id="auth-container"></div>
+    </header>
+
+    <main class="dashboard-wrapper">
+        
+        <section class="welcome-banner">
+            <h1>Bonjour, <span id="display-name">Utilisateur</span> </h1>
+            <p>Que souhaitez-vous faire aujourd'hui ?</p>
+        </section>
+
+        <section class="search-engine-container">
+            
+            <div class="search-tabs">
+                <button class="tab-btn active fas fa-capsules"  data-target="search-drugs">Trouver un Médicament</button>
+                <button class="tab-btn" data-target="search-pharmacy"> Trouver une Pharmacie</button>
+            </div>
+
+            <div id="search-drugs" class="search-panel active">
+                <form class="filter-form">
+                    <div class="form-group">
+                        <label>Nom du médicament</label>
+                        <input type="text" placeholder="Ex: Doliprane, Vitamin C...">
+                    </div>
+                    <div class="form-group">
+                        <label>Catégorie</label>
+                        <select id="drug-category">
+                            <option value="">Toutes</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Prix Max</label>
+                        <input type="number" placeholder="FCFA">
+                    </div>
+                    <button type="button" class="btn-search">Rechercher</button>
+                </form>
+            </div>
+
+            <div id="search-pharmacy" class="search-panel">
+                <form class="filter-form">
+                    <div class="form-group">
+                        <label>Ville / Quartier</label>
+                        <input type="text" placeholder="Ex: Yaoundé, Bastos">
+                    </div>
+                    <div class="form-group">
+                        <label>Type</label>
+                        <select>
+                            <option value="">Toutes</option>
+                            <option value="garde">Pharmacie de Garde </option>
+                            <option value="standard">Standard</option>
+                        </select>
+                    </div>
+                    <div class="form-check">
+                        <input type="checkbox" id="openNow">
+                        <label for="openNow">Ouvert maintenant</label>
+                    </div>
+                    <button type="button" class="btn-search">Trouver</button>
+                </form>
+            </div>
+        </section>
+
+        <section class="quick-actions">
+            <h2>Mes Raccourcis</h2>
+            <div class="cards-grid">
+                <div class="action-card" onclick="window.location.href='#'">
+                    <div class="fa-file-contract"></div>
+                    <h3>Mes Commandes</h3>
+                    <p>Suivre mes achats en cours et l'historique de mes commandes</p>
+                </div>
+                <div class="action-card" onclick="window.location.href='#'">
+                    <div class="icon"></div>
+                   <!--
+                    <h3>Mes Ordonnances</h3>
+                    <p>Scanner et envoyer</p>
+                   --> 
+                </div>
+                <div class="action-card" onclick="window.location.href='#'">
+                    <div class="icon"></div>
+                    <h3>Paramètres</h3>
+                    <p>Modifier mon profil</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <footer class="footer">
+        <div class="footer-bottom">
+            <p>&copy; 2025 MedOnline. Tous droits réservés.</p>
+        </div>
+    </footer>
+
+    <script src="{% static 'js/home.js' %}"></script> <script src="{% static 'js/dashboard.js' %}"></script> </body>
+</html>

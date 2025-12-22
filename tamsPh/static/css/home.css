@@ -1,0 +1,339 @@
+/* Variables de couleurs pour un aspect médical clean */
+:root {
+    --palegreen: #00b894;
+    --green: #0ac92b;
+    --blue: #0984e3;
+    --dark: #2d3436;
+    --light: #f9f9f9;
+    --white: #ffffff;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Inter', sans-serif;
+    line-height: 1.6;
+    background-color: var(--light);
+    color: var(--dark);
+}
+
+/* Navigation bar  start*/
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1rem 3%;
+    background: var(--white);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+}
+
+.logo {
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+header i:hover{
+    color: var(--blue);
+    transition: .3s;
+}
+
+.logo span {
+    color: var(--palegreen);
+}
+
+nav ul {
+    display: flex;
+    list-style: none;
+}
+
+nav ul li {
+    margin-left: 20px;
+}
+
+nav ul li a {
+    text-decoration: none;
+    color: var(--dark);
+    font-weight: 600;
+    transition: 0.3s;
+    font-size: 1rem;
+}
+
+
+nav ul li a:hover{
+    color: var(--blue);
+}
+
+.LogIn{
+    padding: 10px 20px;
+    border-color: var(--palegreen);
+    background: var(--white);
+    color: var(--palegreen);
+    cursor: pointer;
+    border-radius: 10px 0 0 10px ;
+    margin-right: -6px;
+    font-weight: bold;
+    top: .5rem;
+}
+
+.LogIn:hover{
+    background: var(--palegreen);
+    color: white;
+}
+
+.SignUp{
+    padding: 10px 20px;
+    border-color: var(--palegreen);
+    background: var(--palegreen);
+    color: white;
+    cursor: pointer;
+    border-radius: 0 10px 10px 0;
+    font-weight: bold;
+    
+}
+.SignUp:hover{
+    background: var(--white);
+    color: var(--palegreen);
+}
+/* Navigation bar  end*/
+
+/* services  start*/
+.hero {
+    height: 60vh;
+    position: relative;
+    overflow: hidden;
+    width: 100%;
+    color: white;
+    text-align: center;
+}
+
+.hero-content h1{
+    font-size: 2.5rem;
+    margin-bottom: 1rem;
+}
+
+.slide.active {
+    opacity: 1; 
+    z-index: 2;
+}
+
+.slide {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    color: white;
+    opacity: 0; 
+    transition: opacity 1s ease-in-out; 
+    z-index: 1;
+}
+
+.search-bar {
+    position: absolute;
+    bottom: 20%;
+    width: 100%;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+}
+
+.search-bar input {
+    padding: 12px;
+    width: 350px;
+    border: none;
+    border-radius: 5px 0 0 5px;
+}
+
+.search-bar button {
+    padding: 12px 25px;
+    border: none;
+    background: var(--palegreen);
+    color: white;
+    cursor: pointer;
+    border-radius: 0 5px 5px 0;
+}
+/* services  end*/
+
+/* statistics  start*/
+.features {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    padding: 50px 10%;
+    gap: 5%;
+
+}
+
+.stat-card{
+    background: white;
+    padding: 30px;
+    border-radius: 15px;
+    text-align: center;
+    transition: transform 0.3s;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.stat-card h1 {
+    color: var(--palegreen);
+}
+
+.stat-card:hover {
+    transform: translateY(-10px);
+    transition: 1s;
+}
+
+.card {
+    background: white;
+    padding: 30px;
+    border-radius: 10px;
+    border-left: 10px solid #00b893bb;
+    text-align: center;
+    transition: transform 0.3s;
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+    margin: 2.5rem .5rem;
+}
+
+.card h3 {
+    color: var(--palegreen);
+    font-size: 1.5rem;
+    
+}
+
+.fa-location-dot {
+  color: rgba(255, 0, 0, 0.808);
+  font-size: 30px;
+  margin-bottom: 20px;
+}
+
+
+.card:hover {
+    transform: translateY(-10px);
+}
+
+.fa-capsules {
+    color: rgba(255, 0, 0, 0.808);
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.fa-cart-flatbed {
+    color: rgba(255, 0, 0, 0.808);
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+/* statistics  end*/
+
+/* After Sign up or log in start */
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.profile-pic {
+    width: 45px;
+    height: 45px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid var(--palegreen);
+    transition: transform 0.3s;
+}
+
+.profile-pic:hover {
+    transform: scale(1.1);
+}
+
+/* log out  start*/
+.user-profile:hover::after {
+    content: "Se déconnecter";
+    position: absolute;
+    top: 55px;
+    right: 0;
+    background: var(--dark);
+    color: white;
+    padding: 5px 10px;
+    font-size: 0.8rem;
+    border-radius: 5px;
+    white-space: nowrap;
+}
+
+/* after sign up and log in end*/
+
+/* footer  start*/
+.footer {
+    background-color: var(--dark);
+    color: var(--white);
+    padding: 50px 0 20px;
+    margin-top: 50px;
+}
+
+footer .logo{
+    font-size: 2rem;
+    font-weight: 600;
+    color: var(--white);
+}
+
+.footer-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 20%;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 0 5%;
+}
+
+.footer-col p {
+    font-size: 1.1rem;
+    font-weight: 100;
+    color: rgba(255, 255, 255, 0.75);
+}
+
+.footer-col h4 {
+    margin-bottom: 20px;
+    color: var(--palegreen);
+    font-size: 1.2rem;
+}
+
+.footer-col ul {
+    list-style: none;
+}
+
+.footer-col ul li {
+    margin-bottom: 10px;
+}
+
+.footer-col ul li a {
+    color: #bdc3c7;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.footer-col ul li a:hover {
+    color: var(--palegreen);
+}
+
+.footer-bottom {
+    text-align: center;
+    padding-top: 30px;
+    margin-top: 10px;
+    border-top: 1px solid #444444c0;
+    font-size: 0.9rem;
+    color: #bdc3c7;
+}
+/* footer  end*/

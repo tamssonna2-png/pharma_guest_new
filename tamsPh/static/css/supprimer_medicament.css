@@ -1,0 +1,202 @@
+/* Inherits base variables from home.css */
+:root {
+    --danger-red: #d63031;
+    --danger-bg: #ffe6e6;
+    --dark: #2d3436;
+    --gray-text: #636e72;
+    --white: #ffffff;
+    --light: #f9f9f9;
+    --gray-border: #dfe6e9;
+}
+
+body {
+    background-color: var(--light);
+}
+
+.main-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 80vh;
+    padding: 2rem 5%;
+}
+
+/* Card Style */
+.confirmation-card {
+    background: var(--white);
+    width: 100%;
+    max-width: 550px;
+    border-radius: 15px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+    text-align: center;
+    border-top: 5px solid var(--danger-red);
+    overflow: hidden;
+    position: relative;
+}
+
+/* Icon */
+.icon-wrapper {
+    background: var(--danger-bg);
+    width: 90px;
+    height: 90px;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 40px auto 20px;
+    color: var(--danger-red);
+    font-size: 2.5rem;
+    box-shadow: 0 5px 15px rgba(214, 48, 49, 0.1);
+}
+
+.card-content {
+    padding: 0 40px 40px 40px;
+}
+
+.card-content h1 {
+    color: var(--dark);
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+}
+
+.warning-text {
+    color: var(--gray-text);
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+.danger-highlight {
+    color: var(--danger-red);
+    font-weight: 600;
+}
+
+/* Product Details Box */
+.product-details {
+    background: #f8f9fa;
+    border: 1px solid var(--gray-border);
+    border-radius: 12px;
+    padding: 25px;
+    text-align: left;
+    margin-bottom: 30px;
+}
+
+.product-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+    border-bottom: 1px dashed var(--gray-border);
+    padding-bottom: 15px;
+}
+
+.product-header h2 {
+    font-size: 1.3rem;
+    color: var(--dark);
+    margin: 0;
+}
+
+.category-badge {
+    background: #dfe6e9;
+    color: var(--gray-text);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.details-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+    margin-bottom: 15px;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+}
+
+.detail-item .label {
+    font-size: 0.85rem;
+    color: #b2bec3;
+    margin-bottom: 5px;
+}
+
+.detail-item .value {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--dark);
+}
+
+.description-preview {
+    font-size: 0.9rem;
+    color: var(--gray-text);
+    font-style: italic;
+    background: white;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+/* Actions */
+.form-actions {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+}
+
+.btn-cancel {
+    flex: 1;
+    padding: 12px;
+    border: 1px solid var(--gray-border);
+    border-radius: 8px;
+    color: var(--gray-text);
+    text-decoration: none;
+    font-weight: 600;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+}
+
+.btn-cancel:hover {
+    background: #f1f2f6;
+    color: var(--dark);
+}
+
+.btn-delete {
+    flex: 1;
+    padding: 12px;
+    border: none;
+    border-radius: 8px;
+    background: var(--danger-red);
+    color: var(--white);
+    font-weight: 600;
+    cursor: pointer;
+    transition: 0.3s;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 1rem;
+}
+
+.btn-delete:hover {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(214, 48, 49, 0.2);
+}
+
+@media (max-width: 480px) {
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+    
+    .product-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 10px;
+    }
+}
