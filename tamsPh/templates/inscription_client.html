@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Inscription Client - Plateforme Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Variables CSS pour un thème plus facile à maintenir */
+        :root {
+            --primary-color: #007bff; /* Bleu vibrant */
+            --primary-hover: #0056c1; /* Bleu foncé au survol */
+            --secondary-color: #3498db; /* Bleu pour la modale */
+            --bg-light: #f4f7f9; /* Arrière-plan très clair */
+            --text-dark: #333;
+            --text-light: #fff;
+            --card-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            --transition-speed: 0.3s;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg-light);
+            color: var(--text-dark);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 40px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 450px;
+            background: var(--text-light);
+            padding: 40px;
+            border-radius: 15px; /* Coins plus arrondis */
+            box-shadow: var(--card-shadow);
+            transition: transform var(--transition-speed) ease-in-out; /* Animation d'apparition/légère */
+            /* Animation à l'apparition */
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 25px;
+            font-weight: 600;
+        }
+
+        input, select {
+            width: calc(100% - 20px); /* Ajustement pour le padding */
+            padding: 12px 10px;
+            margin: 8px 0 18px 0;
+            border: 1px solid #ddd;
+            border-radius: 8px; /* Coins arrondis pour les inputs */
+            font-size: 16px;
+            transition: border-color var(--transition-speed), box-shadow var(--transition-speed);
+        }
+
+        input:focus, select:focus {
+            border-color: var(--primary-color);
+            box-shadow: 0 0 5px rgba(0, 123, 255, 0.2);
+            outline: none;
+        }
+
+        /* Styling pour les paragraphes générés par form.as_p (si possible) */
+        .container form p {
+            margin: 0;
+        }
+        .container form p label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: 400;
+            font-size: 14px;
+        }
+
+        button[type="submit"] {
+            background: var(--primary-color);
+            color: var(--text-light);
+            border: none;
+            padding: 12px;
+            font-size: 17px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            width: 100%;
+            transition: background var(--transition-speed), transform var(--transition-speed);
+        }
+
+        button[type="submit"]:hover {
+            background: var(--primary-hover);
+            transform: translateY(-2px); /* Effet 3D subtil */
+            box-shadow: 0 5px 15px rgba(0, 123, 255, 0.3);
+        }
+
+        p a {
+            color: var(--primary-color);
+            text-decoration: none;
+            font-weight: 600;
+            transition: color var(--transition-speed);
+        }
+        p a:hover {
+            color: var(--primary-hover);
+            text-decoration: underline;
+        }
+        
+        /* Style pour le texte "Déjà un compte ?" */
+        .connexion-link-container {
+            text-align: center;
+            margin-top: 25px;
+            font-size: 15px;
+        }
+
+        /* --- Style de la Modale de Connexion Ultra-Stylée --- */
+
+        #modal-connexion {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6); /* Fond semi-transparent foncé */
+            display: none; /* Remplacé par le JS */
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            /* Animation pour l'apparition de l'overlay */
+            animation: modalFadeIn 0.3s ease-out;
+        }
+        
+        @keyframes modalFadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-contenu {
+            background: var(--text-light);
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.3);
+            width: 100%;
+            max-width: 380px;
+            /* Animation pour le contenu de la modale */
+            transform: scale(0.9);
+            animation: modalPopIn 0.4s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; /* Effet de rebond */
+        }
+        
+        @keyframes modalPopIn {
+            from { opacity: 0; transform: scale(0.8); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .modal-contenu h3 {
+            color: var(--secondary-color);
+            text-align: center;
+            margin-top: 0;
+            margin-bottom: 25px;
+            font-weight: 600;
+            font-size: 20px;
+        }
+
+        #form-connexion-rapide input[type="text"],
+        #form-connexion-rapide input[type="password"] {
+            width: calc(100% - 20px);
+            padding: 12px 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        #form-connexion-rapide small {
+            display: block;
+            margin-top: -10px;
+            margin-bottom: 15px;
+            color: #777;
+            font-size: 12px;
+            padding-left: 2px;
+        }
+
+        .modal-contenu button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .modal-contenu button[type="submit"] {
+            background: var(--secondary-color);
+            color: white;
+        }
+        .modal-contenu button[type="submit"]:hover {
+            background: #2980b9;
+            transform: scale(1.02);
+        }
+
+        #annuler-connexion {
+            background: #bdc3c7;
+            color: var(--text-dark);
+        }
+        #annuler-connexion:hover {
+            background: #95a5a6;
+            transform: scale(1.02);
+        }
+
+        .info-message {
+            margin-top: 15px;
+            padding: 15px;
+            background: #ecf0f1;
+            border-radius: 5px;
+            text-align: center;
+            font-size: 13px;
+        }
+        .info-message strong {
+            color: var(--secondary-color);
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Créer votre **Espace Client**</h2>
+
+    <form method="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+
+        <button type="submit">S'inscrire et Commander</button>
+    </form>
+    
+    <div class="connexion-link-container">
+        <p>Déjà un compte ? <a href="{% url 'passer_commande' pharmacie_id %}">**Se connecter Rapidement**</a></p>
+    </div>
+</div>
+
+<div id="modal-connexion">
+    <div class="modal-contenu">
+        <h3>🔐 **Connexion Rapide**</h3>
+        <form id="form-connexion-rapide">
+            <input type="hidden" id="pharmacie-id" value="{{ request.GET.pharmacie_id }}">
+            <input type="hidden" id="medicament-id" value="{{ request.GET.medicament_id }}">
+            
+            <div style="margin-bottom: 15px;">
+                <label for="identifiant-rapide">Identifiant (votre nom d'utilisateur ou email) </label>
+                <input type="text" 
+                       id="identifiant-rapide" 
+                       placeholder="Votre nom d'utilisateur"
+                       required>
+            </div>
+            
+            <div style="margin-bottom: 20px;">
+                <label for="password-rapide">Mot de passe</label>
+                <input type="password" 
+                       id="password-rapide" 
+                       placeholder="Mot de passe (facultatif)">
+                <small>Laissez vide si vous n'avez pas de mot de passe (connexion simplifiée).</small>
+            </div>
+            
+            <div style="display: flex; gap: 10px;">
+                <button type="submit" style="flex: 1;">
+                    🚀 Se connecter
+                </button>
+                
+                <button type="button" id="annuler-connexion" style="flex: 1;">
+                    Annuler
+                </button>
+            </div>
+        </form>
+        
+        <div class="info-message">
+            💡 **Connexion Sans Mot de Passe :**<br>
+            Entrez uniquement votre identifiant pour accéder à votre espace.
+        </div>
+    </div>
+</div>
+</body>
+<script>
+// --- Script JS (inchangé dans sa logique) ---
+document.addEventListener('DOMContentLoaded', function() {
+    const lienConnexion = document.querySelector('.connexion-link-container a'); // Selecteur ajusté
+    const modal = document.getElementById('modal-connexion');
+    const btnAnnuler = document.getElementById('annuler-connexion');
+    const formConnexion = document.getElementById('form-connexion-rapide');
+
+    // Ouvrir la modale
+    lienConnexion.addEventListener('click', function(e) {
+        e.preventDefault();
+        // Affichage de la modale en utilisant flex pour centrage (voir CSS)
+        modal.style.display = 'flex'; 
+        
+        // Pré-remplir avec l'email si déjà saisi dans le formulaire d'inscription
+        const emailInscription = document.querySelector('input[name="email"]');
+        if (emailInscription && emailInscription.value) {
+            document.getElementById('identifiant-rapide').value = emailInscription.value;
+        }
+    });
+    
+    // Fermer la modale
+    btnAnnuler.addEventListener('click', function() {
+        modal.style.display = 'none';
+    });
+    
+    // Gérer la connexion
+    formConnexion.addEventListener('submit', function(e) {
+        e.preventDefault();
+        
+        const identifiant = document.getElementById('identifiant-rapide').value;
+        const password = document.getElementById('password-rapide').value;
+        const pharmacie_id = document.getElementById('pharmacie-id').value;
+        const medicament_id = document.getElementById('medicament-id').value;
+        
+        // Vérifier que l'identifiant est saisi
+        if (!identifiant) {
+            alert("Veuillez saisir votre identifiant (email ou nom d'utilisateur).");
+            return; 
+        } 
+        
+        // Affichage temporaire (pour debug si besoin, mais doit être retiré pour la prod)
+        // console.log("Tentative de connexion:", { identifiant, password, pharmacie_id, medicament_id });
+        // alert(`Connexion tentée avec:\nIdentifiant: ${identifiant}\nMot de passe: ${password || "Aucun"}`);
+        // modal.style.display = 'none';
+        // return; // Retire ce return pour activer le fetch
+
+        fetch('{% url "connexion_rapide" pharmacie_id %}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded',
+                'X-CSRFToken': '{{ csrf_token }}'
+            },
+            body: 'identifiant=' + encodeURIComponent(identifiant) + 
+                  '&password=' + encodeURIComponent(password)+
+                  '&pharmacie_id=' + encodeURIComponent(pharmacie_id)+
+                  '&medicament_id='+encodeURIComponent(medicament_id)
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Connexion réussie → redirection
+                window.location.href = data.redirect_url || '/';
+            } else {
+                // Erreur
+                alert('Erreur de connexion : ' + data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Erreur de réseau ou serveur:', error);
+            alert('Une erreur inattendue est survenue lors de la connexion.');
+        });
+    });
+    
+    // Fermer en cliquant à l'extérieur
+    modal.addEventListener('click', function(e) {
+        // Vérifie si le clic est sur l'overlay (la modale elle-même) et non sur son contenu
+        if (e.target === modal) {
+            modal.style.display = 'none';
+        }
+    });
+});
+</script>
+</html>

@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de Bord - {{ donnees_bi.pharmacie.nom }}</title>
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-green: #45a049;
+            --light-green: #e8f5e8;
+            --primary-blue: #2196F3;
+            --dark-blue: #1976D2;
+            --light-blue: #e3f2fd;
+            --accent-purple: #9C27B0;
+            --warning-orange: #ff9800;
+            --error-red: #f44336;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .pharmacien-dashboard {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .pharmacy-header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 35px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pharmacy-header::before {
+            content: '🏥';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 4em;
+            opacity: 0.2;
+        }
+
+        .pharmacy-header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .pharmacy-header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .dashboard-content {
+            background: var(--white);
+            padding: 35px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .pharmacy-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 35px;
+        }
+
+        .metric-card {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .metric-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-blue);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-blue);
+        }
+
+        .metric-card h3 {
+            color: var(--text-dark);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1.1em;
+        }
+
+        .metric-value {
+            font-size: 2.8em;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin: 15px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .metric-card p {
+            color: var(--text-light);
+            font-size: 0.95em;
+        }
+
+        .alertes-section {
+            background: linear-gradient(135deg, #fff3e0, #ffe0b2);
+            border: 2px solid var(--warning-orange);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .alertes-section h3 {
+            color: #e65100;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4em;
+        }
+
+        .alerte-card {
+            background: var(--white);
+            padding: 18px;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            border-left: 4px solid var(--error-red);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: all 0.3s ease;
+        }
+
+        .alerte-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+
+        .badge.urgent {
+            background: var(--error-red);
+            color: var(--white);
+        }
+
+        .badge.warning {
+            background: var(--warning-orange);
+            color: var(--white);
+        }
+
+        .recommandations-section {
+            background: linear-gradient(135deg, var(--light-blue), #bbdefb);
+            border: 2px solid var(--primary-blue);
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .recommandations-section h3 {
+            color: var(--dark-blue);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.4em;
+        }
+
+        .reco-card {
+            background: var(--white);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 4px solid var(--primary-green);
+            transition: all 0.3s ease;
+            line-height: 1.5;
+        }
+
+        .reco-card:hover {
+            transform: translateX(5px);
+            box-shadow: var(--shadow);
+        }
+
+        .reco-card strong {
+            color: var(--primary-green);
+        }
+
+        .navigation-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid var(--light-gray);
+        }
+
+        .nav-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            margin: 0 10px;
+        }
+
+        .nav-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .nav-btn.secondary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+        }
+
+        .performance-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+
+        .performance-excellent { background: #4CAF50; color: white; }
+        .performance-good { background: #8BC34A; color: white; }
+        .performance-average { background: #FFC107; color: black; }
+        .performance-poor { background: #F44336; color: white; }
+
+        @media (max-width: 768px) {
+            .pharmacy-metrics {
+                grid-template-columns: 1fr;
+            }
+            
+            .pharmacy-header h1 {
+                font-size: 2em;
+            }
+            
+            .metric-value {
+                font-size: 2.2em;
+            }
+            
+            .alerte-card {
+                flex-direction: column;
+                gap: 10px;
+                text-align: center;
+            }
+            
+            .nav-btn {
+                width: 100%;
+                margin: 5px 0;
+                justify-content: center;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .metric-card {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .metric-card:nth-child(1) { animation-delay: 0.1s; }
+        .metric-card:nth-child(2) { animation-delay: 0.2s; }
+        .metric-card:nth-child(3) { animation-delay: 0.3s; }
+        .metric-card:nth-child(4) { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <div class="pharmacien-dashboard">
+        <!-- En-tête de la pharmacie -->
+        <div class="pharmacy-header">
+            <h1>🏥 Tableau de Bord - {{ donnees_bi.pharmacie.nom }}</h1>
+            <p>📍 {{ donnees_bi.pharmacie.address }}</p>
+            <div style="margin-top: 15px; opacity: 0.9;">
+                <small>🕐 Données mises à jour : {{ timestamp }}</small>
+            </div>
+        </div>
+
+        <!-- Contenu du dashboard -->
+        <div class="dashboard-content">
+            <!-- Métriques de performance -->
+            <div class="pharmacy-metrics">
+                <div class="metric-card">
+                    <h3>📦 Stock Global</h3>
+                    <div class="metric-value">{{ donnees_bi.statistiques.total_medicaments }}</div>
+                    <p>médicaments enregistrés dans votre pharmacie</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>🟢 Disponibilité</h3>
+                    <div class="metric-value">{{ donnees_bi.statistiques.taux_disponibilite }}%</div>
+                    <p>taux de disponibilité moyen</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>💰 CA Estimé</h3>
+                    <div class="metric-value">{{ donnees_bi.statistiques.chiffre_affaires_estime }}</div>
+                    <p>chiffre d'affaires mensuel estimé</p>
+                </div>
+                
+                <div class="metric-card">
+                    <h3>👥 Clients Quotidiens</h3>
+                    <div class="metric-value">{{ donnees_bi.statistiques.clients_quotidiens }}</div>
+                    <p>estimation de fréquentation journalière</p>
+                </div>
+            </div>
+
+            <!-- Alertes de stock -->
+            <div class="alertes-section">
+                <h3>🚨 Alertes Stock</h3>
+                {% if donnees_bi.alertes_stock %}
+                    {% for medicament in donnees_bi.alertes_stock %}
+                    <div class="alerte-card">
+                        <div>
+                            <strong>{{ medicament.nom }}</strong> 
+                            <br>
+                            <small>{{ medicament.quantite }} unités restantes</small>
+                        </div>
+                        <span class="badge {% if medicament.quantite == 0 %}urgent{% else %}warning{% endif %}">
+                            {% if medicament.quantite == 0 %}RUPTURE{% else %}STOCK FAIBLE{% endif %}
+                        </span>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div style="text-align: center; padding: 20px; background: var(--white); border-radius: 10px;">
+                        <div style="font-size: 3em; margin-bottom: 10px;">✅</div>
+                        <h4 style="color: var(--primary-green); margin-bottom: 10px;">Stock Optimal</h4>
+                        <p style="color: var(--text-light);">Aucune alerte de stock - Votre inventaire est bien géré</p>
+                    </div>
+                {% endif %}
+            </div>
+
+            <!-- Recommandations business -->
+            <div class="recommandations-section">
+                <h3>💡 Recommandations Business Intelligentes</h3>
+                {% for reco in recommandations %}
+                <div class="reco-card">
+                    {{ reco|safe }}
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Navigation -->
+            <div class="navigation-section">
+                <a href="{% url 'recherche_ia' %}" class="nav-btn">
+                    🔍 Recherche Intelligente
+                </a>
+                <a href="{% url 'mes_medicaments_perso' %}" class="nav-btn secondary">
+                    💊 Gérer mes Médicaments
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Animation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.metric-card, .alerte-card, .reco-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // Effet de pulsation pour les alertes urgentes
+        const alertesUrgentes = document.querySelectorAll('.badge.urgent');
+        alertesUrgentes.forEach(alerte => {
+            alerte.style.animation = 'pulse 2s infinite';
+        });
+
+        // Ajout de l'animation de pulsation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulse {
+                0% { transform: scale(1); }
+                50% { transform: scale(1.05); }
+                100% { transform: scale(1); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

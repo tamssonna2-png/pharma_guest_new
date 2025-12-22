@@ -9,8 +9,9 @@ from tamsPh.models import MonIA,Notification
 from django.contrib.auth.models import User
 # Create your views here.
 
-def home(request):
-    return render(request, 'index.html')
+def accueil(request):
+    """Page d'accueil principale"""
+    return render(request, 'accueil.html')
 
 # Mets cette fonction AU DÉBUT de ton views.py
 def creer_notification_pharmacie(pharmacie, type_notification, message, commande=None):

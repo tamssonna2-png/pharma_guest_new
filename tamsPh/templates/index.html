@@ -1,131 +1,775 @@
-{% load static %} <!DOCTYPE html>
-<html lang="fr">
-
+<!DOCTYPE html>
+<html>
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PharmaGuest - Votre Pharmacie en ligne</title>
-    <link rel="stylesheet" href="{% static '/css/home.css' %}"> 
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css">
+    <title>Recherche Pharmacies - PharmaGest</title>
+    <style>
+        :root {
+            --primary-green:rgb(70, 60, 207);
+            --dark-green: #45a049;
+            --light-green: #e8f5e8;
+            --accent-orange: #ff6b35;
+            --dark-orange: #e55a2b;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding: 40px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .search-section {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+            text-align: center;
+        }
+        
+        .search-container {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .search-input {
+            padding: 15px 20px;
+            border: 2px solid var(--primary-green);
+            border-radius: 10px;
+            font-size: 16px;
+            width: 400px;
+            max-width: 100%;
+            background: var(--white);
+            transition: all 0.3s ease;
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--dark-green);
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+        
+        .btn-search {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: var(--white);
+            border: none;
+            padding: 15px 25px;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.3);
+        }
+        
+        .btn-search:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+        }
+        
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 10px;
+            font-size: 1.1em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.3);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.4);
+        }
+        
+        .search-tabs {
+            display: flex;
+            justify-content: center;
+            margin: 20px 0;
+            border-bottom: 2px solid #e9ecef;
+        }
+        
+        .search-tab {
+            padding: 15px 30px;
+            background: none;
+            border: none;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+            color: var(--text-light);
+        }
+        
+        .search-tab.active {
+            color: var(--primary-green);
+            border-bottom-color: var(--primary-green);
+        }
+        
+        .search-tab:hover {
+            color: var(--dark-green);
+        }
+        
+        .status-indicator {
+            background: var(--light-green);
+            padding: 15px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-green);
+        }
+        
+        .customization-panel {
+            background: linear-gradient(135deg, #e3f2fd, #f3e5f5);
+            padding: 25px;
+            border-radius: 15px;
+            margin: 25px 0;
+            border: 2px solid #e1f5fe;
+        }
+        
+        .distance-control {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin: 15px 0;
+        }
+        
+        .input-distance {
+            padding: 12px 15px;
+            border: 2px solid var(--primary-green);
+            border-radius: 8px;
+            font-size: 16px;
+            width: 120px;
+            text-align: center;
+            background: var(--white);
+        }
+        
+        .btn-distance {
+            background: var(--accent-orange);
+            color: var(--white);
+            border: none;
+            padding: 12px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .btn-distance:hover {
+            background: var(--dark-orange);
+            transform: translateY(-1px);
+        }
+        
+        .mode-selector {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 25px 0;
+        }
+        
+        .mode-btn {
+            padding: 12px 25px;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mode-btn.elargir {
+            background: var(--accent-orange);
+            color: var(--white);
+        }
+        
+        .mode-btn.normal {
+            background: var(--primary-green);
+            color: var(--white);
+        }
+        
+        .mode-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .mode-indicator {
+            background: var(--light-green);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            font-weight: bold;
+        }
+        
+        .results-section {
+            margin-top: 40px;
+        }
+        
+        .results-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .results-count {
+            background: var(--primary-green);
+            color: var(--white);
+            padding: 10px 20px;
+            border-radius: 25px;
+            display: inline-block;
+            font-weight: bold;
+        }
+        
+        .results-count.elargi {
+            background: var(--accent-orange);
+        }
+        
+        .results-count.recherche {
+            background: #2196F3;
+        }
+        
+        .pharmacies-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .pharmacy-card {
+            background: var(--white);
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .pharmacy-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+        }
+        
+        .pharmacy-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            border-color: var(--primary-green);
+        }
+        
+        .pharmacy-card.elargi {
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+        
+        .pharmacy-card.elargi:hover {
+            transform: none;
+            border-color: transparent;
+        }
+        
+        .pharmacy-card.elargi::before {
+            background: linear-gradient(135deg, var(--accent-orange), var(--dark-orange));
+        }
+        
+        .pharmacy-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+        
+        .pharmacy-name {
+            color: var(--text-dark);
+            font-size: 1.3em;
+            margin: 0;
+        }
+        
+        .garde-badge {
+            background: linear-gradient(135deg, #ff9800, #ff5722);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+            white-space: nowrap;
+        }
+        
+        .regular-badge {
+            background: var(--text-light);
+            color: var(--white);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: bold;
+        }
+        
+        .pharmacy-info {
+            margin: 15px 0;
+        }
+        
+        .info-item {
+            display: flex;
+            align-items: center;
+            margin: 8px 0;
+            color: var(--text-light);
+        }
+        
+        .info-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+        }
+        
+        .distance-badge {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+        
+        .click-hint {
+            text-align: center;
+            margin-top: 15px;
+            padding: 10px;
+            background: var(--light-green);
+            border-radius: 8px;
+            color: var(--text-light);
+            font-size: 0.9em;
+        }
+        
+        .click-hint.elargi {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid #f44336;
+        }
+        
+        .success-message {
+            background: var(--light-green);
+            color: var(--text-dark);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            margin: 20px 0;
+            border-left: 4px solid var(--primary-green);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: var(--text-light);
+        }
+        
+        .empty-state h3 {
+            margin-bottom: 10px;
+        }
+        
+        .mode-explanation {
+            background: #e3f2fd;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+            text-align: center;
+            border-left: 4px solid #2196F3;
+        }
+    </style>
 </head>
-
 <body>
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>🏥 PharmaGest</h1>
+            <p>Recherche de pharmacies à proximité</p>
+        </div>
+        
+        <a href="{% url 'accueil' %}" class="btn-primary">
+            <span class="btn-icon">🏥</span>
+            <span class="btn-text">Accueil</span>
+        </a>
 
-    <!-- header start-->
-    <header class="navbar">
-        <i class="logo"><span>Med</span>Online</i>
-        <nav>
-            <ul>
-                <li><a href="/html/index.html">Accueil</a></li>
-                <li><a href="#">Pharmacies</a></li>
-                <li><a href="#">Produits</a></li>
-                <li><a href="#">Contact</a></li>
-            </ul>
-        </nav>
-
-        <div class="Account-btn" id="auth-container">
-            <button class="LogIn" onclick="window.location.href='/html/LogIn.html'">Log In</button>
-            <button class="SignUp" onclick="window.location.href='/html/SignUp.html'">Sign Up</button>
+        <!-- Onglets de recherche -->
+        <div class="search-tabs">
+            <button class="search-tab active" onclick="afficherOnglet('geolocalisation')">
+                📍 Recherche par géolocalisation
+            </button>
+            <button class="search-tab" onclick="afficherOnglet('nom')">
+                🔍 Recherche par nom
+            </button>
         </div>
 
-    </header>
-    <!-- header end-->
+        <!-- Section recherche par géolocalisation -->
+        <div id="onglet-geolocalisation" class="search-section">
+            <div class="status-indicator">
+                <p id="statut_recherche">📍 Cliquez sur le bouton pour démarrer la recherche par géolocalisation...</p>
+            </div>
+            
+            <button class="btn-primary" onclick="localiserEtRechercherPharmacies()">
+                📍 Trouver ma Position et Chercher
+            </button>
+        </div>
 
-    <!-- Services start-->
-    <section class="hero">
-        <div class="slide active"
-            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('/images/Pharma1.jpeg');">
-            <div class="hero-content">
-                <h1>Trouvez vos médicaments en un clic</h1>
-                <p>Accédez au stock des pharmacies les plus proches.</p>
+        <!-- Section recherche par nom -->
+        <div id="onglet-nom" class="search-section" style="display: none;">
+            <h3>🔍 Rechercher une pharmacie par nom</h3>
+            
+            <form method="get" action="" class="search-container">
+                <input type="text" 
+                       name="nom_pharmacie" 
+                       class="search-input" 
+                       placeholder="Entrez le nom d'une pharmacie..."
+                       value="{{ request.GET.nom_pharmacie|default:'' }}"
+                       required>
+                
+                <button type="submit" class="btn-search">
+                    🔍 Rechercher
+                </button>
+            </form>
+            
+            <div style="color: var(--text-light); font-size: 0.9em; margin-top: 10px;">
+                Recherchez une pharmacie spécifique par son nom
             </div>
         </div>
-        <div class="search-bar">
-            <input type="text" id="search-input" placeholder="Rechercher un médicament (ex: Doliprane)...">
-            <button id="search-btn">Rechercher</button>
+
+        <!-- Personnalisation de la recherche (uniquement pour géolocalisation) -->
+        {% if request.GET.lat and request.GET.lon and not request.GET.nom_pharmacie %}
+        <div class="customization-panel">
+            <h3>🔧 Personnaliser la recherche</h3>
+            <form method="get" action="">
+                <input type="hidden" name="lat" value="{{ request.GET.lat }}">
+                <input type="hidden" name="lon" value="{{ request.GET.lon }}">
+                <input type="hidden" name="choice" value="{{ request.GET.choice|default:'1' }}">
+                
+                <div class="distance-control">
+                    <label for="distance" style="font-weight: bold;">Rayon de recherche (km):</label>
+                    <input type="number" 
+                           id="distance" 
+                           name="distance" 
+                           class="input-distance"
+                           value="{{ request.GET.distance|default:'5' }}"
+                           min="1" 
+                           max="50" 
+                           step="1">
+                    
+                    <button type="submit" class="btn-distance">🔍 Appliquer</button>
+                </div>
+                <small style="color: var(--text-light);">Recherche dans un rayon de {{ request.GET.distance|default:'5' }} km autour de votre position</small>
+            </form>
+        </div>
+        {% endif %}
+
+        <!-- Sélecteur de mode (uniquement pour géolocalisation) -->
+        {% if request.GET.lat and request.GET.lon and not request.GET.nom_pharmacie %}
+        <div class="mode-selector">
+            <a href="?lat={{ request.GET.lat }}&lon={{ request.GET.lon }}&choice=2{% if request.GET.distance %}&distance={{ request.GET.distance }}{% endif %}" 
+               class="mode-btn elargir">
+               🔍 Recherche élargie
+            </a>
+            
+            <a href="?lat={{ request.GET.lat }}&lon={{ request.GET.lon }}&choice=1{% if request.GET.distance %}&distance={{ request.GET.distance }}{% endif %}" 
+               class="mode-btn normal">
+               📍 Recherche normale
+            </a>
         </div>
 
-        <div class="slide"
-            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('/images/Pharma3.jpeg');">
-            <div class="hero-content">
-                <h1>Pharmacies de garde</h1>
-                <p>Trouvez rapidement une pharmacie ouverte 24h/24.</p>
+        <!-- Indicateur de mode -->
+        {% if request.GET.choice and not request.GET.nom_pharmacie %}
+            <div class="mode-indicator">
+                {% if request.GET.choice == "2" %}
+                    🎯 Mode recherche élargie activé - Rayon: {{ request.GET.distance|default:'5' }} km
+                {% else %}
+                    📍 Mode recherche normale - Rayon: {{ request.GET.distance|default:'5' }} km
+                {% endif %}
+            </div>
+        {% endif %}
+        {% endif %}
+
+        <!-- Messages -->
+        {% if message %}
+            <div class="success-message">
+                {{ message }}
+            </div>
+        {% endif %}
+
+        {% if erreur %}
+            <div class="error-message">
+                {{ erreur }}
+            </div>
+        {% endif %}
+
+        <!-- Résultats pour recherche par nom -->
+        {% if request.GET.nom_pharmacie %}
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count recherche">
+                    🏥 Résultats pour "{{ request.GET.nom_pharmacie }}"
+                </div>
+            </div>
+
+            {% if pharmacies_recherche %}
+            <div class="pharmacies-grid">
+                {% for pharmacie in pharmacies_recherche %}
+                <div class="pharmacy-card" onclick="window.location.href='{% url 'info_pharmacie' pharmacie.id %}'">
+                    <div class="pharmacy-header">
+                        <h3 class="pharmacy-name">🏥 {{ pharmacie.nom }}</h3>
+                        {% if pharmacie.deGarde %}
+                            <div class="garde-badge">🔥 DE GARDE</div>
+                        {% else %}
+                            <div class="regular-badge">⏰ RÉGULIÈRE</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="info-item">
+                            <i>📍</i>
+                            <span>{{ pharmacie.address }}</span>
+                        </div>
+                        {% if pharmacie.zone %}
+                        <div class="info-item">
+                            <i>🏘️</i>
+                            <span>{{ pharmacie.zone }}</span>
+                        </div>
+                        {% endif %}
+                        <div class="info-item">
+                            <i>📞</i>
+                            <span>{{ pharmacie.telephone|default:"Téléphone non renseigné" }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="click-hint">
+                        👆 Cliquez pour voir les détails complets et les médicaments
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            {% else %}
+            <div class="empty-state">
+                <h3>🔍 Aucune pharmacie trouvée</h3>
+                <p>Aucune pharmacie ne correspond à votre recherche "{{ request.GET.nom_pharmacie }}".</p>
+                <p>Essayez avec un autre nom ou utilisez la recherche par géolocalisation.</p>
+            </div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <!-- Résultats pour géolocalisation -->
+        {% if toutes_pharmacies2 and not request.GET.nom_pharmacie %}
+        <!-- Mode recherche élargie -->
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count elargi">
+                    💊 {{ toutes_pharmacies2|length }} Pharmacie(s) trouvée(s) - Mode élargi
+                </div>
+            </div>
+
+            <div class="mode-explanation">
+                <strong>🔍 Recherche élargie activée</strong>
+                <p style="margin: 5px 0 0 0; font-size: 0.9em;">
+                    Les pharmacies sont issues d'une recherche externe. Les détails complets ne sont disponibles qu'en mode recherche normale.
+                </p>
+            </div>
+
+            <div class="pharmacies-grid">
+                {% for pharmacie in toutes_pharmacies2 %}
+                <div class="pharmacy-card elargi" title="Détails non disponibles en mode recherche élargie">
+                    <div class="pharmacy-header">
+                        <h3 class="pharmacy-name">🏥 {{ pharmacie.nom }}</h3>
+                        {% if pharmacie.deGarde %}
+                            <div class="garde-badge">🔥 DE GARDE</div>
+                        {% else %}
+                            <div class="regular-badge">⏰ RÉGULIÈRE</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="info-item">
+                            <i>📍</i>
+                            <span>{{ pharmacie.address }}</span>
+                        </div>
+                        {% if pharmacie.zone %}
+                        <div class="info-item">
+                            <i>🏘️</i>
+                            <span>{{ pharmacie.zone }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="distance-badge">
+                        📏 {{ pharmacie.distance|floatformat:2 }} km
+                    </div>
+                    
+                    <div class="click-hint elargi">
+                        ⚠️ Mode recherche élargie<br>
+                        <small>Détails non disponibles</small>
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
 
-        <div class="slide"
-            style="background-image: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.4)), url('/images/Pharma2.jpeg');">
-            <div class="hero-content">
-                <h1>Conseils d'experts</h1>
-                <p>Discutez avec des professionnels de santé qualifiés.</p>
+        {% elif toutes_pharmacies1 and not request.GET.nom_pharmacie %}
+        <!-- Mode recherche normale -->
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count">
+                    💊 {{ toutes_pharmacies1|length }} Pharmacie(s) trouvée(s) - Mode normal
+                </div>
+            </div>
+
+            <div class="pharmacies-grid">
+                {% for item in toutes_pharmacies1 %}
+                <div class="pharmacy-card" onclick="window.location.href='{% url 'info_pharmacie' item.pharmacie.id %}'">
+                    <div class="pharmacy-header">
+                        <h3 class="pharmacy-name">🏥 {{ item.pharmacie.nom }}</h3>
+                        {% if item.pharmacie.deGarde %}
+                            <div class="garde-badge">🔥 DE GARDE</div>
+                        {% else %}
+                            <div class="regular-badge">⏰ RÉGULIÈRE</div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div class="info-item">
+                            <i>📍</i>
+                            <span>{{ item.pharmacie.address }}</span>
+                        </div>
+                        {% if item.pharmacie.zone %}
+                        <div class="info-item">
+                            <i>🏘️</i>
+                            <span>{{ item.pharmacie.zone }}</span>
+                        </div>
+                        {% endif %}
+                    </div>
+                    
+                    <div class="distance-badge">
+                        📏 {{ item.distance_km|floatformat:2 }} km
+                    </div>
+                    
+                    <div class="click-hint">
+                        👆 Cliquez pour voir les détails complets
+                    </div>
+                </div>
+                {% endfor %}
             </div>
         </div>
-    </section>
-    <!-- Services end-->
 
-    <!-- statistics end-->
-    <section class="features">
-
-        <div class="stat-card">
-            <h1>500+</h1>
-            <p>Pharmacies partenaires</p>
-        </div>
-        <div class="stat-card">
-            <h1>10K</h1>
-            <p>Médicaments disponibles</p>
-        </div>
-        <div class="stat-card">
-            <h1>24/7</h1>
-            <p>Service en continu</p>
-        </div>
-
-        <div class="card">
-            <div class="fas fa-location-dot"></div>
-            <h3>Géolocalisation</h3>
-            <p>Découvrez les pharmacies les plus proches avec leurs horaires et contacts</p>
-        </div>
-        <div class="card">
-            <div class="fas fa-capsules"></div>
-            <h3>Disponibilité</h3>
-            <p>Trouvez vos médicaments par nom ou catégorie en quelques secondes</p>
-        </div>
-        <div class="card">
-            <div class="fas fa-cart-flatbed"></div>
-            <h3>Commandes</h3>
-            <p>Passez vos commandes de médicaments dans la pharmacie la plus proche</p>
-        </div>
-    </section>
-    <!-- statistics end-->
-
-    <!-- footer end-->
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-col">
-                <div class="logo"><span>Med</span>Online</div>
-                <p>Votre partenaire santé de confiance, accessible partout et à tout moment.</p>
+        {% elif request.GET.lat and request.GET.lon and not request.GET.nom_pharmacie %}
+        <!-- Aucun résultat pour géolocalisation -->
+        <div class="results-section">
+            <div class="results-header">
+                <div class="results-count" style="background: #6c757d;">
+                    💊 0 Pharmacie(s) trouvée(s)
+                </div>
             </div>
-            <div class="footer-col">
-                <h4>Liens</h4>
-                <ul>
-                    <li><a href="#">Nos Pharmacies</a></li>
-                    <li><a href="#">Services</a></li>
-                    <li><a href="#">Contact</a></li>
-                </ul>
-            </div>
-            <div class="footer-col">
-                <h4>Adresse</h4>
-                <p>Yaoundé, Cameroun</p>
-                <p>+237 678 502 795</p>
-                <p>support@medonline.com</p>
+            <div class="empty-state">
+                <h3>🔍 Aucune pharmacie trouvée</h3>
+                <p>Essayez d'élargir le rayon de recherche ou vérifiez votre connexion.</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 MedOnline. Tous droits réservés.</p>
-        </div>
-    </footer>
+        {% endif %}
+    </div>
 
-    <!-- footer end-->
-    <script src="{% static '/js/home.js' %}"></script>
+    <script>
+        function afficherOnglet(onglet) {
+            // Masquer tous les onglets
+            document.getElementById('onglet-geolocalisation').style.display = 'none';
+            document.getElementById('onglet-nom').style.display = 'none';
+            
+            // Désactiver tous les onglets
+            document.querySelectorAll('.search-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            // Afficher l'onglet sélectionné
+            document.getElementById('onglet-' + onglet).style.display = 'block';
+            event.target.classList.add('active');
+        }
+
+        function envoyerCoordonneesADjango(lat, lon) {
+            const chemin_reel = 'pharmacies-proximite';
+            const urlDeRecherche = `/${chemin_reel}/?lat=${lat}&lon=${lon}&choice=1`; 
+            window.location.href = urlDeRecherche;
+        }
+
+        function localiserEtRechercherPharmacies() {
+            if (navigator.geolocation) {
+                document.getElementById('statut_recherche').innerHTML = "📍 Localisation en cours...";
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        document.getElementById('statut_recherche').innerHTML = "✅ Position trouvée. Redirection...";
+                        envoyerCoordonneesADjango(lat, lon);
+                    }, 
+                    function(erreur) {
+                        document.getElementById('statut_recherche').innerHTML = "❌ Erreur de géolocalisation. Veuillez autoriser l'accès.";
+                    }
+                );
+            } else {
+                document.getElementById('statut_recherche').innerHTML = "❌ Géolocalisation non supportée.";
+            }
+        }
+
+        // Si on a une recherche par nom, on affiche l'onglet correspondant
+        document.addEventListener('DOMContentLoaded', function() {
+            {% if request.GET.nom_pharmacie %}
+                afficherOnglet('nom');
+            {% endif %}
+        });
+    </script>
 </body>
-
 </html>

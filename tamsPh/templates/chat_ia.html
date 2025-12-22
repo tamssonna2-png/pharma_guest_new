@@ -1,0 +1,1035 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Assistant IA - {{ pharmacie.nom }}</title>
+    <style>
+        :root {
+            --primary-green: #10b981;
+            --secondary-blue: #3b82f6;
+            --light-green: #d1fae5;
+            --dark-green: #059669;
+            --light-blue: #dbeafe;
+            --gray-light: #f8fafc;
+            --gray-border: #e5e7eb;
+            --text-dark: #1f2937;
+            --danger-red: #ef4444;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: linear-gradient(135deg, #f0fdf4 0%, #f8fafc 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px; /* 🔥 AGRANDI */
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            overflow: hidden;
+            height: 90vh; /* 🔥 AGRANDI */
+        }
+        
+        .header {
+            background: linear-gradient(135deg, var(--primary-green) 0%, var(--secondary-blue) 100%);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .header h1 {
+            font-size: 24px;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .header p {
+            opacity: 0.9;
+            font-size: 14px;
+        }
+        
+        .chat-actions {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        
+        .action-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+        
+        .action-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+        }
+        
+        .action-btn.danger {
+            background: rgba(239,68,68,0.8);
+        }
+        
+        .action-btn.danger:hover {
+            background: rgba(239,68,68,1);
+        }
+        
+        .chat-container {
+            display: flex;
+            height: calc(100% - 80px); /* 🔥 AGRANDI */
+        }
+        
+        .sidebar {
+            width: 320px; /* 🔥 AGRANDI */
+            background: var(--gray-light);
+            border-right: 1px solid var(--gray-border);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .sidebar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+        
+        .history-btn {
+            background: var(--secondary-blue);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            flex: 1;
+        }
+        
+        .history-btn:hover {
+            background: #2563eb;
+            transform: translateY(-2px);
+        }
+        
+        .refresh-btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 10px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-left: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .refresh-btn:hover {
+            background: var(--dark-green);
+            transform: rotate(180deg);
+        }
+        
+        .history-panel {
+            flex: 1;
+            overflow-y: auto;
+            background: white;
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid var(--gray-border);
+            display: none;
+        }
+        
+        .history-panel.show {
+            display: block;
+        }
+        
+        .history-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background: var(--light-blue);
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+            border-left: 4px solid var(--secondary-blue);
+        }
+        
+        .history-item:hover {
+            background: var(--secondary-blue);
+            color: white;
+            transform: translateX(5px);
+        }
+        
+        .history-item.active {
+            background: var(--primary-green);
+            color: white;
+            border-left-color: var(--dark-green);
+        }
+        
+        .history-type {
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--secondary-blue);
+            margin-bottom: 5px;
+        }
+        
+        .history-item:hover .history-type {
+            color: white;
+        }
+        
+        .history-date {
+            font-size: 10px;
+            opacity: 0.7;
+            margin-top: 5px;
+        }
+        
+        .delete-history {
+            position: absolute;
+            top: 5px;
+            right: 5px;
+            background: rgba(239,68,68,0.8);
+            color: white;
+            border: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .delete-history:hover {
+            background: var(--danger-red);
+            transform: scale(1.1);
+        }
+        
+        .chat-area {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+        }
+        
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 25px; /* 🔥 AGRANDI */
+            background: var(--gray-light);
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .message {
+            max-width: 80%; /* 🔥 AGRANDI */
+            margin-bottom: 20px; /* 🔥 AGRANDI */
+            padding: 20px; /* 🔥 AGRANDI */
+            border-radius: 18px;
+            position: relative;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .user-message {
+            background: var(--light-green);
+            margin-left: auto;
+            border-bottom-right-radius: 5px;
+        }
+        
+        .ai-message {
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-bottom-left-radius: 5px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08); /* 🔥 NOUVEAU */
+        }
+        
+        .message-type {
+            font-size: 12px; /* 🔥 AGRANDI */
+            color: var(--primary-green);
+            font-weight: 600;
+            margin-bottom: 8px; /* 🔥 AGRANDI */
+        }
+        
+        .message-content {
+            font-size: 15px; /* 🔥 AGRANDI */
+            line-height: 1.5; /* 🔥 AGRANDI */
+            color: var(--text-dark);
+        }
+        
+        .input-form {
+            display: flex;
+            gap: 12px; /* 🔥 AGRANDI */
+            align-items: flex-end;
+        }
+        
+        .input-group {
+            flex: 1;
+        }
+        
+        textarea {
+            width: 100%;
+            padding: 18px; /* 🔥 AGRANDI */
+            border: 2px solid var(--gray-border);
+            border-radius: 12px;
+            resize: none;
+            font-family: inherit;
+            font-size: 15px; /* 🔥 AGRANDI */
+            transition: border-color 0.3s ease;
+            line-height: 1.4;
+        }
+        
+        textarea:focus {
+            outline: none;
+            border-color: var(--primary-green);
+            box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+        }
+        
+        select {
+            width: 100%;
+            padding: 14px; /* 🔥 AGRANDI */
+            border: 2px solid var(--gray-border);
+            border-radius: 8px;
+            background: white;
+            margin-top: 12px; /* 🔥 AGRANDI */
+            font-size: 14px;
+        }
+        
+        .send-btn {
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            padding: 18px 30px; /* 🔥 AGRANDI */
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 15px;
+        }
+        
+        .send-btn:hover {
+            background: var(--dark-green);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+        
+        .send-btn:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 20px;
+            color: var(--secondary-blue);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 10px 20px;
+            border: 1px solid var(--secondary-blue);
+            border-radius: 8px;
+        }
+        
+        .back-link:hover {
+            color: var(--primary-green);
+            border-color: var(--primary-green);
+        }
+        
+        .notification {
+            background: var(--light-green);
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid var(--primary-green);
+            animation: slideIn 0.5s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        .empty-state {
+            text-align: center;
+            color: #6b7280;
+            margin-top: 50px;
+            padding: 40px;
+        }
+        
+        .confirmation-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .modal-content {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+        
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        
+        .modal-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .modal-btn.confirm {
+            background: var(--danger-red);
+            color: white;
+        }
+        
+        .modal-btn.cancel {
+            background: var(--gray-border);
+            color: var(--text-dark);
+        }
+
+        /* INDICATEUR DE CHARGEMENT */
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            background: white;
+            border: 1px solid var(--gray-border);
+            border-radius: 18px;
+            border-bottom-left-radius: 5px;
+            padding: 20px; /* 🔥 AGRANDI */
+            max-width: 140px; /* 🔥 AGRANDI */
+            margin-bottom: 15px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        .typing-dots {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 10px; /* 🔥 AGRANDI */
+            height: 10px; /* 🔥 AGRANDI */
+            background: var(--secondary-blue);
+            border-radius: 50%;
+            animation: typingAnimation 1.4s infinite ease-in-out;
+        }
+
+        .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+        .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+        .typing-dot:nth-child(3) { animation-delay: 0s; }
+
+        @keyframes typingAnimation {
+            0%, 80%, 100% { 
+                transform: scale(0.8);
+                opacity: 0.5;
+            }
+            40% { 
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .typing-text {
+            margin-left: 12px; /* 🔥 AGRANDI */
+            font-size: 13px; /* 🔥 AGRANDI */
+            color: var(--text-dark);
+            font-weight: 500;
+        }
+
+        /* 🔥 NOUVELLES FONCTIONNALITÉS */
+        .quick-actions {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+            flex-wrap: wrap;
+        }
+        
+        .quick-action-btn {
+            background: var(--light-blue);
+            border: 1px solid var(--secondary-blue);
+            color: var(--secondary-blue);
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .quick-action-btn:hover {
+            background: var(--secondary-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255,255,255,0.9);
+            border: 1px solid var(--gray-border);
+            border-radius: 6px;
+            padding: 4px 8px;
+            font-size: 10px;
+            cursor: pointer;
+            opacity: 0;
+            transition: all 0.3s ease;
+        }
+        
+        .ai-message:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary-green);
+            color: white;
+            border-color: var(--primary-green);
+        }
+        
+        .suggestion-chip {
+            background: var(--light-green);
+            border: 1px solid var(--primary-green);
+            color: var(--dark-green);
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 12px;
+            margin: 5px;
+            cursor: pointer;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .suggestion-chip:hover {
+            background: var(--primary-green);
+            color: white;
+            transform: translateY(-1px);
+        }
+
+        /* 🔥 AMÉLIORATION DES RÉPONSES IA */
+        .ai-response-content {
+            line-height: 1.6;
+        }
+        
+        .ai-response-content h3, .ai-response-content h4 {
+            color: var(--primary-green);
+            margin: 15px 0 10px 0;
+        }
+        
+        .ai-response-content ul, .ai-response-content ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+        
+        .ai-response-content li {
+            margin: 5px 0;
+        }
+        
+        .ai-response-content strong {
+            color: var(--dark-green);
+        }
+        
+        .ai-response-content .highlight {
+            background: var(--light-green);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête avec actions -->
+        <div class="header">
+            <div class="chat-actions">
+                <button class="action-btn" onclick="refreshChat()">
+                    🔄 Rafraîchir
+                </button>
+                <button class="action-btn danger" onclick="showClearConfirmation()">
+                    🗑️ Effacer
+                </button>
+            </div>
+            <h1>🧠 Assistant Pharma Intelligent</h1>
+            <p>{{ pharmacie.nom }} - {{ pharmacie.zone }}</p>
+        </div>
+        
+        <div class="chat-container">
+            <!-- Sidebar avec historique -->
+            <div class="sidebar">
+                <div class="sidebar-header">
+                    <button class="history-btn" onclick="toggleHistory()">
+                        📋 Historique des conversations
+                    </button>
+                    <button class="refresh-btn" onclick="loadHistory()" title="Actualiser l'historique">
+                        🔄
+                    </button>
+                </div>
+                
+                <!-- 🔥 NOUVEAU : Actions rapides -->
+                <div class="quick-actions">
+                    <button class="quick-action-btn" onclick="suggestQuestion('stock')">📦 Stock</button>
+                    <button class="quick-action-btn" onclick="suggestQuestion('conseil')">💊 Conseil</button>
+                    <button class="quick-action-btn" onclick="suggestQuestion('analyse')">📊 Analyse</button>
+                    <button class="quick-action-btn" onclick="exportConversation()">📤 Exporter</button>
+                </div>
+                
+                <div class="history-panel" id="historyPanel">
+                    {% for conversation in conversations %}
+                    <div class="history-item" id="history-{{ conversation.id }}" 
+                         onclick="loadConversation({{ conversation.id }})">
+                        <button class="delete-history" onclick="deleteHistoryItem({{ conversation.id }}, event)">
+                            ×
+                        </button>
+                        <div class="history-type">{{ conversation.type_conversation|title }}</div>
+                        <div class="history-preview">{{ conversation.message|truncatechars:40 }}</div>
+                        <div class="history-date">{{ conversation.timestamp|date:"d/m/Y H:i" }}</div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <p>Aucune conversation</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+            
+            <!-- Zone de chat principale -->
+            <div class="chat-area">
+                <!-- Notification nouvelle réponse -->
+                <!--{% if reponse_ia %}
+                <div class="notification">
+                    ✅ <strong>Nouvelle réponse reçue !</strong>
+                </div>
+                {% endif %}-->
+                
+                <!-- Messages - ORDRE INVERSE pour avoir le plus récent en bas -->
+                <div class="messages-container" id="messagesContainer">
+                    {% for conversation in conversations reversed %}
+                    <div class="message user-message">
+                        <div class="message-type">{{ conversation.type_conversation|title }}</div>
+                        <div class="message-content">{{ conversation.message }}</div>
+                    </div>
+                    
+                    <div class="message ai-message">
+                        <div class="message-type">🤖 ASSISTANT IA</div>
+                        <button class="copy-btn" onclick="copyToClipboard('{{ conversation.reponse|escapejs }}')">
+                            📋 Copier
+                        </button>
+                        <div class="message-content ai-response-content">
+                            {{ conversation.reponse|linebreaks }}
+                        </div>
+                    </div>
+                    {% empty %}
+                    <div class="empty-state">
+                        <h3>💬 Commencez une conversation</h3>
+                        <p>Posez votre première question à l'assistant IA</p>
+                        
+                        <!-- 🔥 NOUVEAU : Suggestions de démarrage -->
+                        <div style="margin-top: 20px;">
+                            <div class="suggestion-chip" onclick="quickQuestion('Quels médicaments sont en rupture de stock ?')">
+                                💊 Ruptures de stock
+                            </div>
+                            <div class="suggestion-chip" onclick="quickQuestion('Analyse mes ventes de la semaine')">
+                                📈 Analyse ventes
+                            </div>
+                            <div class="suggestion-chip" onclick="quickQuestion('Conseils pour un client avec toux grasse')">
+                                🩺 Conseil client
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <!-- Formulaire AVEC gestion AJAX -->
+                <form method="post" class="input-form" id="chatForm" onsubmit="return sendMessage(event)">
+                    {% csrf_token %}
+                    <div class="input-group">
+                        <textarea name="message" id="messageInput" rows="3" 
+                                  placeholder="Posez votre question à l'assistant IA..." required></textarea>
+                        <select name="contexte" id="contextSelect">
+                            <option value="stock">📦 Gestion de Stock</option>
+                            <option value="conseil">💊 Conseil Client</option>
+                            <option value="analyse">📊 Analyse et Statistiques</option>
+                            <option value="urgence">🚨 Situation d'Urgence</option>
+                            <option value="general" selected>💬 Question Générale</option>
+                        </select>
+                    </div>
+                    <button type="submit" class="send-btn" id="sendButton">
+                        Envoyer 🚀
+                    </button>
+                </form>
+            </div>
+        </div>
+        
+        <!-- Lien de retour -->
+        <div style="padding: 20px; text-align: center;">
+            <a href="{% url 'recherche_ia' %}" class="back-link">← Retour à l'accueil</a>
+        </div>
+    </div>
+
+    <!-- Modal de confirmation -->
+    <div class="confirmation-modal" id="confirmationModal">
+        <div class="modal-content">
+            <h3>🗑️ Effacer la conversation</h3>
+            <p>Êtes-vous sûr de vouloir effacer toute la conversation actuelle ?</p>
+            <p><small>Cette action est temporaire et sera réinitialisée au prochain rafraîchissement.</small></p>
+            <div class="modal-buttons">
+                <button class="modal-btn confirm" onclick="clearChat()">Oui, effacer</button>
+                <button class="modal-btn cancel" onclick="hideClearConfirmation()">Annuler</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ÉTAT GLOBAL
+        let chatCleared = false;
+        let currentMessages = [];
+        
+        // Stocker les messages initiaux
+        document.addEventListener('DOMContentLoaded', function() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            currentMessages = messagesContainer.innerHTML;
+            scrollToBottom();
+        });
+        
+        function toggleHistory() {
+            const panel = document.getElementById('historyPanel');
+            panel.classList.toggle('show');
+        }
+        
+        function loadHistory() {
+            const panel = document.getElementById('historyPanel');
+            panel.style.opacity = '0.5';
+            
+            setTimeout(() => {
+                panel.style.opacity = '1';
+                alert('Historique actualisé !');
+            }, 500);
+        }
+        
+        function loadConversation(conversationId) {
+            document.querySelectorAll('.history-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            document.getElementById('history-' + conversationId).classList.add('active');
+            console.log('Chargement de la conversation:', conversationId);
+        }
+        
+        function deleteHistoryItem(conversationId, event) {
+            event.stopPropagation();
+            
+            if (confirm('Supprimer cette conversation de l\'historique ?')) {
+                const item = document.getElementById('history-' + conversationId);
+                item.style.transform = 'translateX(-100%)';
+                item.style.opacity = '0';
+                
+                setTimeout(() => {
+                    item.remove();
+                    if (document.querySelectorAll('.history-item').length === 0) {
+                        document.getElementById('historyPanel').innerHTML = 
+                            '<div class="empty-state"><p>Aucune conversation</p></div>';
+                    }
+                }, 300);
+            }
+        }
+        
+        function refreshChat() {
+            location.reload();
+        }
+        
+        function showClearConfirmation() {
+            document.getElementById('confirmationModal').style.display = 'flex';
+        }
+        
+        function hideClearConfirmation() {
+            document.getElementById('confirmationModal').style.display = 'none';
+        }
+        
+        function clearChat() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            const emptyState = `
+                <div class="empty-state">
+                    <h3>💬 Commencez une conversation</h3>
+                    <p>Posez votre première question à l'assistant IA</p>
+                    <div style="margin-top: 20px;">
+                        <div class="suggestion-chip" onclick="quickQuestion('Quels médicaments sont en rupture de stock ?')">
+                            💊 Ruptures de stock
+                        </div>
+                        <div class="suggestion-chip" onclick="quickQuestion('Analyse mes ventes de la semaine')">
+                            📈 Analyse ventes
+                        </div>
+                        <div class="suggestion-chip" onclick="quickQuestion('Conseils pour un client avec toux grasse')">
+                            🩺 Conseil client
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            messagesContainer.innerHTML = emptyState;
+            hideClearConfirmation();
+            chatCleared = true;
+            
+            // 🔥 VIDER LE CHAMP DE TEXTE
+            document.getElementById('messageInput').value = '';
+            document.getElementById('contextSelect').value = 'general';
+        }
+        
+        // 🔥 NOUVELLES FONCTIONNALITÉS
+        function suggestQuestion(type) {
+            const questions = {
+                'stock': 'Quels médicaments dois-je réapprovisionner en priorité ?',
+                'conseil': 'Quels sont les conseils pour un client avec des douleurs articulaires ?',
+                'analyse': 'Peux-tu analyser l\'évolution de mes ventes ce mois-ci ?'
+            };
+            
+            document.getElementById('messageInput').value = questions[type] || '';
+            document.getElementById('contextSelect').value = type;
+            document.getElementById('messageInput').focus();
+        }
+        
+        function quickQuestion(question) {
+            document.getElementById('messageInput').value = question;
+            document.getElementById('chatForm').requestSubmit();
+        }
+        
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(() => {
+                // Feedback visuel
+                const btn = event.target;
+                const originalText = btn.innerHTML;
+                btn.innerHTML = '✅ Copié!';
+                btn.style.background = 'var(--primary-green)';
+                btn.style.color = 'white';
+                btn.style.borderColor = 'var(--primary-green)';
+                
+                setTimeout(() => {
+                    btn.innerHTML = originalText;
+                    btn.style.background = '';
+                    btn.style.color = '';
+                    btn.style.borderColor = '';
+                }, 2000);
+            });
+        }
+        
+        function exportConversation() {
+            const messages = document.querySelectorAll('.message');
+            let exportText = "💊 Historique de conversation - Assistant Pharma\n\n";
+            
+            messages.forEach(msg => {
+                if (msg.classList.contains('user-message')) {
+                    exportText += "👤 VOUS: " + msg.querySelector('.message-content').textContent + "\n\n";
+                } else {
+                    exportText += "🤖 IA: " + msg.querySelector('.message-content').textContent + "\n\n";
+                }
+            });
+            
+            const blob = new Blob([exportText], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `conversation-pharma-${new Date().toISOString().split('T')[0]}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+        
+        // FONCTION AJAX POUR ENVOYER LES MESSAGES
+        function sendMessage(event) {
+            event.preventDefault();
+            
+            const form = event.target;
+            const formData = new FormData(form);
+            const sendButton = document.getElementById('sendButton');
+            const originalText = sendButton.innerHTML;
+            const messageInput = document.getElementById('messageInput');
+            
+            // 🔥 SAUVEGARDER LE MESSAGE AVANT DE LE VIDER
+            const userMessage = formData.get('message');
+            const context = formData.get('contexte');
+            
+            // Désactiver le bouton
+            sendButton.disabled = true;
+            sendButton.innerHTML = 'Envoi...';
+            sendButton.style.opacity = '0.7';
+            
+            // Afficher le message utilisateur immédiatement
+            displayUserMessage(userMessage, context);
+            
+            // 🔥 VIDER LE CHAMP DE TEXTE IMMÉDIATEMENT
+            messageInput.value = '';
+            
+            // Afficher l'indicateur de frappe
+            showTypingIndicator();
+            
+            // Envoyer la requête AJAX
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData,
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur réseau');
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Cacher l'indicateur de frappe
+                hideTypingIndicator();
+                
+                if (data.success) {
+                    displayAiMessage(data.reponse);
+                    document.getElementById('contextSelect').value = 'general';
+                } else {
+                    displayAiMessage("❌ Désolé, une erreur s'est produite. Veuillez réessayer.");
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                hideTypingIndicator();
+                displayAiMessage("❌ Erreur de connexion. Vérifiez votre internet et réessayez.");
+            })
+            .finally(() => {
+                // Réactiver le bouton
+                sendButton.disabled = false;
+                sendButton.innerHTML = originalText;
+                sendButton.style.opacity = '1';
+            });
+            
+            return false;
+        }
+        
+        function showTypingIndicator() {
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            const typingDiv = document.createElement('div');
+            typingDiv.id = 'typingIndicator';
+            typingDiv.className = 'typing-indicator';
+            typingDiv.innerHTML = `
+                <div class="typing-dots">
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                    <div class="typing-dot"></div>
+                </div>
+                <div class="typing-text">Chargement ...</div>
+            `;
+            
+            messagesContainer.appendChild(typingDiv);
+            scrollToBottom();
+        }
+        
+        function hideTypingIndicator() {
+            const typingIndicator = document.getElementById('typingIndicator');
+            if (typingIndicator) {
+                typingIndicator.remove();
+            }
+        }
+        
+        function displayUserMessage(message, context) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            // Supprimer l'état vide si présent
+            const emptyState = messagesContainer.querySelector('.empty-state');
+            if (emptyState) {
+                emptyState.remove();
+            }
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message user-message';
+            messageDiv.innerHTML = `
+                <div class="message-type">${getContextLabel(context)}</div>
+                <div class="message-content">${message}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        function displayAiMessage(message) {
+            const messagesContainer = document.getElementById('messagesContainer');
+            
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message ai-message';
+            messageDiv.innerHTML = `
+                <div class="message-type">🤖 ASSISTANT IA</div>
+                <button class="copy-btn" onclick="copyToClipboard('${message.replace(/'/g, "\\'")}')">
+                    📋 Copier
+                </button>
+                <div class="message-content ai-response-content">${message}</div>
+            `;
+            
+            messagesContainer.appendChild(messageDiv);
+            scrollToBottom();
+        }
+        
+        function getContextLabel(context) {
+            const labels = {
+                'stock': '📦 Gestion de Stock',
+                'conseil': '💊 Conseil Client', 
+                'analyse': '📊 Analyse et Statistiques',
+                'urgence': '🚨 Situation d\'Urgence',
+                'general': '💬 Question Générale'
+            };
+            return labels[context] || '💬 Question Générale';
+        }
+        
+        function scrollToBottom() {
+            const container = document.getElementById('messagesContainer');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+        
+        // Raccourci clavier
+        document.getElementById('messageInput').addEventListener('keydown', function(e) {
+            if (e.key === 'Enter' && e.shiftKey) {
+                e.preventDefault();
+                document.getElementById('chatForm').requestSubmit();
+            }
+        });
+    </script>
+    <div style="padding: 20px; text-align: center;">
+            <a href="{% url 'recherche_ia' %}" class="back-link">← Retour</a>
+    </div>
+</body>
+</html>

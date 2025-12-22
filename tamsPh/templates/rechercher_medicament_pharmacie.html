@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats de recherche - PharmaGest</title>
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-green: #45a049;
+            --light-green: #e8f5e8;
+            --primary-blue: #2196F3;
+            --dark-blue: #1976D2;
+            --light-blue: #e3f2fd;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --error-color: #f44336;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #e8f5e8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 35px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '🔍';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 4em;
+            opacity: 0.2;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .content {
+            background: var(--white);
+            padding: 35px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .search-info {
+            background: linear-gradient(135deg, var(--light-green), var(--light-blue));
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border: 2px dashed var(--primary-blue);
+            text-align: center;
+        }
+
+        .search-term {
+            font-size: 1.4em;
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .pharmacy-info {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            padding: 15px;
+            background: var(--white);
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-green);
+            margin-top: 15px;
+        }
+
+        .results-count {
+            font-size: 1.2em;
+            color: var(--text-dark);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .medicaments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .medicament-card {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicament-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-green);
+        }
+
+        .medicament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-green);
+        }
+
+        .medicament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .medicament-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .medicament-price {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .medicament-details {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: var(--text-light);
+        }
+
+        .detail-label {
+            font-weight: 600;
+            color: var(--text-dark);
+            min-width: 100px;
+        }
+
+        .medicament-actions {
+            display: flex;
+            gap: 12px;
+            justify-content: flex-end;
+        }
+
+        .action-btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.9em;
+        }
+
+        .btn-edit {
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+        }
+
+        .btn-delete {
+            background: linear-gradient(135deg, var(--error-color), #d32f2f);
+            color: var(--white);
+        }
+
+        .action-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .error-container {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: var(--text-dark);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--error-color);
+        }
+
+        .error-container h3 {
+            color: var(--error-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .back-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid var(--light-gray);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        @media (max-width: 768px) {
+            .medicaments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .medicament-header {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .medicament-price {
+                align-self: flex-start;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>🔍 Résultats de Recherche</h1>
+        </div>
+
+        <!-- Bouton de retour -->
+            <div class="back-section">
+                <a href="/mes-medicaments/" class="back-btn">
+                    ⬅️ Retour à mes médicaments
+                </a>
+            </div>
+
+        <!-- Contenu -->
+        <div class="content">
+            {% if erreur %}
+                <div class="error-container">
+                    <h3>❌ Erreur</h3>
+                    <p>{{ erreur }}</p>
+                </div>
+            {% else %}
+                <!-- Informations de recherche -->
+                <div class="search-info">
+                    <div class="search-term">
+                        <span>📋 Recherche pour :</span>
+                        <strong>"{{ terme_recherche }}"</strong>
+                    </div>
+                    
+                    <div class="pharmacy-info">
+                        <div>🏥</div>
+                        <div>
+                            <strong>{{ pharmacie.nom }}</strong>
+                            <p style="margin: 5px 0 0 0; color: var(--text-light);">Votre pharmacie</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Résultats -->
+                {% if medicaments %}
+                    <div class="results-count">
+                        <strong>{{ medicaments|length }} médicament(s) trouvé(s)</strong>
+                    </div>
+
+                    <div class="medicaments-grid">
+                        {% for medicament in medicaments %}
+                            <div class="medicament-card">
+                                <div class="medicament-header">
+                                    <div>
+                                        <div class="medicament-name">{{ medicament.nom }}</div>
+                                        <div style="color: var(--primary-blue);">{{ medicament.categorie }}</div>
+                                    </div>
+                                    <div class="medicament-price">{{ medicament.prix }} FCFA</div>
+                                </div>
+                                
+                                <div class="medicament-details">
+                                    <div class="detail-item">
+                                        <span class="detail-label">📝 Description:</span>
+                                        <span>{{ medicament.description|default:"Aucune description" }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span class="detail-label">📦 Quantité:</span>
+                                        <span>{{ medicament.quantite }} unités</span>
+                                    </div>
+                                </div>
+                                
+                                <div class="medicament-actions">
+                                    <a href="/modifier-medicament/{{ medicament.id }}/" class="action-btn btn-edit">
+                                        ✏️ Modifier
+                                    </a>
+                                    <a href="/supprimer-medicament/{{ medicament.id }}/" class="action-btn btn-delete">
+                                        🗑️ Supprimer
+                                    </a>
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% else %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>Aucun médicament trouvé</h3>
+                        <p>Aucun résultat pour "{{ terme_recherche }}" dans votre pharmacie.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+        </div>
+    </div>
+
+    <script>
+        // Confirmation avant suppression
+        document.addEventListener('click', function(e) {
+            if (e.target.classList.contains('btn-delete') || 
+                e.target.parentElement.classList.contains('btn-delete')) {
+                if (!confirm('⚠️ Êtes-vous sûr de vouloir supprimer ce médicament ?')) {
+                    e.preventDefault();
+                }
+            }
+        });
+
+        // Animation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.medicament-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.style.animation = 'fadeInUp 0.6s ease-out';
+            });
+        });
+
+        // Ajout de l'animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes fadeInUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(30px);
+                }
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>

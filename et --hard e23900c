@@ -1,0 +1,25 @@
+[33m71f84cd[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m)[m Migration vers MEDOLINE - Version finale présentation
+[33me23900c[m Correction : Ajout de python-dotenv
+[33m8500102[m Correction : Ajout du module nexmo/vonage manquant
+[33mf1b7076[m Correction : Ajout de dj-database-url
+[33m86ca5fe[m Configuration propre sans fichiers sensibles
+[33m4a51328[m Configuration propre sans fichiers sensibles
+[33mb133246[m Fix: Configuration mail SMTP Gmail et port 465 pour production
+[33me6859f1[m FIX: Résolution des erreurs de connexion (TypeError, NoReverseMatch) et renforcement de la gestion des identifiants (email/username).
+[33m577f59f[m modification de la vue inscription_client pour rediriger vers la bonne pharmacie2
+[33me44badc[m modification de la vue inscription_client pour rediriger vers la bonne pharmacie
+[33mc7db83e[m modification de la vue inscription_client pour rediriger vers la bonne pharmacie
+[33m3f2c6a8[m FIX: Empêche l'erreur 500 en ajoutant la validation d'unicité du username avant la sauvegarde en DB.
+[33m29e769f[m FIX: Empêche l'erreur 500 en ajoutant la validation d'unicité du username avant la sauvegarde en DB.
+[33m7d53c95[m FEAT: Ajout de la dépendance reportlab pour la génération de PDF.
+[33mdb1943a[m FIX: Ajout de l'import dj_database_url pour corriger l'erreur de déploiement.
+[33m10da9b0[m FIX: Ajout de l'import dj_database_url pour corriger l'erreur de déploiement.
+[33m0c58c2a[m feat: Ajout des fonctionnalités commande, client et personnel
+[33m99ac469[m ADD: Ajout de Pillow pour supporter les ImageField
+[33m6f8304a[m FIX: Correction de conn_health_check en conn_health_checks pour dj-database-url
+[33m85eb0aa[m Activation de PostgreSQL et installation de dj-database-url
+[33mf0bcbee[m Déploiement final du Dockerfile corrigé pour build-essential
+[33mdbc1ad8[m passage à la configuration docker et nettoyage de db.sqlite3
+[33m1700a53[m ajout d'un superutilsateur
+[33mbdaf1c1[m Suppression de db.sqlte3 pour le deploiement
+[33m8a317a6[m Ajout des fichiers de configuration Railway

@@ -1,140 +1,219 @@
-{% load static %} <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="fr">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IA & Prédictions - {{ pharmacie.nom }}</title>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <link rel="stylesheet" href="{%static% 'css/home.css'}">
-    <link rel="stylesheet" href="{% static 'css/recherche_ia.css' %}">
+    <title>Recherche Intelligente - {{ pharmacie.nom }}</title>
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-green: #45a049;
+            --light-green: #e8f5e8;
+            --primary-blue: #2196F3;
+            --white: #ffffff;
+            --text-dark: #2c3e50;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background: #f8f9fa;
+        }
+
+        .pharmacy-header {
+            background: linear-gradient(135deg, var(--primary-blue), #1976D2);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .ai-badge { 
+            background: var(--primary-green); 
+            color: white; 
+            padding: 4px 8px; 
+            border-radius: 12px; 
+            font-size: 0.8em; 
+        }
+
+        .search-form {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .search-input {
+            padding: 12px 20px;
+            width: 60%;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            font-size: 16px;
+            margin-right: 10px;
+        }
+
+        .search-btn {
+            padding: 12px 25px;
+            background: var(--primary-green);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-size: 16px;
+            cursor: pointer;
+            font-weight: bold;
+        }
+
+        .medicament-card {
+            background: white;
+            border-left: 4px solid var(--primary-green);
+            padding: 20px;
+            margin: 15px 0;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .recommandation-card { 
+            border-left: 4px solid var(--primary-blue); 
+            background: #f0f8ff; 
+            padding: 15px; 
+            margin: 10px 0; 
+            border-radius: 8px;
+        }
+
+        .stats-panel { 
+            background: #e8f5e8; 
+            border: 1px solid var(--primary-green); 
+            border-radius: 10px; 
+            padding: 20px; 
+            margin: 20px 0; 
+        }
+
+        .alert-panel {
+            background: #fff3e0;
+            border: 1px solid #ff9800;
+            border-radius: 10px;
+            padding: 15px;
+            margin: 15px 0;
+        }
+    </style>
 </head>
-
 <body>
+    <!-- En-tête de la pharmacie -->
+    <div class="pharmacy-header">
+        <h1>🏥 {{ pharmacie.nom }}</h1>
+        <p>📍 {{ pharmacie.address }} • {{ pharmacie.zone }}</p>
+        <span class="ai-badge">🤖 RECHERCHE INTELLIGENTE</span>
+    </div>
 
-    <header class="navbar">
-        <i class="logo"><span>Pharma</span>Gest</i>
-        <nav>
-            <ul>
-                <li><a href="index.html">Accueil</a></li>
-                <li><a href="tableau_bord_pharmacien.html">Tableau de Bord</a></li>
-                <li><a href="#" class="active" style="color: var(--blue);">Intelligence Artificielle</a></li>
-            </ul>
-        </nav>
-        <div class="Account-btn" id="auth-container">
-            </div>
-    </header>
+    <!-- Formulaire de recherche -->
+    <div class="search-form">
+        <form method="get">
+            <input type="text" name="q" value="{{ query }}" placeholder="Rechercher un médicament dans votre inventaire..." class="search-input" required>
+            <button type="submit" class="search-btn">🔍 Recherche Boostee</button>
+        </form>
+    </div>
 
-    <div class="main-wrapper">
+    {% if erreur %}
+        <div class="alert-panel">
+            <h3>❌ {{ erreur }}</h3>
+        </div>
+    {% endif %}
+
+    {% if medicaments %}
+        <h2>💊 Résultats pour "{{ query }}" dans votre pharmacie</h2>
         
-        <div class="ia-header">
-            <div class="header-content">
-                <div class="badge-ia">BETA</div>
-                <h1>Assistant Prédictif</h1>
-                <p>Analyse des stocks et tendances pour <strong>{{ pharmacie.nom }}</strong>.</p>
+        <!-- Résultats principaux -->
+        {% for medicament in medicaments %}
+        <div class="medicament-card">
+            <h3>{{ medicament.nom }}</h3>
+            <p><strong>Catégorie:</strong> {{ medicament.categorie }}</p>
+            <p><strong>Description:</strong> {{ medicament.description|default:"Aucune description" }}</p>
+            <p><strong>Stock:</strong> 
+                <span style="color: {% if medicament.quantite > 20 %}#4CAF50{% elif medicament.quantite > 5 %}#FF9800{% else %}#F44336{% endif %}; font-weight: bold;">
+                    {{ medicament.quantite }} unités
+                </span>
+            </p>
+            <p><strong>Prix:</strong> {{ medicament.prix }} FCFA</p>
+        </div>
+        {% endfor %}
+
+        <!-- Recommandations IA -->
+        {% if recommandations_ia %}
+        <div class="stats-panel">
+            <h3>🤖 Recommandations IA pour votre pharmacie</h3>
+            <p><em>D'autres médicaments de votre inventaire qui pourraient intéresser vos clients :</em></p>
+            {% for reco in recommandations_ia %}
+            <div class="recommandation-card">
+                <strong>{{ reco.medicament.nom }}</strong>
+                <br>📊 Score de similarité: {{ reco.score }} ({{ reco.confiance }})
+                <br>📂 Catégorie: {{ reco.medicament.categorie }}
+                <br>📦 Stock: {{ reco.medicament.quantite }} unités
+                <br>💰 Prix: {{ reco.medicament.prix }} FCFA
             </div>
-            
-            <div class="header-actions">
-                <a href="{% url 'tableau_bord_ia' %}" class="btn-dashboard">
-                    <i class="fas fa-chart-line"></i> Dashboard Complet
-                </a>
-                <a href="{% url 'mes_medicaments_perso' %}" class="btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Retour Stock
-                </a>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+    {% elif query %}
+        <div class="alert-panel">
+            <h3>🔍 Aucun résultat trouvé</h3>
+            <p>Aucun médicament correspondant à "{{ query }}" dans votre inventaire.</p>
+        </div>
+    {% endif %}
+
+    <!-- Statistiques de la pharmacie -->
+    <div class="stats-panel">
+        <h3>📊 Tableau de Bord - {{ pharmacie.nom }}</h3>
+        
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin: 20px 0;">
+            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
+                <div style="font-size: 2em; font-weight: bold; color: var(--primary-blue);">{{ stats_pharmacie.total_medicaments }}</div>
+                <div>Médicaments total</div>
+            </div>
+            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
+                <div style="font-size: 2em; font-weight: bold; color: var(--primary-green);">{{ stats_pharmacie.taux_disponibilite }}%</div>
+                <div>Taux disponibilité</div>
+            </div>
+            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
+                <div style="font-size: 2em; font-weight: bold; color: #FF9800;">{{ stats_pharmacie.alertes_stock }}</div>
+                <div>Alertes stock</div>
+            </div>
+            <div style="text-align: center; padding: 15px; background: white; border-radius: 8px;">
+                <div style="font-size: 1.5em; font-weight: bold; color: var(--primary-green);">{{ stats_pharmacie.performance }}</div>
+                <div>Performance</div>
             </div>
         </div>
 
-        <div class="dashboard-grid">
-            
-            <div class="main-analysis">
-                <h2 class="section-title"><i class="fas fa-brain"></i> Analyses Prédictives</h2>
-                
-                {% if analyses %}
-                    <div class="cards-grid">
-                        {% for analyse in analyses %}
-                            <div class="prediction-card">
-                                <div class="card-top">
-                                    <div class="icon-box">
-                                        <i class="fas fa-prescription-bottle-alt"></i>
-                                    </div>
-                                    <span class="confidence-badge" data-level="{{ analyse.confiance }}">
-                                        {{ analyse.confiance }}% fiable
-                                    </span>
-                                </div>
-                                
-                                <h3>{{ analyse.produit }}</h3>
-                                <p class="prediction-text">{{ analyse.prediction }}</p>
-                                
-                                <div class="card-footer">
-                                    <span class="date-meta">Mis à jour récemment</span>
-                                    <button class="btn-details">Détails</button>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                {% else %}
-                    <div class="empty-state">
-                        <i class="fas fa-robot"></i>
-                        <p>Aucune analyse disponible pour le moment.</p>
-                    </div>
-                {% endif %}
+        <h4>🔥 Tendances dans votre pharmacie:</h4>
+        <div style="display: grid; gap: 10px; margin-top: 15px;">
+            {% for tendance in stats_pharmacie.tendances %}
+            <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; background: white; border-radius: 6px;">
+                <span><strong>{{ tendance.terme }}</strong> - {{ tendance.niveau }}</span>
+                <span>Stock: {{ tendance.stock }} {{ tendance.statut }}</span>
             </div>
-
-            <div class="sidebar-analysis">
-                
-                <div class="ai-assistant-box">
-                    <div class="assistant-header">
-                        <div class="avatar-ia">
-                            <i class="fas fa-robot"></i>
-                        </div>
-                        <div>
-                            <h3>PharmaBot</h3>
-                            <span class="status-dot"></span> En ligne
-                        </div>
-                    </div>
-                    <p>Besoin d'aide pour interpréter ces données ou gérer votre stock ?</p>
-                    <a href="{% url 'chat_ia' pharmacie_id=pharmacie.id %}" class="btn-chat">
-                        <i class="fas fa-comments"></i> Discuter avec l'IA
-                    </a>
-                </div>
-
-                <div class="trends-box">
-                    <h3><i class="fas fa-poll"></i> Tendances du Marché</h3>
-                    <div class="trends-list">
-                        {% for tendance in tendances %}
-                            <div class="trend-item">
-                                <div class="trend-info">
-                                    <span class="trend-name">{{ tendance.terme }}</span>
-                                    <span class="trend-level">{{ tendance.niveau }}</span>
-                                </div>
-                                <div class="trend-stock">
-                                    Stock: <strong>{{ tendance.stock }}</strong>
-                                    <span class="stock-status {{ tendance.statut|lower }}">{{ tendance.statut }}</span>
-                                </div>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-            </div>
+            {% endfor %}
         </div>
     </div>
 
-    <footer class="footer">
-        <div class="footer-container">
-            <div class="footer-col">
-                <div class="logo"><span>Pharma</span>Gest</div>
-                <p>Technologie avancée pour la santé.</p>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2025 PharmaGest. Tous droits réservés.</p>
-        </div>
-    </footer>
-
-    <script src="js/home.js"></script>
-    <script src="js/recherche_ia.js"></script>
+    <div style="text-align: center; margin-top: 30px;">
+        <a href="{% url 'tableau_bord_ia' %}" style="display: inline-block; padding: 12px 25px; background: var(--primary-blue); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            📈 Accéder au tableau de bord complet
+        </a>
+        <a href="{% url 'mes_medicaments_perso' %}" style="display: inline-block; padding: 12px 25px; background: var(--primary-green); color: white; text-decoration: none; border-radius: 8px; font-weight: bold;">
+            ⬅️ Retour inventaire des Médicaments
+        </a>
+        <div style="margin: 40px 0; padding: 20px; background: #f8fafc; border-radius: 12px; text-align: center;">
+            <h3 style="margin-bottom: 15px; color: #1f2937;">Assistant Intelligent</h3>
+            <a href="{% url 'chat_ia' pharmacie_id=pharmacie.id %}" 
+                style="display: inline-block; padding: 12px 25px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; text-decoration: none; border-radius: 8px; font-weight: bold; transition: transform 0.2s;">
+                💡 Conseiller Pharma Digital
+            </a>
+</div>
+    </div>
 </body>
 </html>

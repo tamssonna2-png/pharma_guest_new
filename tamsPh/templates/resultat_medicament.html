@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Résultats de recherche - PharmaGest</title>
+    <style>
+        :root {
+            --primary-green: #4CAF50;
+            --dark-green: #45a049;
+            --light-green: #e8f5e8;
+            --primary-blue: #2196F3;
+            --dark-blue: #1976D2;
+            --light-blue: #e3f2fd;
+            --white: #ffffff;
+            --light-gray: #f8f9fa;
+            --text-dark: #2c3e50;
+            --text-light: #6c757d;
+            --border-color: #e0e0e0;
+            --shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            --shadow-hover: 0 8px 15px rgba(0, 0, 0, 0.15);
+            --error-color: #f44336;
+            --warning-color: #ff9800;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #e8f5e8 100%);
+            min-height: 100vh;
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .header {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 35px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+            box-shadow: var(--shadow);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '💊';
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 4em;
+            opacity: 0.2;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 15px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .search-section {
+            background: var(--white);
+            padding: 30px;
+            border-radius: 0;
+            box-shadow: var(--shadow);
+        }
+
+        .search-form {
+            display: flex;
+            gap: 15px;
+            align-items: stretch;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .search-input {
+            flex: 1;
+            padding: 18px 20px;
+            border: 2px solid var(--border-color);
+            border-radius: 12px;
+            font-size: 1.1em;
+            background: var(--light-gray);
+            transition: all 0.3s ease;
+            min-height: 60px;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-blue);
+            background: var(--white);
+            box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.1);
+        }
+
+        .search-btn {
+            padding: 0 30px;
+            border: none;
+            border-radius: 12px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            min-height: 60px;
+        }
+
+        .search-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .status-section {
+            background: var(--light-blue);
+            padding: 20px;
+            border-radius: 0;
+            text-align: center;
+            border-left: 4px solid var(--primary-blue);
+        }
+
+        .results-container {
+            background: var(--white);
+            padding: 35px;
+            border-radius: 0 0 20px 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .results-info {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: linear-gradient(135deg, var(--light-green), var(--light-blue));
+            border-radius: 15px;
+            border: 2px dashed var(--primary-green);
+        }
+
+        .results-count {
+            font-size: 1.3em;
+            color: var(--text-dark);
+            margin-bottom: 10px;
+        }
+
+        .search-term {
+            font-size: 1.2em;
+            color: var(--primary-blue);
+            font-weight: 600;
+        }
+
+        .medicaments-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(450px, 1fr));
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .medicament-card {
+            background: var(--white);
+            border: 2px solid var(--border-color);
+            border-radius: 15px;
+            padding: 25px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .medicament-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 5px;
+            height: 100%;
+            background: var(--primary-green);
+        }
+
+        .medicament-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary-green);
+        }
+
+        .medicament-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .medicament-name {
+            font-size: 1.4em;
+            font-weight: bold;
+            color: var(--text-dark);
+            margin-bottom: 5px;
+        }
+
+        .medicament-category {
+            color: var(--primary-blue);
+            font-weight: 500;
+        }
+
+        .medicament-price {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 10px 18px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            white-space: nowrap;
+        }
+
+        .medicament-description {
+            color: var(--text-light);
+            margin: 15px 0;
+            line-height: 1.5;
+        }
+
+        .pharmacy-info {
+            background: var(--light-blue);
+            padding: 18px;
+            border-radius: 12px;
+            border-left: 4px solid var(--primary-blue);
+            margin-top: 15px;
+        }
+
+        .pharmacy-name {
+            font-size: 1.1em;
+            font-weight: bold;
+            color: var(--primary-blue);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pharmacy-details {
+            display: grid;
+            gap: 8px;
+        }
+
+        .detail-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--text-dark);
+        }
+
+        .distance-badge {
+            background: linear-gradient(135deg, var(--primary-green), var(--dark-green));
+            color: var(--white);
+            padding: 4px 12px;
+            border-radius: 15px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+
+        .empty-state h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .error-container {
+            background: linear-gradient(135deg, #ffebee, #ffcdd2);
+            color: var(--text-dark);
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 30px;
+            border-left: 4px solid var(--error-color);
+        }
+
+        .error-container h3 {
+            color: var(--error-color);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .back-section {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid var(--light-gray);
+        }
+
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 15px 30px;
+            background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue));
+            color: var(--white);
+            text-decoration: none;
+            border-radius: 12px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow);
+        }
+
+        .back-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-hover);
+        }
+
+        @media (max-width: 768px) {
+            .medicaments-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .search-form {
+                flex-direction: column;
+            }
+            
+            .search-btn {
+                justify-content: center;
+            }
+            
+            .medicament-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .medicament-price {
+                align-self: flex-start;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .medicament-card {
+            animation: fadeInUp 0.6s ease-out both;
+        }
+
+        .medicament-card:nth-child(1) { animation-delay: 0.1s; }
+        .medicament-card:nth-child(2) { animation-delay: 0.2s; }
+        .medicament-card:nth-child(3) { animation-delay: 0.3s; }
+        .medicament-card:nth-child(4) { animation-delay: 0.4s; }
+        .medicament-card:nth-child(5) { animation-delay: 0.5s; }
+
+        .status-success {
+            background: var(--light-green);
+            border-left-color: var(--primary-green);
+        }
+
+        .status-error {
+            background: #ffebee;
+            border-left-color: var(--error-color);
+        }
+
+        .status-loading {
+            background: #fff3e0;
+            border-left-color: var(--warning-color);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- En-tête -->
+        <div class="header">
+            <h1>💊 Résultats de Recherche</h1>
+        </div>
+
+        <!-- Section recherche -->
+        <div class="search-section">
+            <form id="searchForm" method="get" action="{% url 'rechercher_medicament_client' %}" class="search-form">
+                <input type="text" 
+                       name="nom_medic" 
+                       id="medicInput"
+                       value="{{ terme_recherche }}" 
+                       placeholder="Rechercher un autre médicament..." 
+                       class="search-input">
+                
+                <input type="hidden" name="lat" id="latField">
+                <input type="hidden" name="lon" id="lonField">
+                
+                <button type="button" onclick="localiserEtRechercherPharmacies()" class="search-btn">
+                    <span>🔍</span>
+                    <span>Rechercher</span>
+                </button>
+            </form>
+        </div>
+
+        <!-- Statut de recherche -->
+        <div id="statut_recherche" class="status-section">
+            📍 Prêt à rechercher...
+        </div>
+
+        {% if erreur %}
+            <div class="error-container">
+                <h3> {{ erreur }}</h3>
+                <p>Essayez avec un autre nom de médicament.</p>
+            </div>
+        {% endif %}
+
+        <!-- Résultats -->
+        <div class="results-container">
+            {% if medicaments %}
+                <div class="results-info">
+                    <div class="results-count">
+                        <strong>{{ medicaments|length }} médicament(s) trouvé(s)</strong>
+                    </div>
+                    {% if terme_recherche %}
+                        <div class="search-term">
+                            Pour : "{{ terme_recherche }}"
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="medicaments-grid">
+                    {% for med in medicaments %}
+                        <div class="medicament-card">
+                            <div class="medicament-header">
+                                <div>
+                                    <div class="medicament-name">{{ med.nom }}</div>
+                                    <div class="medicament-category">{{ med.categorie }}</div>
+                                </div>
+                                <div class="medicament-price">{{ med.prix }} FCFA</div>
+                            </div>
+                            {% if med.description %}
+                                <div class="medicament-description">
+                                    {{ med.description }}
+                                </div>
+                            {% endif %}
+                        
+
+                            <div class="action-buttons" style="display: flex; gap: 15px; margin: 20px 0; flex-wrap: wrap; align-items: center;">
+    <!-- Bouton Commander -->
+    <a href="{% url 'inscription_client' med.pharmacie_id %}?pharmacie_id={{ med.pharmacie_id }}&medicament_id={{med.id}}" 
+       class="btn-action btn-commander"
+       style="flex: 1; min-width: 160px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; background: linear-gradient(135deg, #27ae60, #2ecc71); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 6px 20px rgba(39, 174, 96, 0.3); transition: all 0.4s ease; border: 2px solid #27ae60; cursor: pointer; position: relative; overflow: hidden;">
+       
+       <span class="btn-icon" style="font-size: 18px; transition: transform 0.3s ease;">🚀</span>
+       <span class="btn-text" style="transition: transform 0.3s ease;">Commander</span>
+       
+       <!-- Effet de brillance -->
+       <span class="btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s ease;"></span>
+    </a>
+    
+    <!-- Bouton Info pharmacie -->
+    <a href="{% url 'info_pharmacie' med.pharmacie_id %}" 
+       class="btn-action btn-info"
+       style="flex: 1; min-width: 160px; display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 14px 20px; background: linear-gradient(135deg, #3498db, #2980b9); color: white; text-decoration: none; border-radius: 12px; font-weight: 700; font-size: 15px; box-shadow: 0 6px 20px rgba(52, 152, 219, 0.3); transition: all 0.4s ease; border: 2px solid #3498db; cursor: pointer; position: relative; overflow: hidden;">
+       
+       <span class="btn-icon" style="font-size: 18px; transition: transform 0.3s ease;">🏥</span>
+       <span class="btn-text" style="transition: transform 0.3s ease;">Info pharmacie</span>
+       
+       <!-- Effet de brillance -->
+       <span class="btn-shine" style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); transition: left 0.5s ease;"></span>
+    </a>
+</div>
+
+<style>
+    .btn-action {
+        position: relative;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    
+    .btn-action:hover {
+        transform: translateY(-4px) scale(1.02);
+        box-shadow: 0 12px 30px rgba(0, 0, 0, 0.25);
+    }
+    
+    .btn-commander:hover {
+        background: linear-gradient(135deg, #219653, #27ae60);
+        box-shadow: 0 12px 30px rgba(39, 174, 96, 0.5);
+    }
+    
+    .btn-info:hover {
+        background: linear-gradient(135deg, #2980b9, #3498db);
+        box-shadow: 0 12px 30px rgba(52, 152, 219, 0.5);
+    }
+    
+    .btn-action:hover .btn-icon {
+        transform: scale(1.2) rotate(10deg);
+    }
+    
+    .btn-action:hover .btn-text {
+        transform: translateX(2px);
+    }
+    
+    .btn-action:hover .btn-shine {
+        left: 100%;
+    }
+    
+    .btn-action:active {
+        transform: translateY(-1px) scale(1.01);
+        box-shadow: 0 6px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    /* Responsive */
+    @media (max-width: 480px) {
+        .action-buttons {
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .btn-action {
+            min-width: 100%;
+            padding: 16px 20px;
+        }
+    }
+</style>
+
+
+
+
+                            <!-- Information de la pharmacie -->
+                            <div class="pharmacy-info">
+                                <div class="pharmacy-name">
+                                    🏥 {{ med.pharmacie_nom }}
+                                </div>
+                                <div class="pharmacy-details">
+                                    <div class="detail-item">
+                                        <span>📍</span>
+                                        <span>{{ med.pharmacie_adresse }}</span>
+                                    </div>
+                                    <div class="detail-item">
+                                        <span>🏘️</span>
+                                        <span>{{ med.pharmacie_zone }}</span>
+                                        {% if med.distance %}
+                                            <span class="distance-badge">{{ med.distance }}</span>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                {% if not erreur %}
+                    <div class="empty-state">
+                        <div class="empty-state-icon">🔍</div>
+                        <h3>Aucun médicament trouvé</h3>
+                        <p>Aucun résultat pour "{{ terme_recherche }}" dans les pharmacies proches.</p>
+                    </div>
+                {% endif %}
+            {% endif %}
+
+            <!-- Bouton de retour -->
+            <div class="back-section">
+                <a href="/" class="back-btn">
+                    ⬅️ Retour à l'accueil
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Fonction pour localiser l'utilisateur via le navigateur
+        function localiserEtRechercherPharmacies() {
+            // Récupérer le terme de recherche
+            const nomMedicament = document.getElementById('medicInput').value;
+            const statusElement = document.getElementById('statut_recherche');
+
+            // Vérifier si l'utilisateur a tapé quelque chose
+            if (!nomMedicament.trim()) {
+                statusElement.innerHTML = "❌ Veuillez entrer le nom du médicament.";
+                statusElement.className = "status-section status-error";
+                return;
+            }
+            
+            if (navigator.geolocation) {
+                statusElement.innerHTML = "📍 Localisation en cours...";
+                statusElement.className = "status-section status-loading";
+                
+                navigator.geolocation.getCurrentPosition(
+                    // Fonction de succès
+                    function(position) {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        
+                        // Mettre à jour les champs cachés
+                        document.getElementById('latField').value = lat;
+                        document.getElementById('lonField').value = lon;
+                        
+                        statusElement.innerHTML = "✅ Position trouvée. Recherche en cours...";
+                        statusElement.className = "status-section status-success";
+                        
+                        // Soumettre le formulaire
+                        setTimeout(() => {
+                            document.getElementById('searchForm').submit();
+                        }, 1000);
+                    }, 
+                    
+                    // Fonction d'erreur
+                    function(erreur) {
+                        let errorMessage = "❌ Erreur de géolocalisation. ";
+                        switch(erreur.code) {
+                            case erreur.PERMISSION_DENIED:
+                                errorMessage += "Localisation refusée.";
+                                break;
+                            case erreur.POSITION_UNAVAILABLE:
+                                errorMessage += "Position indisponible.";
+                                break;
+                            case erreur.TIMEOUT:
+                                errorMessage += "Délai dépassé.";
+                                break;
+                            default:
+                                errorMessage += "Erreur inconnue.";
+                        }
+                        
+                        statusElement.innerHTML = errorMessage + " Recherche sans localisation...";
+                        statusElement.className = "status-section status-error";
+                        
+                        // Vider les champs de coordonnées
+                        document.getElementById('latField').value = '';
+                        document.getElementById('lonField').value = '';
+                        
+                        // Soumettre quand même le formulaire
+                        setTimeout(() => {
+                            document.getElementById('searchForm').submit();
+                        }, 1500);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            } else {
+                statusElement.innerHTML = "🌍 Géolocalisation non supportée. Recherche sans localisation...";
+                statusElement.className = "status-section status-error";
+                document.getElementById('latField').value = '';
+                document.getElementById('lonField').value = '';
+                setTimeout(() => {
+                    document.getElementById('searchForm').submit();
+                }, 1000);
+            }
+        }
+
+        // Animation au chargement
+        document.addEventListener('DOMContentLoaded', function() {
+            const cards = document.querySelectorAll('.medicament-card');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+            });
+        });
+
+        // Permettre la soumission avec la touche Entrée
+        document.getElementById('medicInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                localiserEtRechercherPharmacies();
+            }
+        });
+    </script>
+</body>
+</html>
