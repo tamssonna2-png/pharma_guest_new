@@ -1781,7 +1781,7 @@ def notifications_pharmacie(request):
 
 
 
-@login_required
+"""@login_required
 def accepter_commande(request, commande_id):
     try:
         pharmacie = request.user.pharmacie
@@ -1810,7 +1810,7 @@ def accepter_commande(request, commande_id):
     except Pharmacie.DoesNotExist:
         return redirect('/')
     
-    return redirect('notifications_pharmacie')
+    return redirect('notifications_pharmacie')"""
 
 @login_required
 def refuser_commande(request, commande_id):
@@ -1842,6 +1842,61 @@ def refuser_commande(request, commande_id):
         return redirect('/')
     
     return redirect('notifications_pharmacie')
+
+from django.db import transaction
+
+@login_required
+def accepter_commande(request, commande_id):
+    try:
+        pharmacie = request.user.pharmacie
+        commande = get_object_or_404(Commande, id=commande_id, pharmacie=pharmacie)
+
+        lignes = commande.lignecommande_set.select_related('medicament').all()
+
+        # Vérifier que le stock est suffisant pour chaque ligne AVANT toute modification
+        for ligne in lignes:
+            if ligne.medicament.quantite < ligne.quantite:
+                messages.error(
+                    request,
+                    f"Stock insuffisant pour {ligne.medicament.nom} "
+                    f"(disponible : {ligne.medicament.quantite}, demandé : {ligne.quantite})."
+                )
+                return redirect('notifications_pharmacie')
+
+        with transaction.atomic():
+            # Décrémenter le stock de chaque médicament
+            for ligne in lignes:
+                ligne.medicament.quantite -= ligne.quantite
+                ligne.medicament.save()
+
+            # Accepter la commande
+            commande.statut = 'acceptee'
+            commande.save()
+
+            # Marquer la notification comme lue
+            notification = Notification.objects.filter(
+                commande=commande, type_notification='nouvelle_commande'
+            ).first()
+            if notification:
+                notification.lue = True
+                notification.save()
+
+            # Créer une notification pour le client
+            Notification.objects.create(
+                pharmacie=pharmacie,
+                type_notification='nouvelle_commande',
+                message=f"Votre commande #{commande.id} a été acceptée par la pharmacie {pharmacie.nom}",
+                commande=commande
+            )
+
+        messages.success(request, f"Commande #{commande.id} acceptée ! Email envoyé au client.")
+
+    except Pharmacie.DoesNotExist:
+        return redirect('/')
+
+    return redirect('notifications_pharmacie')
+
+
 
 @login_required
 def supprimer_notification(request, notification_id):
@@ -1968,7 +2023,7 @@ Cordialement,
             send_mail(
                 sujet,
                 message,
-                'notifications.pharmacie@gmail.com',  # Expéditeur générique
+                settings.DEFAULT_FROM_EMAIL,  # Expéditeur générique
                 [commande.client.user.email],         # Ton email de test
                 fail_silently=False,
             )
@@ -2120,6 +2175,7 @@ def marquer_recuperee(request, commande_id):
         
         if commande.statut == 'acceptee':
             commande.statut = 'recuperee'
+
             commande.save()
             messages.success(request, f"Commande #{commande.id} marquée comme récupérée")
         else:
@@ -2253,7 +2309,7 @@ def test_email_config(request):
             'Test Configuration',
             f'Ceci est un test. DEBUG={settings.DEBUG}',
             settings.EMAIL_HOST_USER,
-            ['tamssonna@gmail.com'],
+            ['tamssonna@gmaim.com'],
             fail_silently=False,
         )
         

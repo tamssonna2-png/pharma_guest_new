@@ -311,8 +311,8 @@ EMAIL_HOST_PASSWORD = '' # Mot de passe d'application"""
 if DEBUG:
     # En développement local
     EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    EMAIL_HOST_USER = 'notifications.pharmacie@gmail.com'  # Ajoute ceci
-    DEFAULT_FROM_EMAIL = 'notifications.pharmacie@gmail.com'  # Et ceci
+    EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='tamssonna2@gmail.com') # Ajoute ceci
+    DEFAULT_FROM_EMAIL = 'tamssonna2@gmail.com'  # Et ceci
     print("Mode DEBUG activé - L'email n'a pas été envoyé")
 else:
     # En production
@@ -322,8 +322,9 @@ else:
     EMAIL_USE_SSL = True
     EMAIL_USE_TLS = False
     EMAIL_HOST_USER = config('EMAIL_HOST_USER', default='tamssonna2@gmail.com')
-    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='notifications.pharmacie@gmail.com')
+    EMAIL_HOST_PASSWORD = config('EMAIL_HOST_PASSWORD', default='tamssonna2@gmail.com')
     DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+    
 # Dans settings.py, ajoute ce debug
 """print(f"🔍 DEBUG value: {DEBUG}")
 print(f"🔍 EMAIL_BACKEND: {EMAIL_BACKEND}")"""
